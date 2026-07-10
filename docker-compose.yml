@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # React Frontend (Production)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_BASEURL: ${REACT_APP_BASEURL:-http://localhost:8000/api/v1}
+        REACT_APP_BASEURL1: ${REACT_APP_BASEURL1:-http://localhost:8000/api/v1/}
+        REACT_APP_NLFS_DIESEL_VENDOR: ${REACT_APP_NLFS_DIESEL_VENDOR:-231564}
+        REACT_APP_NLFS_DIESEL_MATERIAL_CODE: ${REACT_APP_NLFS_DIESEL_MATERIAL_CODE:-SS126568}
+    container_name: logisticspro_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - logisticspro_network
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  logisticspro_network:
+    driver: bridge

@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # React Frontend (Development with Hot Reload)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: logisticspro_frontend_dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_BASEURL=${REACT_APP_BASEURL:-http://localhost:8000/api/v1}
+      - REACT_APP_BASEURL1=${REACT_APP_BASEURL1:-http://localhost:8000/api/v1/}
+      - REACT_APP_NLFS_DIESEL_VENDOR=${REACT_APP_NLFS_DIESEL_VENDOR:-231564}
+      - REACT_APP_NLFS_DIESEL_MATERIAL_CODE=${REACT_APP_NLFS_DIESEL_MATERIAL_CODE:-SS126568}
+    networks:
+      - logisticspro_network
+    stdin_open: true
+    tty: true
+
+networks:
+  logisticspro_network:
+    driver: bridge
