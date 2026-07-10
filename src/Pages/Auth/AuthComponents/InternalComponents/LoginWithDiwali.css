@@ -1,0 +1,782 @@
+.diwali-login-wrapper {
+  position: relative;
+  width: 100%;
+  /* height: 100vh; */
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-image:none; */
+  /* background: url('src/assets/logo/festival.png') center center / cover no-repeat; */
+}
+
+.background-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  filter: brightness(0.6);
+  z-index: 1;
+}
+
+.fireworks-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background: url('/images/fireworks.png') center top / contain no-repeat; */
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 1.5s ease-in-out;
+}
+
+/* Add a class to trigger fade-in */
+.fireworks-overlay.animate-fireworks {
+  opacity: 1;
+}
+
+/* You could also add keyframes for sparkle or movement */
+@keyframes sparkle {
+  0%, 100% { opacity: 0.8; transform: scale(1) }
+  50% { opacity: 1; transform: scale(1.05) }
+}
+.fireworks-overlay.animate-fireworks {
+  animation: sparkle 4s infinite alternate;
+}
+
+.login-container {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.login-card {
+  /* background: rgba(183, 32, 32, 0.85); */
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  padding: 2rem;
+}
+
+.diwali-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #FFD700; /* gold */
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.small-wish {
+  text-align: center;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Input & button styling override if needed */
+.login-card .form-control:focus {
+  border-color: #FF8C00; /* deep orange accent */
+  box-shadow: none;
+}
+
+.login-card .btn-primary {
+  background-color: #FF8C00;
+  border-color: #FF8C00;
+}
+
+.login-card .btn-primary:hover {
+  background-color: #e67e22;
+  border-color: #e67e22;
+}
+
+  /* Cracker particle styles */
+  .cracker-particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 3;
+    box-shadow: 0 0 4px currentColor, 0 0 8px currentColor;
+  }
+
+  /* Christmas Star Particle */
+.christmas-star1 {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: gold; 
+  clip-path: polygon( 
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  pointer-events: none;
+  z-index: 3;
+  box-shadow: 0 0 6px gold, 0 0 12px gold;
+}
+
+
+/* Diwali Banner */
+.diwali-banner {
+  position: absolute;
+  top: 15%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  z-index: 4;
+}
+
+.diwali-banner h1 {
+  font-size: 3rem;
+  margin: 0;
+  color: #FFD700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  animation: banner-glow 2s infinite alternate;
+}
+
+.diwali-banner p {
+  font-size: 1.2rem;
+  margin: 10px 0 0 0;
+  color: #FFF;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+@keyframes banner-glow {
+  0% { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+  100% { text-shadow: 0 0 25px rgba(255, 215, 0, 1), 0 0 35px rgba(255, 215, 0, 0.8); }
+}
+
+@keyframes diwali-glow-border {
+  0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5), 0 0 10px rgba(255, 165, 0, 0.5); }
+  50% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 165, 0, 0.8); }
+  100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5), 0 0 10px rgba(255, 165, 0, 0.5); }
+}
+
+.diwali-glowing-card {
+  animation: diwali-glow-border 3s infinite linear;
+  background: transparent;
+   /* background: url('src/assets/logo/festival.png') center center / cover no-repeat; */
+}
+
+
+
+/* Background style for the card */
+.winter-card {
+  width: 400px;
+  height: 250px;
+  background: linear-gradient(135deg, #0d1b2a, #1b263b);
+  border: none;
+  border-radius: 1rem;
+  overflow: hidden;
+  padding: 1rem;
+  z-index: 1;
+}
+
+/* Snow overlay layer */
+.snow {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(white 1px, transparent 1px),
+    radial-gradient(white 1px, transparent 1px),
+    radial-gradient(white 1px, transparent 1px);
+  background-size: 20px 20px, 30px 30px, 40px 40px;
+  background-position: 0 0, 10px 10px, 20px 20px;
+  animation: snowFall 10s linear infinite;
+  /* animation: snowDrift  10s linear infinite;
+  animation: snowZigZag 12s ease-in infinite; */
+  /* animation: snowFloat 15s ease-in-out infinite; */
+  z-index: 2;
+}
+
+/* Keyframes for snowfall */
+@keyframes snowFall {
+  0% {
+    background-position: 0 0, 10px 10px, 20px 20px;
+  }
+  100% {
+    background-position: 0 1000px, 10px 1010px, 20px 1020px;
+  }
+}
+
+/* Container for card + snow overlay */
+.snow-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Keyframes for snow drift */
+@keyframes snowDrift {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 100vh);
+  }
+}
+
+@keyframes snowZigZag {
+  0% { transform: translateX(0) translateY(0); }
+  25% { transform: translateX(30px) translateY(25vh); }
+  50% { transform: translateX(-30px) translateY(50vh); }
+  75% { transform: translateX(15px) translateY(75vh); }
+  100% { transform: translateX(-10px) translateY(100vh); }
+}
+
+@keyframes snowFloat {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(50vh) scale(1.2);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(100vh) scale(0.8);
+    opacity: 0.9;
+  }
+}
+
+/* ================= SANTA ANIMATION ================= */
+.santa-container {
+  position: fixed;
+  top: 85%;
+  left: -200px;
+  z-index: 20;
+  pointer-events: none;
+  animation: santa-move 15s linear infinite;
+}
+
+.santa-container img {
+  width: 140px;
+  animation: santa-bob 1.5s ease-in-out infinite;
+}
+
+/* Santa movement */
+@keyframes santa-move {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(100vw + 400px));
+  }
+}
+
+/* Floating effect */
+@keyframes santa-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* ================= CHRISTMAS LIGHTS ================= */
+/* .christmas-lights {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  z-index: 15;
+  pointer-events: none;
+} */
+
+.light-bulb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin-top: 15px;
+  animation: blink 3s infinite alternate;
+  /* animation: blink 1.5s infinite alternate; */
+}
+
+/* Light colors */
+.light-red { background: #ff3b3b; box-shadow: 0 0 8px #ff3b3b; }
+.light-green { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
+.light-yellow { background: #f1c40f; box-shadow: 0 0 8px #f1c40f; }
+.light-blue { background: #3498db; box-shadow: 0 0 8px #3498db; }
+
+/* Blink animation */
+@keyframes blink {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+/* Random delay for natural look */
+.light-bulb:nth-child(odd) {
+  animation-delay: 0.7s;
+}
+
+/* 🎄 CHRISTMAS LIGHT STRIP */
+.christmas-lights {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  z-index: 15;
+  pointer-events: none;
+}
+
+/* COMMON HANGING STRING */
+.light-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Hanging wire */
+.light-wire {
+  width: 2px;
+  height: 35px;
+  /* background: red; */
+  background: linear-gradient(135deg, #b11226, #0b5d1e)
+}
+
+/* 💡 BULB */
+.light-bulb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  animation: blink 1.5s infinite alternate;
+}
+
+.light-red    { background: #ff3b3b; box-shadow: 0 0 8px #ff3b3b; }
+.light-green  { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
+.light-yellow { background: #f1c40f; box-shadow: 0 0 8px #f1c40f; }
+.light-blue   { background: #3498db; box-shadow: 0 0 8px #3498db; }
+
+/* ⭐ STAR */
+.christmas-star {
+  font-size: 22px;
+  color: gold;
+  text-shadow: 0 0 8px gold;
+  animation: star-glow 2s infinite alternate;
+}
+
+/* 🎄 BALL */
+.christmas-ball {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at top, #fff, #e74c3c);
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.8);
+  animation: swing 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes blink {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+@keyframes star-glow {
+  from { opacity: 0.6; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes swing {
+  0%   { transform: rotate(2deg); }
+  50%  { transform: rotate(-2deg); }
+  100% { transform: rotate(2deg); }
+}
+
+/* Stagger animation */
+.light-item:nth-child(even) .light-bulb {
+  animation-delay: 0.7s;
+}
+.light-item:nth-child(odd) .christmas-ball {
+  animation-delay: 1s;
+}
+@keyframes twinkle {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+
+/* ================= PONGAL FESTIVE GARLAND ================= */
+
+.pongal-garlands {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  z-index: 15;
+  pointer-events: none;
+}
+
+/* Garland holder */
+.garland-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Rope / Thread */
+.garland-rope {
+  width: 3px;
+  height: 35px;
+  background: linear-gradient(to bottom, #8b0000, #ffd700);
+  border-radius: 2px;
+}
+
+/* 🍃 Mango Leaf (Toranam) */
+.mango-leaf {
+  width: 22px;
+  height: 14px;
+  background: linear-gradient(135deg, #0b7d3b, #32cd32);
+  border-radius: 0 100% 0 100%;
+  transform: rotate(-20deg);
+  box-shadow: 0 0 6px rgba(50, 205, 50, 0.8);
+  animation: leaf-sway 2.5s ease-in-out infinite;
+}
+
+/* 🌼 Marigold Flower */
+.marigold-flower {
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, #ffd700 30%, #ff8c00 70%);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 165, 0, 0.9);
+  animation: flower-pulse 2s infinite alternate;
+}
+
+/* 🔴 Traditional Bead */
+.pongal-bead {
+  width: 12px;
+  height: 12px;
+  background: #c0392b;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(192, 57, 43, 0.8);
+  animation: bead-blink 1.8s infinite alternate;
+}
+
+/* Animations */
+@keyframes leaf-sway {
+  0%   { transform: rotate(-15deg); }
+  50%  { transform: rotate(15deg); }
+  100% { transform: rotate(-15deg); }
+}
+
+@keyframes flower-pulse {
+  from { transform: scale(1); opacity: 0.8; }
+  to   { transform: scale(1.2); opacity: 1; }
+}
+
+@keyframes bead-blink {
+  from { opacity: 0.4; }
+  to   { opacity: 1; }
+}
+
+/* Natural stagger */
+.garland-item:nth-child(even) .mango-leaf {
+  animation-delay: 0.6s;
+}
+.garland-item:nth-child(odd) .marigold-flower {
+  animation-delay: 1s;
+}
+
+.sugarcane {
+  font-size: 22px;
+  animation: sugarcane-sway 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px #7cb342);
+}
+
+@keyframes sugarcane-sway {
+  0% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+  100% { transform: rotate(-8deg); }
+}
+
+.pongal-pot {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 48px;
+  animation: pongal-boil 2.2s infinite ease-in-out;
+  filter: drop-shadow(0 0 15px orange);
+  z-index: 12;
+}
+
+@keyframes pongal-boil {
+  0% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.1); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+.pongal-cow {
+  position: fixed;
+  bottom: 10px;
+  left: -80px;
+  font-size: 48px;
+  animation: cow-walk 18s linear infinite;
+  opacity: 0.85;
+  z-index: 10;
+}
+
+@keyframes cow-walk {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(100vw + 200px)); }
+}
+
+.surya {
+  position: fixed;
+  top: 60px;
+  right: 80px;
+  font-size: 64px;
+  animation: sun-glow 3s infinite alternate;
+  filter: drop-shadow(0 0 25px gold);
+  z-index: 8;
+}
+
+@keyframes sun-glow {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(1.15); opacity: 1; }
+}
+
+paddy {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(#a5d65c 1px, transparent 1px),
+    radial-gradient(#7cb342 1px, transparent 1px);
+  background-size: 18px 18px, 30px 30px;
+  animation: paddy-fall 12s linear infinite;
+  z-index: 2;
+}
+
+@keyframes paddy-fall {
+  from {
+    background-position: 0 0, 20px 20px;
+  }
+  to {
+    background-position: 0 1000px, 20px 1020px;
+  }
+}
+
+.pongal-effects {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  background-image:
+    radial-gradient(circle, #facc15 1.1px, transparent 1px),
+    radial-gradient(circle, #ef4444 1.1px, transparent 1px),
+    radial-gradient(circle, #22c55e 1.1px, transparent 1px),
+    radial-gradient(circle, #fb923c 1.1px, transparent 1px),
+    radial-gradient(circle, #a855f7 1.1px, transparent 1px);
+
+  background-size: 
+    40px 40px,
+    50px 50px,
+    60px 60px,
+    70px 70px,
+    80px 80px;
+
+  animation: pongalConfetti 12s linear infinite;
+}
+@keyframes pongalConfetti {
+  0% {
+    background-position:
+      0 -200px,
+      50px -300px,
+      100px -400px,
+      150px -500px,
+      200px -600px;
+  }
+  100% {
+    background-position:
+      0 1000px,
+      50px 1100px,
+      100px 1200px,
+      150px 1300px,
+      200px 1400px;
+  }
+}
+.pongal-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at bottom,
+    rgba(255, 153, 51, 0.25),
+    transparent 60%
+  );
+  animation: bhogiGlow 4s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes bhogiGlow {
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+.pongal-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.05) 10%,
+      transparent 30%
+    );
+  background-size: 120px 100%;
+  animation: jallikattuRush 3s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes jallikattuRush {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+.pongal-container {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.summer-effects {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  background-image:
+    radial-gradient(circle, rgba(255, 223, 0, 0.8) 2px, transparent 2px),   /* sun spark */
+    radial-gradient(circle, rgba(255, 140, 0, 0.7) 1.5px, transparent 2px), /* warm glow */
+    radial-gradient(circle, rgba(255, 255, 255, 0.6) 1px, transparent 1px); /* light dust */
+
+  background-size:
+    120px 120px,
+    180px 180px,
+    250px 250px;
+
+  animation: summerFloat 18s linear infinite;
+}
+
+@keyframes summerFloat {
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  50% {
+    background-position: 60px 120px, -80px 160px, 40px 200px;
+  }
+  100% {
+    background-position: 120px 240px, -160px 320px, 80px 400px;
+  }
+}
+
+.sun-rays {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 200, 0, 0.15),
+    rgba(255, 255, 0, 0.05),
+    rgba(255, 200, 0, 0.15)
+  );
+
+  animation: rotateSun 20s linear infinite;
+  mix-blend-mode: overlay;
+}
+
+@keyframes rotateSun {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.palm-shadow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 20% 20%, rgba(0,0,0,0.15), transparent 40%),
+              linear-gradient(120deg, rgba(0,0,0,0.15) 20%, transparent 60%);
+  mix-blend-mode: multiply;
+  animation: palmSwing 6s ease-in-out infinite;
+}
+
+@keyframes palmSwing {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(2deg) scale(1.02);
+  }
+}
+.summer-container {
+  position: relative;
+  overflow: hidden;
+}
+.beach-waves {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 120px;
+  /* background: url("data:image/svg+xml;utf8,\
+  <svg viewBox='0 0 1200 120' xmlns='http://www.w3.org/2000/svg'>\
+  <path fill='%23ffffff55' d='M0,40 C150,120 350,0 600,40 C850,80 1050,0 1200,40 L1200,120 L0,120 Z'></path>\
+  </svg>") repeat-x;
+  background-size: 50% 100%; */
+  animation: waveMove 10s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes waveMove {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+ 
+
+ 
+
+

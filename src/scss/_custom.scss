@@ -1,0 +1,161 @@
+
+
+// Css For Field Set in Input
+
+
+
+
+
+// input[type]{
+//     box-sizing: border-box;
+//     width: 100%;
+//     height: calc(2.5em + 2px);
+//     margin: 0 0 1em;
+//     padding: 6px;
+//     border: 1px solid #bababa;
+//     border-radius: 3px;
+//     background: rgb(255, 255, 255);
+//       font-size: 16px;
+//     resize: none;
+//     outline: none;
+
+//   }
+
+//   select:nth-child(0){
+//     transition-duration: .2s;
+//     transform: translate(0, -1.6em) scale(0.9, 0.9);
+//       font-weight: bold;
+//   }
+
+//   input[type]:focus,select:focus {
+//     border-color: #ff4800;
+//   }
+
+//   input[type]:focus + label[placeholder]:before,
+//   select:focus + label[placeholder]:before {
+//     color: #4d3227;
+//   }
+
+//   input[type]:focus + label[placeholder]:before,
+//   input[type]:valid + label[placeholder]:before,
+//   select + label[placeholder]:before {
+//     transition-duration: .2s;
+//     transform: translate(0, -1.6em) scale(0.9, 0.9);
+//       font-weight: bold;
+//   }
+
+//   input[type]:valid {
+//       border-color: #4d3227;
+//   }
+
+//   input[type]:valid + label[placeholder]:before {
+//       color: #00ffdd;
+//   }
+
+//   input[type]:invalid + label[placeholder][alt]:before {
+//     content: attr(alt);
+//   }
+
+//   input[type] + label[placeholder] {
+//     display: block;
+//     pointer-events: none;
+//     line-height: 1.25em;
+//     margin-top: calc(-3em - 2px);
+//     margin-bottom: calc((3em - 1em) + 2px);
+//   }
+
+//   input[type] + label[placeholder]:before {
+//     content: attr(placeholder);
+//     display: inline-block;
+//     margin: 0 calc(0.5em + 2px);
+//     padding: 0 2px;
+//     color: #7d7d7d;
+//     white-space: nowrap;
+//     transition: 0.3s ease-in-out;
+//     background-image: linear-gradient(to bottom, #ffffff, #ffffff);
+//     background-size: 100% 5px;
+//     background-repeat: no-repeat;
+//     background-position: center;
+//   }
+
+//   input[type] + label[placeholder]:before {
+//     content: attr(placeholder);
+//     display: inline-block;
+//     margin: 0 calc(0.5em + 2px);
+//     padding: 0 2px;
+//     color: #7d7d7d;
+//     white-space: nowrap;
+//     transition: 0.3s ease-in-out;
+//     background-image: linear-gradient(to bottom, #ffffff, #ffffff);
+//     background-size: 100% 5px;
+//     background-repeat: no-repeat;
+//     background-position: center;
+//   }
+
+//   // Css For Field Set in Input
+
+// .fieldset {
+//   border: 1px solid black !important;
+//   background: #EBC999 !important;
+//   border-radius: 5px !important;
+// }
+// legend
+// {
+// border-bottom: 0px;
+// margin-bottom:-7px;
+// width: auto;
+// font-size: 15px;
+// background: white;
+// border-radius: 5px;
+// font-family: initial;
+// margin-left: 4%;
+// font-weight: bolder;
+// color: #4D3227;
+// }
+// #legend-file
+// {
+// border-bottom: 0px;
+// margin-bottom:-7px;
+// width: auto;
+// font-size: 15px;
+// background: white;
+// border-radius: 5px;
+// font-family: initial;
+// margin-left: 8%;
+// font-weight: bolder;
+// color: #4D3227;
+// }
+// #file-input
+// {
+// line-height: 1.5;
+// padding: 5px;
+// width: auto;
+// font-size: 15px;
+// background: white;
+// border:1px  solid #4D3227;
+// border-radius: 5px;
+// font-family: initial;
+// margin-left: 4%;
+// font-weight: bolder;
+// color: #4D3227;
+// }
+// #file-input input{
+//   padding-top:1% ;
+// }
+// #file-input > input:nth-child(1)
+// {
+//    height: 10%;
+//    padding: 3%;
+// }
+// #myLabel-label
+// {
+//   margin-top: -15%;
+// }
+
+// .has-float-label label, .has-float-label > span
+// {
+//   font-size:103%;
+// }
+
+
+// @import '~@tkrotoff/bootstrap-floating-label/src/bootstrap-floating-label';

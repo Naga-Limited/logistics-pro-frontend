@@ -1,0 +1,91 @@
+# React Frontend .gitignore
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Production Build
+/build
+/dist
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Package manager lock files (keep or remove based on preference)
+# yarn.lock
+# package-lock.json
+
+# Debug logs
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Local Netlify folder
+.netlify
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build artifacts
+build/
+dist/
+
+# Service worker
+/src/serviceWorker.js.map
+
+# Source maps (optional - uncomment if you don't want to commit them)
+# *.map
+
+# React App specific
+/public/hot
+/public/storage
+
+# Laravel log files (if any accidentally placed here)
+laravel-*.log
+
+# UAT/Environment specific files
+uat_env.txt
+prod_env.txt

@@ -1,0 +1,17 @@
+export const DesignationMap = {
+  // 1: 'AD',
+  // 2: 'MG',
+  // 3: 'DE',
+  // 4: 'SE',
+  // 5: 'AS',
+  1: 'SAD',
+  2: 'SMG',
+  3: 'SAC',
+  4: 'MGR',
+  5: 'DEE',
+  6: 'ACC',
+  7: 'SET',
+  8: 'MET',
+  9: 'BET',
+  10: 'SSP',
+}
