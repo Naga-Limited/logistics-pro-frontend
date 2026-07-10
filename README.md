@@ -7,6 +7,7 @@ Modern, responsive admin dashboard for LogisticsPro - A comprehensive logistics 
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+- [Docker Deployment](#docker-deployment)
 - [Configuration](#configuration)
 - [Running the Application](#running-the-application)
 - [Project Structure](#project-structure)
@@ -99,6 +100,304 @@ REACT_APP_BASEURL1=http://127.0.0.1:8000/api/v1/
 REACT_APP_NLFS_DIESEL_VENDOR=231564
 REACT_APP_NLFS_DIESEL_MATERIAL_CODE=SS126568
 ```
+
+---
+
+## 🐳 Docker Deployment
+
+### Quick Start with Docker
+
+The easiest way to run the frontend is using Docker. No need to install Node.js locally!
+
+#### Prerequisites
+- Docker Desktop installed ([Download](https://www.docker.com/products/docker-desktop))
+- Docker Compose (included with Docker Desktop)
+
+#### Option 1: Development with Docker (Hot Reload)
+
+```bash
+# Clone the repository
+git clone https://github.com/sakthibalaji-naga/logistics-pro-frontend.git
+cd logistics-pro-frontend
+
+# Copy environment file
+cp .env.example .env
+
+# Edit .env with your backend API URL
+# REACT_APP_BASEURL=http://localhost:8000/api/v1
+# REACT_APP_BASEURL1=http://localhost:8000/api/v1/
+
+# Start development server with hot reload
+docker-compose -f docker-compose.dev.yml up -d
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f
+```
+
+**Access:** http://localhost:3000
+
+**Features:**
+- ✅ Hot reload - code changes instantly reflected
+- ✅ Volume mounting - edit code on host machine
+- ✅ Fast refresh - React Fast Refresh enabled
+- ✅ No local Node.js installation needed
+
+**Development Workflow:**
+```bash
+# Your code changes will auto-reload in the browser!
+# Edit files in src/ and see instant updates
+
+# Install new packages
+docker exec logisticspro_frontend_dev npm install package-name
+
+# Run tests
+docker exec logisticspro_frontend_dev npm test
+
+# Access container shell
+docker exec -it logisticspro_frontend_dev sh
+```
+
+#### Option 2: Production with Docker
+
+```bash
+# Clone the repository
+git clone https://github.com/sakthibalaji-naga/logistics-pro-frontend.git
+cd logistics-pro-frontend
+
+# Copy and configure environment
+cp .env.example .env
+# Edit .env with production API URL
+
+# Build production image (multi-stage optimized)
+docker-compose build
+
+# Start production server
+docker-compose up -d
+```
+
+**Access:** http://localhost:3000
+
+**Features:**
+- ✅ Multi-stage Docker build - minimal image size
+- ✅ Optimized Nginx configuration
+- ✅ Gzip compression enabled
+- ✅ Browser caching configured
+- ✅ Security headers included
+- ✅ Health check endpoint
+
+#### Option 3: Full Stack with Backend (Recommended)
+
+Run both frontend and backend together:
+
+```bash
+# Create project directory
+mkdir logisticspro-fullstack
+cd logisticspro-fullstack
+
+# Clone both repositories
+git clone https://github.com/Naga-Limited/logistics-pro-backend.git backend
+git clone https://github.com/sakthibalaji-naga/logistics-pro-frontend.git frontend
+
+# Create docker-compose.yml for full stack
+# (See Full Stack Configuration below)
+
+# Start everything
+docker-compose up -d
+
+# Initialize backend
+docker exec backend php artisan migrate
+```
+
+**Access:**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- PhpMyAdmin: http://localhost:8080
+
+### Docker Services
+
+| Service | Container Name | Port | Purpose |
+|---------|---------------|------|---------|
+| Frontend | logisticspro_frontend | 3000 | React application |
+
+### Common Docker Commands
+
+```bash
+# View running containers
+docker ps
+
+# View logs (follow mode)
+docker logs -f logisticspro_frontend
+
+# Access container shell
+docker exec -it logisticspro_frontend sh
+
+# Install npm packages (dev mode)
+docker exec logisticspro_frontend_dev npm install
+
+# Restart container
+docker-compose restart
+
+# Stop services
+docker-compose down
+
+# Rebuild and restart
+docker-compose up -d --build
+
+# View container resource usage
+docker stats logisticspro_frontend
+```
+
+### Environment Variables in Docker
+
+When building production Docker images, pass environment variables as build arguments:
+
+```bash
+# Build with custom API URL
+docker build \
+  --build-arg REACT_APP_BASEURL=https://api.yourdomain.com/api/v1 \
+  --build-arg REACT_APP_BASEURL1=https://api.yourdomain.com/api/v1/ \
+  -t logisticspro-frontend:latest .
+
+# Run with environment variables
+docker run -d \
+  -p 3000:80 \
+  -e NODE_ENV=production \
+  logisticspro-frontend:latest
+```
+
+### Full Stack Configuration
+
+Create `docker-compose.fullstack.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: logisticspro
+      MYSQL_USER: logisticspro
+      MYSQL_PASSWORD: secret
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  # Backend API
+  backend:
+    image: logisticspro-backend:latest
+    ports:
+      - "8000:80"
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=logisticspro
+      - REDIS_HOST=redis
+    depends_on:
+      - mysql
+      - redis
+
+  # Frontend
+  frontend:
+    image: logisticspro-frontend:latest
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+```
+
+### Troubleshooting Docker
+
+#### Port Already in Use
+```bash
+# Change port in docker-compose.yml
+ports:
+  - "3001:80"  # Change 3000 to 3001
+```
+
+#### Build Fails
+```bash
+# Clear Docker cache
+docker builder prune -a
+
+# Rebuild from scratch
+docker-compose build --no-cache
+```
+
+#### Hot Reload Not Working (Windows)
+```bash
+# Enable polling in docker-compose.dev.yml
+environment:
+  - CHOKIDAR_USEPOLLING=true
+```
+
+#### Container Exits Immediately
+```bash
+# Check logs for errors
+docker logs logisticspro_frontend
+
+# Verify Dockerfile syntax
+docker build --no-cache .
+```
+
+#### API Connection Issues
+```bash
+# Verify backend is running
+curl http://localhost:8000
+
+# Check CORS configuration in backend
+# Ensure frontend domain is allowed
+
+# Verify environment variables
+docker exec logisticspro_frontend_dev env | grep REACT_APP
+```
+
+#### Out of Disk Space
+```bash
+# Remove unused Docker resources
+docker system prune -a
+
+# Remove specific images
+docker rmi $(docker images -q logisticspro*)
+```
+
+### Docker Files Overview
+
+- **Dockerfile** - Production build (multi-stage, optimized)
+- **Dockerfile.dev** - Development build (hot reload)
+- **docker-compose.yml** - Production container
+- **docker-compose.dev.yml** - Development container
+- **docker/nginx/nginx.conf** - Nginx configuration for SPA
+- **.dockerignore** - Files excluded from build
+
+### Production Build Optimization
+
+The production Dockerfile uses multi-stage builds:
+
+**Stage 1: Build**
+- Install dependencies
+- Build React app
+- Optimize assets
+
+**Stage 2: Serve**
+- Lightweight Nginx Alpine image
+- Copy only built files
+- Configured for SPA routing
+- Gzip compression
+- Security headers
+
+**Result:** Small image size (~50MB vs ~1GB)
 
 ---
 
