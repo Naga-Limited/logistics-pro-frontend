@@ -8,7 +8,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install ALL dependencies (including dev dependencies needed for build)
+# Install ALL dependencies including devDependencies (react-scripts is required for build)
+# npm ci installs from package-lock.json with explicit --include=dev flag
+# Fallback to npm install if lock file has issues
 RUN npm ci --include=dev || npm install
 
 # Copy application files
