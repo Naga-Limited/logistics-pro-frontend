@@ -13,20 +13,16 @@ jobs:
 
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
-      COMMON_REF: main
-      SHARED_REF: main
-      ECR_REPOSITORY_PROD: ${{ secrets.ECR_REPOSITORY_PROD }}
-      ECS_CLUSTER_PROD: ${{ secrets.ECS_CLUSTER_PROD }}
-      ECS_SERVICE_PROD: ${{ secrets.ECS_SERVICE_PROD }}
-      TASK_DEFINITION_PROD: ${{ secrets.ECS_TASK_DEFINITION_PROD }}
-      CONTAINER_NAME_PROD: ${{ secrets.CONTAINER_NAME_PROD }}
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_PROD }}
+      ECS_CLUSTER: ${{ secrets.ECS_CLUSTER_PROD }}
+      ECS_SERVICE: ${{ secrets.ECS_SERVICE_PROD }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
@@ -36,28 +32,21 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Pin @naga/common + @naga/shared to env-matching ref  # digipro-pin-injected
-        # package.json pins a release/* ref for local installs; prod must build
-        # against #main (COMMON_REF/SHARED_REF=main) or it ships stale @naga types.
-        run: |
-          if jq -e '.dependencies."@naga/common"' package.json > /dev/null 2>&1; then
-            npm pkg set "dependencies.@naga/common=github:Naga-Limited/digipro-common#${COMMON_REF}"
-          fi
-          if jq -e '.dependencies."@naga/shared"' package.json > /dev/null 2>&1; then
-            npm pkg set "dependencies.@naga/shared=github:Naga-Limited/digipro-shared#${SHARED_REF}"
-          fi
-          echo "--- @naga deps after pin ---"
-          grep -E '"@naga/' package.json || true
-
       - name: Build Docker image
         run: |
           docker build \
-            --build-arg GH_PAT=${{ secrets.GH_PAT }} \
-            -t $ECR_REPOSITORY_PROD:latest .
-          docker tag $ECR_REPOSITORY_PROD:latest \
-            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY_PROD:latest
+            -t $ECR_REPOSITORY:latest \
+            .
 
-      - name: Push Docker image to ECR          #
+      - name: Tag Docker image
         run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY_PROD:latest
+          docker tag \
+            $ECR_REPOSITORY:latest \
+            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:latest
 
+      - name: Push Docker image to Amazon ECR
+        run: |
+          docker push \
+            ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:latest
+
+  
