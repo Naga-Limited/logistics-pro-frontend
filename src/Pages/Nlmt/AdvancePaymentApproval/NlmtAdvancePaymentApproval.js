@@ -198,6 +198,174 @@ const NlmtAdvancePaymentApproval = () => {
     return uname
   }
 
+  const expenseRows = (data) => data.map((item, index) => `
+    <tr style="
+      background:${index % 2 === 0 ? '#ffffff' : '#f8f9fc'};
+      border-bottom:1px solid #e3e6f0;
+    ">
+      <td style="padding:2px;width:10%;text-align:center;">
+        ${index + 1}
+      </td>
+
+      <td style="padding:2px;width:25%;text-align:center;">
+        ${item.VEN_GL || '-'}
+      </td>
+
+      <td style="
+        padding:2px;
+        width:25%;
+        text-align:right;
+        font-weight:600;
+      ">
+        ${Number(item.AMOUNT || 0).toLocaleString('en-IN', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}
+      </td>
+
+      <td style="padding:2px;width:40%;text-align:center;">
+        ${item.TEXT || '-'}
+      </td>
+    </tr>
+  `).join('');
+
+  const expenseTable = (data) => `
+    <div style="
+      border:2px solid #dcdcdc;
+      border-radius:8px;
+      overflow:hidden;
+      font-family:sans-serif;
+    ">
+
+      <div style="
+        background:linear-gradient(90deg,#4e73df,#5a8dee);
+        color:#fff;
+        padding:5px;
+        font-size:16px;
+        font-weight:600;
+      ">
+        Expense Information
+      </div>
+
+      <table style="
+        width:100%;
+        border-collapse:collapse;
+        font-size:15px;
+      ">
+
+        <thead>
+          <tr style="
+            background:#eaecf4;
+            color:#333;
+            border-bottom:2px solid #d1d3e2;
+          ">
+            <th style="padding:2px;width:10%;text-align:center;">
+              S.No
+            </th>
+
+            <th style="padding:2px;width:25%;text-align:center;">
+              Vendor GL Code
+            </th>
+
+            <th style="padding:2px;width:25%;text-align:right;">
+              Amount
+            </th>
+
+            <th style="padding:2px;width:40%;text-align:center;">
+              Description
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${expenseRows(data)}
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+
+  function SAPSimulateProcess() {
+
+    console.log('CreateAdvanceHire-values', values)
+    let from_date = Expense_Income_Posting_Date_Taken.min_date
+    let to_date = Expense_Income_Posting_Date_Taken.max_date
+
+    console.log('CreateAdvanceHire-from_date', from_date)
+    console.log('CreateAdvanceHire-to_date', to_date)
+
+    if(values.gst_tax_type == '' || values.gst_tax_type == undefined) {
+      toast.warning('GST Tax Type Should be required..')
+      setFetch(true)
+      return false
+    } else if(values.vendor_hsn == '') {
+      toast.warning('HSN Code Should be required..')
+      setFetch(true)
+      return false
+    } else if(values.sap_invoice_posting_date == '' || values.sap_invoice_posting_date == undefined) {
+      toast.warning('Enter Freight Posting Date')
+      setFetch(true)
+      return false
+    } else if(values.vendor_tds == '') {
+      toast.warning('Vendor TDS Tax Type Should be required..')
+      setFetch(true)
+      return false
+    } else if(!JavascriptDateCheckComponent(from_date, formatYMD(values.sap_invoice_posting_date), to_date)) {
+      toast.warning('Invalid Freight Posting date')
+      setFetch(true)
+      return false
+    }  
+
+    let formData = new FormData()
+
+    formData.append('TRIP_SHEET', values.trip_sheet_no) 
+    formData.append('TAX_TYPE', values.gst_tax_type === 'Empty' ? '' : values.gst_tax_type)
+    formData.append('TDS', values.vendor_tds && values.vendor_tds !== '0' ? 'YES' : 'NO')
+    formData.append('TDS_VALUE',values.vendor_tds && values.vendor_tds !== '0' ? values.vendor_tds : '') 
+    formData.append('LIFNR', singleVehicleInfo.vendor_info.vendor_code)
+    formData.append('FREIGHT_PAYMENT', `FREIGHT_PAYMENT:${Number(totalFreightAmount) || 0}`)
+    formData.append('POST_DATE', values.sap_invoice_posting_date) 
+    formData.append('HSN', values.vendor_hsn)
+    formData.append('PLANT', 'NLMD')
+
+    NlmtAdvanceOwnSAP.AdvanceSimulationSAP(formData).then((res) => {
+      setFetch(true)
+      const sap_simulation_data = res.data
+      console.log('SAPSimulateProcess-res', sap_simulation_data)
+      if (res.status == 200 && res.data != '') { 
+
+        Swal.fire({ 
+          text: "You won't be able to revert this!", 
+          title: `SAP Simulation Details Detected!`,
+          icon: "success",
+          width: "600px",
+          showCancelButton: false,
+          confirmButtonColor: "#3085d6", 
+          html: `<table style="height: fit-content" id="table" border=1>
+                  <tbody>
+                    ${expenseTable(sap_simulation_data)}
+                  </tbody>
+                </table>`, 
+        }).then((result) => {
+
+          if (result.isConfirmed) {
+            // setFetch(false)
+          }
+        });
+
+      } else { 
+        toast.warning('SAP Simulation Details cannot be fetched..')
+      }
+    })
+    .catch((err) => {
+      console.error('NLMT SAP Simulation Error:', err)
+      toast.error('Failed to fetch SAP Simulation details. Please try again.')
+      setFetch(true)
+    })
+
+  }
+
   const freightamountfinder = (id, ton, qty) => {
     console.log(id, 'freightamountfinder-id')
     console.log(ton, 'freightamountfinder-ton')
@@ -1482,9 +1650,21 @@ const NlmtAdvancePaymentApproval = () => {
                               className="offset-md-6"
                               xs={12}
                               sm={12}
-                              md={3}
+                              md={6}
                               style={{ display: 'flex', justifyContent: 'end' }}
                             >
+
+                              <CButton
+                                size="sm"
+                                color="primary"
+                                className="mx-3 px-3 text-white" 
+                                onClick={() => {
+                                  setFetch(false)
+                                  SAPSimulateProcess()
+                                }} 
+                              >
+                                SAP Simulate
+                              </CButton>
 
                               {/* <CButton
                                 size="sm"

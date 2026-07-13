@@ -24,13 +24,10 @@ import {
   CTableBody,
   CTableDataCell,
   CTableHead,
-  CTableHeaderCell,
-  CFormFloating,
-  CNavbar,
+  CTableHeaderCell, 
   CTableRow,
   CFormTextarea,
-  CCardImage,
-  CBadge,
+  CCardImage, 
   CInputGroup,
   CInputGroupText,
   CAlert,
@@ -42,31 +39,18 @@ import * as icon from '@coreui/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-import Loader from 'src/components/Loader'
-// import Select from 'react-select';
-// import CModal from '@coreui/react/src/components/modal/CModal'
-import useForm from 'src/Hooks/useForm'
-
-import validate from 'src/Utils/Validation'
-
-import * as TripsheetClosureConstants from 'src/components/constants/TripsheetClosureConstants'
-import VehicleAssignmentService from 'src/Service/VehicleAssignment/VehicleAssignmentService'
+import Loader from 'src/components/Loader' 
+import * as TripsheetClosureConstants from 'src/components/constants/TripsheetClosureConstants' 
 import DieselVendorMasterService from 'src/Service/Master/DieselVendorMasterService'
 
-import StoTableComponent from './StoTableComponent'
-import AllDriverListNameSelectComponent from 'src/components/commoncomponent/AllDriverListNameSelectComponent'
-import StoTableRMSTOComponent from './StoTableRMSTOComponent'
+import StoTableComponent from '../StoTableComponent' 
 import CustomTable from 'src/components/customComponent/CustomTable'
-import ExpenseCalculations from './Calculations/NlmtExpenseCalculations'
-import useFormRJSO from 'src/Hooks/useFormRJSO'
-import useFormTripsheetClosure from 'src/Hooks/useFormTripsheetClosure'
-import RJSaleOrderCreationService from 'src/Service/RJSaleOrderCreation/RJSaleOrderCreationService'
-import VehicleMasterService from 'src/Service/Master/VehicleMasterService'
+import ExpenseCalculations from '../Calculations/NlmtExpenseCalculations' 
+import useFormTripsheetClosure from 'src/Hooks/useFormTripsheetClosure' 
 import DefinitionsListApi from 'src/Service/Definitions/DefinitionsListApi'
 import TripSheetInfoService from 'src/Service/PurchasePro/TripSheetInfoService'
 import CustomerCreationService from 'src/Service/CustomerCreation/CustomerCreationService'
-import ExpenseIncomePostingDate from './Calculations/NlmtExpenseIncomePostingDate'
-import TripSheetClosureSapService from 'src/Service/SAP/TripSheetClosureSapService'
+import ExpenseIncomePostingDate from '../Calculations/NlmtExpenseIncomePostingDate' 
 import Swal from 'sweetalert2'
 import AccessDeniedComponent from 'src/components/commoncomponent/AccessDeniedComponent'
 import JavascriptInArrayComponent from 'src/components/commoncomponent/JavascriptInArrayComponent'
@@ -74,29 +58,22 @@ import * as NlmtScreenAccessCodes from 'src/components/constants/NlmtScreenAcces
 import FileResizer from 'react-image-file-resizer'
 import DepartmentApi from 'src/Service/SubMaster/DepartmentApi'
 import DivisionApi from 'src/Service/SubMaster/DivisionApi'
-import StoTableOthersComponent from './StoTableOthersComponent'
-import VehicleRequestMasterService from 'src/Service/VehicleRequest/VehicleRequestMasterService'
-import SmallLoader from 'src/components/SmallLoader'
-import JavascriptDateCheckComponent from 'src/components/commoncomponent/JavascriptDateCheckComponent'
-import { APIURL } from 'src/App'
+// import StoTableOthersComponent from './StoTableOthersComponent'  
 import NlmtTripSheetClosureService from 'src/Service/Nlmt/TripSheetClosure/NlmtTripSheetClosureService'
-import NlmtVehicleAssignmentService from 'src/Service/Nlmt/VehicleAssignment/NlmtVehicleAssignmentService'
-import NlmtTripInOwnVehicle from '../TripIn/NlmtTripInOwnVehicle'
-import NlmtDefinitionsListApi from 'src/Service/Nlmt/Masters/NlmtDefinitionsListApi'
-import NlmtTripSheetInfoService from 'src/Service/Nlmt/SAP/NlmtTripSheetInfoService'
-import NlmtTripSheetClosureSapService from 'src/Service/Nlmt/SAP/NlmtTripSheetClosureSapService'
+import NlmtVehicleAssignmentService from 'src/Service/Nlmt/VehicleAssignment/NlmtVehicleAssignmentService' 
+import NlmtDefinitionsListApi from 'src/Service/Nlmt/Masters/NlmtDefinitionsListApi' 
 import NlmtTripsheetClosureValidation from 'src/Utils/Nlmt/TripsheetClosure/NlmtTripsheetClosureValidation'
-import NlmtStoDeliveryDataService from 'src/Service/Nlmt/SAP/NlmtStoDeliveryDataService'
-import NlmtRJSaleOrderCreationSapService from 'src/Service/Nlmt/SAP/NlmtRJSaleOrderCreationSapService'
-import NlmtRJSaleOrderCreationService from 'src/Service/Nlmt/RJSaleOrderCreation/NlmtRJSaleOrderCreationService'
-import { de } from 'date-fns/locale' 
-import TripSheetCreationService from 'src/Service/TripSheetCreation/TripSheetCreationService'
+import NlmtStoDeliveryDataService from 'src/Service/Nlmt/SAP/NlmtStoDeliveryDataService' 
+import NlmtRJSaleOrderCreationService from 'src/Service/Nlmt/RJSaleOrderCreation/NlmtRJSaleOrderCreationService' 
 import UserLoginMasterService from 'src/Service/Master/UserLoginMasterService'
 import NlmtTSFreightUpdationService from 'src/Service/Nlmt/FreightUpdation/NlmtTSFreightUpdationService'
 import { getCurrentDateTime } from 'src/Pages/Depo/CommonMethods/CommonMethods'
 import NlmtAdvanceOwnSAP from 'src/Service/Nlmt/SAP/NlmtAdvanceOwnSAP'
+import StoTableOthersComponent from '../StoTableOthersComponent'
+import NlmtTripSheetClosureSapService from 'src/Service/Nlmt/SAP/NlmtTripSheetClosureSapService'
+import JavascriptDateCheckComponent from 'src/components/commoncomponent/JavascriptDateCheckComponent'
 
-const NlmtTripSheetClosure = () => {
+const NlmtTSOwnExpenseClosureApproval = () => {
   /*================== User Id & Location Fetch ======================*/
   const user_info_json = localStorage.getItem('user_info')
   const user_info = JSON.parse(user_info_json)
@@ -136,7 +113,7 @@ const NlmtTripSheetClosure = () => {
   /* ==================== Access Part Start ========================*/
   const [screenAccess, setScreenAccess] = useState(false)
   const [restrictScreenById, setRestrictScreenById] = useState(true)
-  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.Nlmt_Expenses_Closure
+  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.NLMT_Own_Expense_Approval
 
   useEffect(()=>{
 
@@ -233,7 +210,8 @@ const NlmtTripSheetClosure = () => {
     expense_posting_date: '',
     incoterm_freight_info: '',
     supplier_posting_date:'',
-    supplier_ref_no:''
+    supplier_ref_no:'',
+    approval_remarks:''
   }
   const VEHICLE_TYPE_MAP = {
     21: 'Own',
@@ -821,17 +799,6 @@ const NlmtTripSheetClosure = () => {
           values.sap_text = res.data.data[0].sap_text ? res.data.data[0].sap_text : ''
           values.GSTtax = res.data.data[0].gst_tax_type ? res.data.data[0].gst_tax_type : ''
           values.HSNtax = res.data.data[0].vendor_hsn ? res.data.data[0].vendor_hsn : ''
-
-          values.enroute_vendor = res.data.data[0].enroute_vendor ? res.data.data[0].enroute_vendor : ''
-          setErVendorName(res.data.data[0].enroute_vendor ? res.data.data[0].enroute_vendor : '')
-          values.enroute_diesel_liter = res.data.data[0].enroute_diesel_liter ? res.data.data[0].enroute_diesel_liter : ''
-          setErVendorLtr(res.data.data[0].enroute_diesel_liter ? res.data.data[0].enroute_diesel_liter : '')
-          values.enroute_diesel_rate = res.data.data[0].enroute_diesel_rate ? res.data.data[0].enroute_diesel_rate : ''
-          setErVendorDslRate(res.data.data[0].enroute_diesel_rate ? res.data.data[0].enroute_diesel_rate : '')
-          values.enroute_diesel_amount = res.data.data[0].enroute_diesel_amount ? res.data.data[0].enroute_diesel_amount : 0
-          setErDslAmount(res.data.data[0].enroute_diesel_amount ? res.data.data[0].enroute_diesel_amount : '')
-          values.enroute_payment = res.data.data[0].enroute_payment ? res.data.data[0].enroute_payment : 1
-
           let updatedInputs = { ...calculationValues, budgetKM, budgetMileage, actualMileage }
           setCalculationValues(updatedInputs)
           setTripIdleHours(res.data.data[0].idle_hours)
@@ -1710,9 +1677,6 @@ const NlmtTripSheetClosure = () => {
         Number(data.diversion_return_charges ? data.diversion_return_charges : 0) +
         Number(rvTotalValuesBP.rvTotalDieselAmount ? rvTotalValuesBP.rvTotalDieselAmount : 0) +
         Number(urvTotalAmountFinder ? urvTotalAmountFinder : 0)
-        if(tripsettlementData){
-          total_charge = Number(total_charge) + Number(erDslAmount)
-        }
     }
 
     if (tripInfo.rj_so_info && tripInfo.rj_so_info.length > 0) {
@@ -1966,51 +1930,6 @@ const NlmtTripSheetClosure = () => {
       })
       .finally(() => setLoading(false))
   }, [])
-
-  const [erVendorName, setErVendorName] = useState('')
-  const [erVendorLtr, setErVendorLtr] = useState('')
-  const [erVendorDslRate, setErVendorDslRate] = useState('')
-  const [erDslAmount, setErDslAmount] = useState(0)
-
-  const enrouteDieselInfoChange = (event) => {
-    let value_change = event.target.value
-    let value_name = event.target.name
-
-    console.log(event, 'enrouteDieselInfoChange-event')
-    console.log(value_change, 'enrouteDieselInfoChange-value_change')
-    console.log(value_name, 'enrouteDieselInfoChange-value_name')
-
-    if (event.target.name == 'enroute_vendor') {
-      let val1 = value_change.replace(/[^a-zA-Z ]/gi, '')
-      setErVendorName(val1) 
-    } else if (event.target.name == 'enroute_diesel_rate') {
-      let val2 = value_change
-        .replace(/[^0-9^\.]+/g, '')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.')
-        .replace(/^0+/, '')
-        setErVendorDslRate(val2)
-    } else if (event.target.name == 'enroute_diesel_liter') {
-      let val3 = value_change
-        .replace(/[^0-9^\.]+/g, '')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.')
-        .replace(/^0+/, '')
-      setErVendorLtr(val3)
-    } 
-
-    let total_amount = 0
-    if (erVendorLtr && erVendorDslRate) {
-      total_amount = Math.round(erVendorLtr * erVendorDslRate)
-    } else {
-      total_amount = 0
-    }    
-    setErDslAmount(total_amount)
-
-  }
-
   const onChangeURVItem = (event) => {
     let urv_value_change = event.target.value
     if (event.target.name == 'urvDieselAmount') {
@@ -4948,262 +4867,9 @@ const NlmtTripSheetClosure = () => {
     return total
   }
 
-  const OwnTripsheetClosureUpdateProcess = () => {
-
-    // setFetch(true) 
-    // toast.success('OwnTripsheetClosureUpdateProcess') 
-    
-    console.log(values,'OwnTripsheetClosureUpdateProcess-values')
-    console.log(erVendorName,'OwnTripsheetClosureUpdateProcess-erVendorName')
-    console.log(erDslAmount,'OwnTripsheetClosureUpdateProcess-erDslAmount')
-    console.log(erVendorLtr,'OwnTripsheetClosureUpdateProcess-erVendorLtr')
-    console.log(erVendorDslRate,'OwnTripsheetClosureUpdateProcess-erVendorDslRate') 
-
-    if(values.expense_form && values.expense_form.size > 5000000) {
-      setFetch(true)
-      toast.warning('Expense Attachment should be required within 5MB')
-      return false
-    }
-
-    if(values.enroute_invoice_copy && values.enroute_invoice_copy.size > 5000000) {
-      setFetch(true)
-      toast.warning('Enroute Invoice Attachment should be required within 5MB')
-      return false
-    }
-
-    const now = new Date();
-
-    const closure_updation_time =
-      now.getFullYear() + '-' +
-      String(now.getMonth() + 1).padStart(2, '0') + '-' +
-      String(now.getDate()).padStart(2, '0') + ' ' +
-      String(now.getHours()).padStart(2, '0') + ':' +
-      String(now.getMinutes()).padStart(2, '0') + ':' +
-      String(now.getSeconds()).padStart(2, '0');
-
-    console.log(closure_updation_time, 'closure_updation_time')
-
-    const formData = new FormData() 
-    formData.append('_method', 'PUT')
-    formData.append('created_by', user_id)
-    formData.append('halt_days', values.halt_days ? values.halt_days : 0)
-    formData.append('parking_id', tripInfo.nlmt_trip_in_id) 
-    formData.append('remarks', values.remarks ? values.remarks : '')
-    formData.append('tripsheet_id', tripInfo.tripsheet_info.nlmt_tripsheet_id) 
-    formData.append('tripsheet_no', tripInfo.tripsheet_info.nlmt_tripsheet_no)
-    formData.append('vehicle_id', tripInfo.vehicle_id)
-    formData.append('vehicle_no', tripInfo.vehicle_info.vehicle_number)
-    formData.append('vehicle_number',tripInfo.vehicle_info.vehicle_number)
-    formData.append('sap_text', values.sap_text ? values.sap_text : '')
-
-    let actual_km_value = tripInfo.odometer_km ? tripKMFinder(tripInfo.odometer_km, tripInfo.odometer_closing_km) : ''
-    formData.append('actual_km', actual_km_value || '0')
-    formData.append('actual_mileage', calculationValues.actualMileage || '0')
-    
-    formData.append('budgeted_km', calculationValues.budgetKM)
-    formData.append('budgeted_mileage', calculationValues.budgetMileage)
-    formData.append('expense',totalChargesOwn) 
-    formData.append('idle_hours', tripIdleHours)
-    formData.append('approval_status', 0) /* 0 - Need to Get Approval */
-    formData.append('bata', values.bata ? values.bata : 0) 
-    formData.append('loading_charges', values.loading_charges ? values.loading_charges : 0)
-    formData.append('misc_charges', values.misc_charges ? values.misc_charges : 0)
-    formData.append('toll_amount', values.toll_amount ? values.toll_amount : 0)
-    formData.append('unloading_charges', values.unloading_charges ? values.unloading_charges : 0)
-
-    if(erVendorName){
-      formData.append('enroute_vendor', erVendorName)
-    }
-
-    if(erVendorLtr){
-
-      let value = String(erVendorLtr ?? '').trim();
-      let regex1 = /^\d+\.\d{3}$/;  // exactly 3 decimals, e.g. 10.000
-
-      if (!regex1.test(value)) {
-        setFetch(true);
-        toast.warning('Enroute Diesel Rate Per Liter should be in (Ex:10.000) Valid Format..');
-        return false;
-      }   
-
-      formData.append('enroute_diesel_liter', erVendorLtr)
-    }
-
-    if(erVendorDslRate){
-
-      let value = String(erVendorDslRate ?? '').trim();
-      let regex2 = /^\d+\.\d{3}$/;  // exactly 3 decimals, e.g. 10.000
-
-      if (!regex2.test(value)) {
-        setFetch(true);
-        toast.warning('Enroute Diesel Rate Per Liter should be in (Ex:10.000) Valid Format..');
-        return false;
-      }  
-
-      formData.append('enroute_diesel_rate', erVendorDslRate)
-    }
-
-    if(erDslAmount){
-      formData.append('enroute_diesel_amount', erDslAmount)
-    }
-
-    if(values.enroute_invoice_copy){
-      formData.append('enroute_invoice_copy', values.enroute_invoice_copy)
-    } 
-    if(values.expense_form){
-      formData.append('sap_income_info', values.expense_form)
-    } 
-    formData.append('closure_updation_time', closure_updation_time)
-    formData.append('enroute_payment', values.enroute_payment)
-    formData.append('driver_expenses', driverExpenseFinder())
-    formData.append('own_closure_status', 1) /* 1 - Expense Requeted (23) */ 
-
-    if(driverExpenseFinder() < 100){
-      setFetch(true)
-      toast.warning('Driver Expense Amount would be greater then 100..')
-      return false
-    }
-
-    let tripSettlementID = tripsettlementData.id
-
-    console.log(formData,'OwnTripsheetClosureUpdateProcess-formData')
-    console.log(tripSettlementID,'OwnTripsheetClosureUpdateProcess-tripSettlementID')
-    // setFetch(true)
-    // return false
-
-        // setFetch(false)
-    NlmtTripSheetClosureService.updateTripsheetSettlement(tripSettlementID, formData).then((res) => {
-      console.log(res)
-      setFetch(true)
-      if (res.status == 200) {          
-        toast.success('Tripsheet Settlement Expense Capture Process Updated Successfully!')
-        navigation('/NlmtTSExpenseClosureHome')
-      } else { 
-        toast.warning('Tripsheet Settlement Expense Capture Process Failed..')
-        navigation('/NlmtTSExpenseClosureHome')
-      }
-    })
-    .catch((errortemp) => {
-      console.log(errortemp)
-      toast.error('Tripsheet Settlement Expense Capture Process Failed.Kindly Contact Admin..')
-      setFetch(true)
-      var object = errortemp.response.data.errors
-      var output = ''
-      for (var property in object) {
-        output += '*' + object[property] + '\n'
-      }
-      setError(output)
-      setErrorModal(true)
-    })
-    
-  }
-
   const TripsheetClosureSubmit = (process) => {
 
-    console.log(process,'TripsheetClosureSubmit-process')
-
-    if (is_admin) {
-      console.log('-------------------tripInfo---------------------------')
-      console.log(tripInfo)
-      console.log('-------------------shipmentInfo---------------------------')
-      console.log(shipmentInfo)
-      console.log('-------------------RJSOInfo---------------------------')
-      console.log(rjsoInfo)
-      console.log('-------------------stoTableData---------------------------')
-      console.log(stoTableData)
-      console.log('-------------------stoTableDataFGSTO---------------------------')
-      console.log(stoTableDataFGSTO)
-      console.log('-------------------stoTableDataRMSTO---------------------------')
-      console.log(stoTableDataRMSTO)
-      console.log('-------------------stoTableDataFCI---------------------------')
-      console.log(stoTableDataFCI)
-      console.log('-------------------stoOthersTableData---------------------------')
-      console.log(stoOthersTableData) 
-      console.log('-------------------CalculationValues---------------------------')
-      console.log(calculationValues)
-      console.log('-------------------rvTotalValuesBP---------------------------')
-      console.log(rvTotalValuesBP)
-      console.log('-------------------FormValues---------------------------')
-      console.log(values)
-    }
-
-    let sto1 = []
-    let sto2 = []
-
-    stoTableData.map((val1, key1) => {
-      sto1.push(parseInt(val1.sto_delivery_number))
-    })
-    stoTableDataFGSTO.map((val2, key2) => {
-      sto2.push(parseInt(val2.sto_delivery_number_fgsto))
-    })
-
-    if(process == 'update' && (values.expense_form && values.expense_form.size > 5000000)) {
-      setFetch(true)
-      toast.warning('Expense Attachment should be required within 5MB')
-      return false
-    }
-
-    if (process == 'submit' && ((values.expense_form && values.expense_form.size > 5000000) || values.expense_form == '')) {
-      setFetch(true)
-      toast.warning('Expense Attachment should be required within 5MB')
-      return false
-    } 
-
-    const intersection_elements_array = sto1.filter((element) => sto2.includes(element))
-
-    let updated_fgsto_data_array = []
-    stoTableDataFGSTO.map((vv, kk) => {
-      updated_fgsto_data_array.push({
-        sto_delivery_date_time: vv.sto_delivery_date_time_fgsto,
-        sto_to_location: vv.sto_to_location_fgsto,
-        sto_po_number: vv.sto_po_number_fgsto,
-        sto_from_location: vv.sto_from_location_fgsto,
-        sto_freight_amount: vv.sto_freight_amount_fgsto,
-        sto_delivery_quantity: vv.sto_delivery_quantity_fgsto,
-        sto_delivery_number: vv.sto_delivery_number_fgsto,
-        sto_delivery_division: vv.sto_delivery_division_fgsto,
-      })
-    })
-    console.log(updated_fgsto_data_array, 'updated_fgsto_data_array')
-    const all_sto_merged_array = stoTableData.concat(updated_fgsto_data_array)
-
-    if(tripInfo.vehicle_info && tripInfo.vehicle_info.vehicle_type_id == '22' && tripInfo.vendor_info && tripInfo.vendor_info.vendor_code == 0) {
-      setFetch(true)
-      toast.warning(`Vendor details not found in SAP. Please update vendor details to proceed..`)
-      return false
-    }
-
-    if (is_admin) {
-      console.log(sto1, 'sto1')
-      console.log(sto2, 'sto2')
-      console.log(updated_fgsto_data_array, 'updated_fgsto_data_array')
-      console.log(all_sto_merged_array, 'all_sto_merged_array')
-      console.log(intersection_elements_array, 'intersection_elements_array')
-    }
-
-    if (intersection_elements_array.length != 0) {
-      setFetch(true)
-      toast.warning(`Same STO-Delivery Information can't allowed to save twice..`)
-      return false
-    }
-
-    if (!(tripInfo.advance_payment_info || tripInfo.vehicle_info.vehicle_type_id != '22')) {
-      if (values.TdsHaving == '') {
-        setFetch(true)
-        toast.warning(`TDS Tax Type Should be required.`)
-        return false
-      }
-      if (values.GSTtax == '') {
-        setFetch(true)
-        toast.warning(`GST Tax Type Should be required.`)
-        return false
-      }
-      if (values.HSNtax == '') {
-        setFetch(true)
-        toast.warning(`HSN Tax Type Should be required.`)
-        return false
-      }
-    }
+    console.log(process,'TripsheetClosureSubmit-process') 
 
     const now = new Date();
 
@@ -5216,764 +4882,199 @@ const NlmtTripSheetClosure = () => {
       String(now.getSeconds()).padStart(2, '0');
 
     console.log(closure_updation_time, 'closure_updation_time');
-    // 2026-07-06 02:15:30
-
-    /* Values Assigning To Save Details into DB Part Start*/
-
-    const formData = new FormData()
-
-    /* Common Table Column Values */
-    formData.append('created_by', user_id)
-    formData.append('vehicle_type_id', tripInfo.vehicle_info.vehicle_type_id )
-    formData.append('halt_days', values.halt_days ? values.halt_days : 0)
-    formData.append('parking_id', tripInfo.nlmt_trip_in_id) 
-    formData.append('remarks', values.remarks ? values.remarks : '')
-    formData.append('tripsheet_id', tripInfo.tripsheet_info.nlmt_tripsheet_id) 
-    formData.append('tripsheet_no', tripInfo.tripsheet_info.nlmt_tripsheet_no)
-    formData.append('vehicle_id', tripInfo.vehicle_id)
-    formData.append('vehicle_no', tripInfo.vehicle_info.vehicle_number)
-    formData.append('vehicle_number',tripInfo.vehicle_info.vehicle_number)
-    formData.append('sap_text', values.sap_text ? values.sap_text : '')
-
-    if(process == 'update' && values.expense_form == '') {
-      //
-    } else {
-      formData.append('sap_income_info', values.expense_form)
-    } 
-    formData.append('closure_updation_time', closure_updation_time)
-
-    /* Own Vehicles Column Values */
-    if (tripInfo.vehicle_info.vehicle_type_id == 21) {
-
-      let actual_km_value = tripInfo.odometer_km ? tripKMFinder(tripInfo.odometer_km, tripInfo.odometer_closing_km) : ''
-      formData.append('actual_km', actual_km_value || '0')
-      formData.append('actual_mileage', calculationValues.actualMileage || '0')
-      
-      formData.append('budgeted_km', calculationValues.budgetKM)
-      formData.append('budgeted_mileage', calculationValues.budgetMileage)
-      formData.append('expense',totalChargesOwn) 
-      formData.append('idle_hours', tripIdleHours)
-      
-      formData.append('bata', values.bata ? values.bata : 0)
-      // formData.append('freight_charges', values.freight_charges ? values.freight_charges : 0)
-      formData.append('loading_charges', values.loading_charges ? values.loading_charges : 0)
-      formData.append('misc_charges', values.misc_charges ? values.misc_charges : 0)
-      formData.append('toll_amount', values.toll_amount ? values.toll_amount : 0)
-      formData.append('unloading_charges', values.unloading_charges ? values.unloading_charges : 0)
-
-      //Enroute Vendor Details Send
-      formData.append('enroute_vendor', urvValues.urvName || '')
-      formData.append('enroute_invoice_copy', urvValues.urvInvoice || '')
-      formData.append('enroute_diesel_liter', urvValues.urvDieselLiter || '')
-      formData.append('enroute_diesel_rate', urvValues.urvDieselRate || '')
-      formData.append('enroute_payment', values.enroute_payment || '')
-      formData.append('enroute_diesel_amount', urvTotalAmountFinder)
-      formData.append('registered_diesel_amount', rvTotalValuesBP.rvTotalDieselAmount ? rvTotalValuesBP.rvTotalDieselAmount : 0 )
-      
-      formData.append('driver_id', tripInfo.driver_id ? tripInfo.driver_id : '')
-      formData.append('vendor_code', tripInfo.driver_info  ? tripInfo.driver_info.driver_code : '')
-      formData.append('own_closure_status', 1) /* 1 - Expense Requeted (23) */
-      formData.append('approval_status', 0) /* 0 - Need to Get Approval */
-    }
-
-    /* Hire Vehicles Column Values */
-    if (tripInfo.vehicle_info.vehicle_type_id == 22) {
-
-      formData.append('expense',totalChargesHire)
-      formData.append('diversion_return_charges',values.diversion_return_charges ? values.diversion_return_charges : 0)
-      // formData.append('approval_status', approval_status)
-      formData.append('freight_charges', totalFreightAmountFinder(tripInfo))
-      formData.append('cost_center', values.cost_center ? values.cost_center : '')
-      formData.append('ded_remarks', values.ded_remarks ? values.ded_remarks : '')
-      formData.append('ded_ref', values.ded_ref ? values.ded_ref : '')
-      formData.append('vendor_id', tripInfo.vendor_info ? tripInfo?.vendor_info?.vendor_id : values.vendor_id) 
-      formData.append('shipment_id',tripInfo.vehicle_assignment[0].shipment_id)
-      formData.append('hire_closure_status', 1) /* 1 - Expense Requeted (26) */
-      formData.append('billed_qty', tripInfo.vehicle_assignment[0].billed_net_qty || 0)
-      formData.append('shipment_no', tripInfo.vehicle_assignment[0].shipment_no || 0) 
-      formData.append('freight_per_ton', tripInfo.tripsheet_info.trip_freight_rate || 0)
-      formData.append('route_id', tripInfo.tripsheet_info.route_id || 0) 
-
-      if(!tripInfo.advance_payment_info){
-        formData.append('supplier_posting_date', values.supplier_posting_date)
-        formData.append('supplier_ref_no',values.supplier_ref_no ? values.supplier_ref_no : tripInfo.tripsheet_info.nlmt_tripsheet_no)
-      }
-
-      if (tripInfo.advance_payment_info && tripInfo.advance_payment_info.vendor_tds) {
-
-        formData.append('tds_having', tripInfo.advance_payment_info.tds_type == '1' ? 1 : 0)
-        formData.append('tds_type', values.TdsHaving ? values.TdsHaving : '')
-        formData.append('vendor_tds', tripInfo.advance_payment_info.vendor_tds ? tripInfo.advance_payment_info.vendor_tds : ''
-        )
-        formData.append('vendor_hsn', tripInfo.advance_payment_info.vendor_hsn ? tripInfo.advance_payment_info.vendor_hsn : ''
-        )
-        formData.append('gst_tax_type',tripInfo.advance_payment_info.gst_tax_type ? tripInfo.advance_payment_info.gst_tax_type : '')
-
-      } else {
-
-        formData.append('tds_having', values.TdsHaving == '0' ? 0 : 1)
-        formData.append('tds_type', values.TdsHaving ? values.TdsHaving : '')
-        formData.append('vendor_tds', values.TdsHaving ? values.TdsHaving : '')
-        formData.append('vendor_hsn', values.HSNtax ? values.HSNtax : '')
-        formData.append('gst_tax_type', values.GSTtax ? values.GSTtax : '')
-
-      }
-      
-      formData.append('vendor_code', tripInfo.vendor_info  ? tripInfo.vendor_info.vendor_code : '')  
-
-    } 
-
-
-    //ADD-ON INFO DATA SEND
-    formData.append('trip_data_info', '') 
-    formData.append('trip_shipment_info', JSON.stringify(shipmentInfo))
-    formData.append('trip_rj_info', JSON.stringify(rjsoInfo)) 
-    formData.append('trip_fgsto_info', JSON.stringify(all_sto_merged_array))
-    formData.append('trip_rmsto_info', JSON.stringify(stoTableDataRMSTO))
-    formData.append('trip_others_info', JSON.stringify(stoOthersTableData))
-    formData.append('trip_fci_info', JSON.stringify(stoTableDataFCI))
-
-    let shipment_array = []
-    let rjso_array = []
-    let fgsto_array = []
-    let rmsto_array = []
-
-    if (shipmentInfo.length > 0) {
-      shipmentInfo.map((parent, parent_index) => {
-        shipment_array[parent_index] = parent.shipment_id
-        parent.shipment_child_info.map((child, child_index) => {
-          formData.append(
-            `fg_pod_copy_shipment_${child.shipment_no}_delivery_${child.delivery_no}`,
-            child.fj_pod_copy
-          )
-        })
-      })
-    } 
-
-    if (rjsoInfo.length > 0) {
-      rjsoInfo.map((parent, parent_index) => {
-        rjso_array[parent_index] = parent.id
-        formData.append(`rj_pod_copy_so_${parent.rj_so_no}`, parent.rj_pod_copy)
-      })
-    }
-
-    if (shipmentInfo.length > 0) {
-      if (shipmentInfo && shipmentInfo.length > 0) {
-        shipmentInfo.forEach((parent) => {
-          parent.shipment_child_info.forEach((child) => {
-            if (child.fj_pod_copy instanceof File) {
-              formData.append(
-                `fg_pod_copy_shipment_${parent.shipment_no}_delivery_${child.delivery_no}`,
-                child.fj_pod_copy // ✅ actual File object
-              )
-            }
-          })
-        })
-      }
-    }
-
-    if (stoTableData.length > 0) {
-      stoTableData.map((parent, parent_index) => {
-        formData.append(`sto_pod_copy_do_${parent.sto_delivery_number}`, parent.sto_pod_copy)
-      })
-    }
-
-    if (stoTableDataRMSTO.length > 0) {
-      stoTableDataRMSTO.map((parent, parent_index) => {
-        formData.append(
-          `sto_pod_copy_rmsto_do_${parent.sto_delivery_number_rmsto}`,
-          parent.sto_pod_copy_rmsto
-        )
-      })
-    } 
-
-    console.log('-------------------JSON.stringify(rjsoInfo)---------------------------')
-    console.log(JSON.stringify(rjsoInfo))
-    console.log(tripInfo,'setFetch-tripInfo') 
-    console.log(process,'setFetch-process') 
-    console.log(values,'setFetch-values') 
-    console.log(stoTableDataFCI,'setFetch-stoTableDataFCI')
-
-    let deduction_exists = 0
-    if(values.diversion_return_charges && Number(values.diversion_return_charges) > 0){
-      deduction_exists = 1
-    }
-
-    let advance_percentage = tripInfo.advance_payment_info ? 10 : 100
+    // 2026-07-06 02:15:30     
 
     if (process == 'submit') {
 
-      /* ====== Hire Vehicle Direct Expense Closure Posting Process  */
-
-      if(tripInfo.vehicle_info.vehicle_type_id === 22 && stoTableDataFCI &&
-        stoTableDataFCI.length > 0){
-
-        console.log(deduction_exists,'setFetch-deduction_exists')
-        console.log(process, 'process if')
-
-        /* If Deduction exists, need to proceed deduction approval process */ 
-        if(deduction_exists == 1 || (deduction_exists == 0 && advance_percentage == 10)){
-
-          if(deduction_exists == 1){
-         
-            if (values.cost_center == '' || !values.cost_center ) {
-              setFetch(true)
-              toast.warning(`Cost Center Should be required for Deduction Process.`)
-              return false
-            }
-
-            if (values.ded_ref == '' || values.ded_ref.trim() == '') {
-              setFetch(true)
-              toast.warning(`Reference No. Should be required for Deduction Process.`)
-              return false
-            }
-
-            if (values.ded_remarks == '' || values.ded_remarks.trim() == '') {
-              setFetch(true)
-              toast.warning(`Remarks Should be required for Deduction Process.`)
-              return false
-            }
-
-          } else if(deduction_exists == 0 && advance_percentage == 10){
-            formData.append('hire_closure_status', 2) /* 2 - Expense Requested / Deduction Approved (27) */
-          }
-
-          formData.append('deduction_exists', deduction_exists)
-          formData.append('advance_amount', advance_percentage) /* submit - 10% or 100% - with deduction */
-          formData.append('tripsheet_is_settled', 1)
-          
-          formData.append('approval_status', deduction_exists == 0 ? 1 : 0) /* 1 - No Need / Accepted, 0 - Need to get Approval */
-
-          if(advance_percentage == 10){
-            formData.append('expense_sap_document_no', tripInfo.advance_payment_info.sap_freight_payment_document_no)  
-          }
-
-          NlmtTripSheetClosureService.createTripsheetSettlement(formData).then((res) => {
-            console.log(res, 'createTripsheetSettlement')
-            if (res.status == 200) {
-              setFetch(true)
-              toast.success('Tripsheet Settlement Expense Capture Process Done Successfully!')
-              navigation('/NlmtTSExpenseClosureHome')
-            } else {
-              setFetch(true)
-              toast.warning('Tripsheet Settlement Expense Capture Process Failed..')
-              navigation('/NlmtTSExpenseClosureHome')
-            }
-          })
-          .catch((errortemp) => {
-            console.log(errortemp)
-            setFetch(true)
-            var object = errortemp.response.data.errors
-            var output = ''
-            for (var property in object) {
-              output += '*' + object[property] + '\n'
-            }
-            setError(output)
-            setErrorModal(true)
-          })
-
-        } else { /* If No Deduction, directly sent to expense approval process */ 
-
-          // ============= Posting date Validation Part =================== //
-
-          // let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
-          // let from_date = Expense_Income_Posting_Date_Taken.min_date
-          // let to_date = Expense_Income_Posting_Date_Taken.max_date
+      /* ====== Own Vehicle SAP Expense Closure Posting Process  */
       
-          // if(JavascriptDateCheckComponent(from_date,values.expense_posting_date,to_date)){
-          //   //
-          // } else {
-          //   setFetch(true)
-          //   toast.warning('Invalid Expense Posting date')
-          //   return false
-          // }
-          // ============= Posting date Validation Part =================== //
-
-          // let SAPData = new FormData()
-          
-          // SAPData.append('TRIP_SHEET', tripInfo.tripsheet_info.nlmt_tripsheet_no) 
-          // SAPData.append('VEHICLE_NO', tripInfo.vehicle_info.vehicle_number)
-          // SAPData.append('TAX_TYPE', values.GSTtax && values.GSTtax != 'Empty' ? values.GSTtax : '') /* Hire Vehicle Submit Process */
-          // SAPData.append('TDS', values.TdsHaving == 0 ? 'NO' : 'YES')
-          // SAPData.append('TDS_VALUE', (values.TdsHaving == 0 ? '' : values.TdsHaving))
-          // SAPData.append('REMARKS', values.sap_text ? values.sap_text : '')
-          // SAPData.append('LIFNR', tripInfo.vendor_info  ? tripInfo.vendor_info.vendor_code : '')         
-          // SAPData.append('TOTAL_FRE', totalChargesHire)
-          // SAPData.append('POST_DATE', values.expense_posting_date) 
-          // SAPData.append('HSN', values.HSNtax ? values.HSNtax : '')
-          // SAPData.append('PLANT', 'NLMD')
-          // SAPData.append('DEDUCT_AMT', '')
-          // SAPData.append('DEDUCT_REMARKS', '')
-          // SAPData.append('COST_CENTER', '')
-          // SAPData.append('REF_NO',values.supplier_ref_no ? values.supplier_ref_no : tripInfo.tripsheet_info.nlmt_tripsheet_no)
-          // SAPData.append('REF_DATE', values.supplier_posting_date) 
-          
-          // console.log(SAPData,'SAPData')
-
-          // // setFetch(true)
-          // // return false
-            
-          // NlmtTripSheetClosureSapService.hireTripsheetExpenseWithoutDeductionPost(SAPData).then((res) => {
-
-          //   let sap_ts_no = res.data.TRIP_SHEET
-          //   let sap_expense_amount = res.data.EXP_DOC_AMT || 0
-          //   let sap_expense_document_no = res.data.DOCUMENT_NO
-          //   let sap_expense_status = res.data.STATUS
-          //   let sap_expense_message = res.data.MESSAGE
-          //   let sap_expense_deduction_document_no = res.data.DEDUCTION_DOCUMENT_NO
-          //   let sap_expense_deduction_status = res.data.DEDUCTION_STATUS
-          //   let sap_expense_deduction_message = res.data.DEDUCTION_MESSAGE
-
-          //   console.log('hireTripsheetExpenseWithoutDeductionPost',
-          //     sap_ts_no + '/' + sap_expense_amount + '/' + sap_expense_document_no + '/' + sap_expense_status + '/' + sap_expense_message + '/' + sap_expense_deduction_document_no + '/' + sap_expense_deduction_status + '/' + sap_expense_deduction_message
-          //   )
-
-          //   if (
-          //     sap_expense_status == '1' &&
-          //     res.status == 200 &&
-          //     sap_expense_document_no &&
-          //     sap_expense_message &&
-          //     sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no && 
-          //     sap_expense_deduction_status == '2' 
-          //   ){
-
-          //     formData.append('expense_sap_document_no', sap_expense_document_no)
-          //     formData.append('sap_expense_amount', sap_expense_amount)
-          //     formData.append('expense_posting_date', values.expense_posting_date)
-              // formData.append('tripsheet_is_settled', 3) 
-              formData.append('approval_status',1) /* 1 - No Need */
-              formData.append('hire_closure_status', 2) /* 2 - Expense Requested (26) */
-              formData.append('process', 1) /* 2 - Create */
-              // setFetch(true)
-              // return false
-
-              formData.append('advance_amount',advance_percentage) /* submit - 100% - with out deduction */
-              NlmtTripSheetClosureService.createTripsheetSettlementForExpenseWitoutDeduction(formData).then((res) => {
-                console.log(res,'approveSettlementSubmission')
-                
-                setFetch(true)
-                if (res.status == 200) {
-                  Swal.fire({
-                    title: "Tripsheet Settlement Expense Capture Process Done Successfully!",
-                    icon: "success",
-                    // html: `SAP Expense Amount - ${sap_expense_amount ?? '-'}<br/>SAP Expense Doc.No - ${sap_expense_document_no}`,
-                      
-                    confirmButtonText: "OK",
-                  }).then(function () {
-                    navigation('/NlmtTSExpenseClosureHome')
-                  });
-                } else if (res.status == 201) {
-                  Swal.fire({
-                    title: res.data.message,
-                    icon: "warning",
-                    confirmButtonText: "OK",
-                  }).then(function () {
-                    // window.location.reload(false)
-                  });
-                } else {
-                  toast.warning(
-                    'Expense Closure - Submission Cannot Be Updated From LP.. Kindly Contact Admin!'
-                  )
-                }
-              })
-              .catch((error) => {
-                setFetch(true) 
-                console.log(error)
-                var object = error.response.data.errors
-                var output = ''
-                for (var property in object) {
-                  output += '*' + object[property] + '\n'
-                }
-                setError(output)
-                setErrorModal(true)
-              })
-
-
-            // } else if (
-            //   (sap_expense_status == '2') &&
-            //   res.status == 200 &&
-            //   sap_expense_document_no == '' &&
-            //   sap_expense_message &&
-            //   sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
-            // ) {
-            //   setFetch(true)
-            //   Swal.fire({
-            //     title: sap_expense_message + ' Kindly Contact Admin..',
-            //     icon: "warning",
-            //     confirmButtonText: "OK",
-            //   }).then(function () {
-            //     // window.location.reload(false)
-            //   })
-    
-            // } else {
-            //   setFetch(true)
-            //   toast.warning('Expense Posting Failed in SAP.. Kindly Contact Admin!')
-            // }
-
-          // })
-          
-        }
-
-      /* ====== Own Vehicle Direct Expense Closure Posting Process  */
-      } else if (
-        tripInfo.vehicle_info.vehicle_type_id === 21 &&
-        stoTableDataFCI &&
-        stoTableDataFCI.length > 0
-      ) {
         console.log(process, 'process else if')
 
-        formData.append('tripsheet_is_settled', 1)
-        formData.append('driver_expenses', driverExpenseFinder())
-        formData.append('own_closure_status', 1) /* 1 - Expense Requeted (23) */
+        const formData = new FormData()
 
-        if(tripInfo.diesel_intent_info && tripInfo.diesel_intent_info.diesel_status != '2'){
-          setFetch(true)
-          toast.warning('Diesel Confirmation should be completed before making Expense Closure Submission..!')
-          return false
-        }
+        formData.append('parking_id', tripInfo.nlmt_trip_in_id)  
+        formData.append('tripsheet_id', tripInfo.tripsheet_info.nlmt_tripsheet_id) 
+        formData.append('tripsheet_no', tripInfo.tripsheet_info.nlmt_tripsheet_no)
+        formData.append('vehicle_id', tripInfo.vehicle_id)
+        formData.append('vehicle_no', tripInfo.vehicle_info.vehicle_number)
+        formData.append('vehicle_number',tripInfo.vehicle_info.vehicle_number) 
+        formData.append('approval_status', 3) /* 3 - Expense Approved */
+        formData.append('closure_updation_time', closure_updation_time)
+        formData.append('expense_approval_at', closure_updation_time)
+        formData.append('tripsheet_is_settled', 3) 
+        formData.append('own_closure_status', 3) /* 3 - Expense Approved (25) */  
+        formData.append('updated_by', user_id)
+        formData.append(
+        'expense_approval_remarks',
+        values.approval_remarks ? values.approval_remarks : 'reject'
+      )
+      formData.append('expense_approval_by', user_id) 
 
-        if(driverExpenseFinder() < 100){
-          setFetch(true)
-          toast.warning('Driver Expense Amount would be greater then 100..')
-          return false
-        }
+      // ============= Posting date Validation Part =================== //
 
-        // ============= Posting date Validation Part =================== //
-
-        // let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
-        // let from_date = Expense_Income_Posting_Date_Taken.min_date
-        // let to_date = Expense_Income_Posting_Date_Taken.max_date
-    
-        // if(JavascriptDateCheckComponent(from_date,values.expense_posting_date,to_date)){
-        //   //
-        // } else {
-        //   setFetch(true)
-        //   toast.warning('Invalid Expense Posting date')
-        //   return false
-        // }
-        // ============= Posting date Validation Part =================== //
-
-        // let SAPData = new FormData()
-          
-        // SAPData.append('TRIPSHEET_NO', tripInfo.tripsheet_info.nlmt_tripsheet_no) 
-        // SAPData.append('VEHICLE_NO', tripInfo.vehicle_info.vehicle_number)
-        // SAPData.append('LIFNR', tripInfo.driver_info  ? tripInfo.driver_info.driver_code : '')  
-
-        // SAPData.append('TOLL_AMOUNT', values.toll_amount)
-        // SAPData.append('BATA', values.bata)
-        // SAPData.append('LOADING_CHARG', values.loading_charges)
-        // SAPData.append('UNLOADING_CHARG', values.unloading_charges)
-        // SAPData.append('OTHER_CHARG', values.misc_charges) 
-        // SAPData.append('TOTAL_EXP_AMT', driverExpenseFinder())
-
-        // SAPData.append('TAX_TYPE', '') /* Own Vehicle Process */
-        // SAPData.append('TDS', '')
-        // SAPData.append('TDS_VALUE', '')
-        // SAPData.append('HSN', '')
-        // SAPData.append('REMARKS', values.sap_text ? values.sap_text : '')
-        // SAPData.append('POST_DATE', values.expense_posting_date)
-        // SAPData.append('PLANT', 'NLMD') 
-          
-        // console.log(SAPData,'SAPData1')
-        // console.log(formData,'SAPData2')
-
-        // NlmtTripSheetClosureSapService.driverExpensePost(SAPData).then((res) => {
-
-        //   console.log(res, 'driverExpensePost-response')
-
-        //   let sap_ts_no = res.data.TRIP_SHEET
-        //   let sap_status = res.data.STATUS
-        //   let sap_expense_post_document = res.data.DOCUMENT_NO
-        //   let sap_expense_post_message = res.data.MESSAGE
-
-        //   console.log(sap_ts_no, 'sap_ts_no')
-        //   console.log(sap_status, 'sap_status')
-        //   console.log(sap_expense_post_document, 'sap_expense_post_document')
-        //   console.log(sap_expense_post_message, 'sap_expense_post_message')
-
-        //   if (
-        //       sap_status == '1' &&
-        //       res.status == 200 &&
-        //       sap_expense_post_document &&
-        //       sap_expense_post_message &&
-        //       sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
-        //     ){
-
-        //     formData.append('expense_sap_document_no', sap_expense_post_document)
-            formData.append('expense_posting_date', values.expense_posting_date)
-
-            // setFetch(true)
-            // return false
-       
-            NlmtTripSheetClosureService.createTripsheetSettlement(formData).then((res) => {
-              console.log(res, 'createTripsheetSettlement')
-              if (res.status == 200) {
-                setFetch(true) 
-                Swal.fire({
-                  title: "Tripsheet Expense Closure Process Done Successfully!",
-                  icon: "success",
-                  // html: 'SAP Expense Document No : ' + sap_expense_post_document,  
-                  confirmButtonText: "OK",
-                }).then(function () {
-                  navigation('/NlmtTSExpenseClosureHome')
-                })
-
-              } else {
-                setFetch(true)
-                toast.warning('Tripsheet Settlement Expense Capture Process Failed..')
-                // navigation('/NlmtTSExpenseClosureHome')
-              }
-            })
-            .catch((errortemp) => {
-              console.log(errortemp)
-              setFetch(true)
-              var object = errortemp.response.data.errors
-              var output = ''
-              for (var property in object) {
-                output += '*' + object[property] + '\n'
-              }
-              setError(output)
-              setErrorModal(true)
-            })
-
-        //   } else if (
-        //       (sap_status == '2') &&
-        //       res.status == 200 &&
-        //       sap_expense_post_document == '' &&
-        //       sap_expense_post_message &&
-        //       sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
-        //     ) {
-        //       setFetch(true)
-        //       Swal.fire({
-        //         title: sap_expense_post_message + ' Kindly Contact Admin..',
-        //         icon: "warning",
-        //         confirmButtonText: "OK",
-        //       }).then(function () {
-        //         // window.location.reload(false)
-        //       })
-    
-        //     } else {
-        //       setFetch(true)
-        //       toast.warning('Driver Expense Posting Failed in SAP.. Kindly Contact Admin!')
-        //     }
-
-        // })
-
-      }
-
-    } else if (process == 'update') {
-
-      if(deduction_exists == 1){
-         
-        if (values.cost_center == '' || !values.cost_center ) {
-          setFetch(true)
-          toast.warning(`Cost Center Should be required for Deduction Process.`)
-          return false
-        }
-
-        if (values.ded_ref == '' || values.ded_ref.trim() == '') {
-          setFetch(true)
-          toast.warning(`Reference No. Should be required for Deduction Process.`)
-          return false
-        }
-
-        if (values.ded_remarks == '' || values.ded_remarks.trim() == '') {
-          setFetch(true)
-          toast.warning(`Remarks Should be required for Deduction Process.`)
-          return false
-        }
-
-
-      }
-
-      /* If Deduction exists, need to proceed deduction approval process */ 
-      if(deduction_exists == 1 || (deduction_exists == 0 && advance_percentage == 10)){
-
-        formData.append('_method', 'PUT')
-        formData.append('approval_status',0) /* Need to get Approval */
-        formData.append('advance_amount',advance_percentage) /* update - 10% - with deduction */
-        formData.append('deduction_exists',deduction_exists) 
-
-        if(deduction_exists == 0 && advance_percentage == 10){
-          formData.append('tripsheet_is_settled', 1)
-          formData.append('approval_status', 1) /* No Need / Accepted */
-          formData.append('hire_closure_status', 2) /* 2 - Expense Requested / Deduction Approved (27) */
-          formData.append('expense_sap_document_no', tripInfo.advance_payment_info.sap_freight_payment_document_no) 
-        }
-
-        let tripSettlementID = tripsettlementData.id
-        // setFetch(false)
-        NlmtTripSheetClosureService.updateTripsheetSettlement(tripSettlementID, formData).then((res) => {
-        console.log(res)
-        setFetch(true)
-        if (res.status == 200) {          
-          toast.success('Tripsheet Settlement Expense Capture Process Updated Successfully!')
-          navigation('/NlmtTSExpenseClosureHome')
-        } else { 
-          toast.warning('Tripsheet Settlement Expense Capture Process Failed..')
-          navigation('/NlmtTSExpenseClosureHome')
-        }
-      })
-      .catch((errortemp) => {
-        console.log(errortemp)
-        toast.error('Tripsheet Settlement Expense Capture Process Failed.Kindly Contact Admin..')
-        setFetch(true)
-        var object = errortemp.response.data.errors
-        var output = ''
-        for (var property in object) {
-          output += '*' + object[property] + '\n'
-        }
-        setError(output)
-        setErrorModal(true)
-      })
-
-      } else { /* If No Deduction, directly sent to expense approval process */ 
-
-        // ============= Posting date Validation Part =================== //
-
-        // let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
-        // let from_date = Expense_Income_Posting_Date_Taken.min_date
-        // let to_date = Expense_Income_Posting_Date_Taken.max_date
-    
-        // if(JavascriptDateCheckComponent(from_date,values.expense_posting_date,to_date)){
-        //   //
-        // } else {
-        //   setFetch(true)
-        //   toast.warning('Invalid Expense Posting date')
-        //   return false
-        // }
-        // ============= Posting date Validation Part =================== //
-
-        // let SAPData = new FormData()
-        
-        // SAPData.append('TRIP_SHEET', tripInfo.tripsheet_info.nlmt_tripsheet_no) 
-        // SAPData.append('VEHICLE_NO', tripInfo.vehicle_info.vehicle_number)
-        // SAPData.append('TAX_TYPE', values.GSTtax && values.GSTtax != 'Empty' ? values.GSTtax : '') /* Hire Vehicle Update Process */
-        // SAPData.append('TDS', values.TdsHaving == 0 ? 'NO' : 'YES')
-        // SAPData.append('TDS_VALUE', (values.TdsHaving == 0 ? '' : values.TdsHaving))
-        // SAPData.append('REMARKS', values.sap_text ? values.sap_text : '')
-        // SAPData.append('LIFNR', tripInfo.vendor_info  ? tripInfo.vendor_info.vendor_code : '')         
-        // SAPData.append('TOTAL_FRE', totalChargesHire)
-        // SAPData.append('POST_DATE', values.expense_posting_date) 
-        // SAPData.append('HSN', values.HSNtax ? values.HSNtax : '')
-        // SAPData.append('PLANT', 'NLMD')
-        // SAPData.append('DEDUCT_AMT', '')
-        // SAPData.append('DEDUCT_REMARKS', '')
-        // SAPData.append('COST_CENTER', '')
-        // SAPData.append('REF_NO',values.supplier_ref_no ? values.supplier_ref_no : tripInfo.tripsheet_info.nlmt_tripsheet_no)
-        // SAPData.append('REF_DATE', values.supplier_posting_date) 
-        
-        // console.log(SAPData,'SAPData')
-
-        // // setFetch(true)
-        // // return false
-          
-        // NlmtTripSheetClosureSapService.hireTripsheetExpenseWithoutDeductionPost(SAPData).then((res) => {
-
-        //   let sap_ts_no = res.data.TRIP_SHEET
-        //   let sap_expense_document_no = res.data.DOCUMENT_NO
-        //   let sap_expense_amount = res.data.EXP_DOC_AMT || 0
-        //   let sap_expense_status = res.data.STATUS
-        //   let sap_expense_message = res.data.MESSAGE
-        //   let sap_expense_deduction_document_no = res.data.DEDUCTION_DOCUMENT_NO
-        //   let sap_expense_deduction_status = res.data.DEDUCTION_STATUS
-        //   let sap_expense_deduction_message = res.data.DEDUCTION_MESSAGE
-
-        //   console.log('hireTripsheetExpenseWithoutDeductionPost',
-        //     sap_ts_no + '/' + sap_expense_amount + '/' +sap_expense_document_no + '/' + sap_expense_status + '/' + sap_expense_message + '/' + sap_expense_deduction_document_no + '/' + sap_expense_deduction_status + '/' + sap_expense_deduction_message
-        //   )
-
-        //   if (
-        //     sap_expense_status == '1' &&
-        //     res.status == 200 &&
-        //     sap_expense_document_no &&
-        //     sap_expense_message &&
-        //     sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no && 
-        //     sap_expense_deduction_status == '2' 
-        //   ){
-
-        //     formData.append('expense_sap_document_no', sap_expense_document_no)
-        //     formData.append('sap_expense_amount', sap_expense_amount)
-        //     formData.append('expense_posting_date', values.expense_posting_date)
-            // formData.append('tripsheet_is_settled', 3)  
-            formData.append('approval_status',1) /* 1 - No Need */
-            formData.append('hire_closure_status', 2) /* 2 - Expense Requested (26) */ 
-            // setFetch(true)
-            // return false
-
-            formData.append('advance_amount',advance_percentage) /* update - 100% - with out deduction */
-            NlmtTripSheetClosureService.createTripsheetSettlementForExpenseWitoutDeduction(formData).then((res) => {
-              console.log(res,'approveSettlementSubmission')
-              
-              setFetch(true)
-              if (res.status == 200) {
-                Swal.fire({
-                  title: "Tripsheet Settlement Expense Capture Process Done Successfully!",
-                  icon: "success",
-                  // html: 'SAP Expense Document No : ' + sap_expense_document_no,  
-                  // html: `SAP Expense Amount - ${sap_expense_amount ?? '-'}<br/>SAP Expense Doc.No - ${sap_expense_document_no}`,
-                   
-                  confirmButtonText: "OK",
-                }).then(function () {
-                  navigation('/NlmtTSExpenseClosureHome')
-                });
-              } else if (res.status == 201) {
-                Swal.fire({
-                  title: res.data.message,
-                  icon: "warning",
-                  confirmButtonText: "OK",
-                }).then(function () {
-                  // window.location.reload(false)
-                });
-              } else {
-                toast.warning(
-                  'Expense Closure - Submission Cannot Be Updated From LP.. Kindly Contact Admin!'
-                )
-              }
-            })
-            .catch((error) => {
-              setFetch(true) 
-              console.log(error)
-              var object = error.response.data.errors
-              var output = ''
-              for (var property in object) {
-                output += '*' + object[property] + '\n'
-              }
-              setError(output)
-              setErrorModal(true)
-            })
-
-
-        //   } else if (
-        //     (sap_expense_status == '2') &&
-        //     res.status == 200 &&
-        //     sap_expense_document_no == '' &&
-        //     sap_expense_message &&
-        //     sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
-        //   ) {
-        //     setFetch(true)
-        //     Swal.fire({
-        //       title: sap_expense_message + ' Kindly Contact Admin..',
-        //       icon: "warning",
-        //       confirmButtonText: "OK",
-        //     }).then(function () {
-        //       // window.location.reload(false)
-        //     })
+      let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
+      let from_date = Expense_Income_Posting_Date_Taken.min_date
+      let to_date = Expense_Income_Posting_Date_Taken.max_date
   
-        //   } else {
-        //     setFetch(true)
-        //     toast.warning('Expense Posting Failed in SAP.. Kindly Contact Admin!')
-        //   }
-
-        // })
-        
+      if(JavascriptDateCheckComponent(from_date,values.expense_posting_date,to_date)){
+        //
+      } else {
+        setFetch(true)
+        toast.warning('Invalid Expense Posting date')
+        return false
       }
+      // ============= Posting date Validation Part =================== //
 
-       
+      let SAPData = new FormData()
+        
+      SAPData.append('TRIPSHEET_NO', tripInfo.tripsheet_info.nlmt_tripsheet_no) 
+      SAPData.append('VEHICLE_NO', tripInfo.vehicle_info.vehicle_number)
+      SAPData.append('LIFNR', tripInfo.driver_info  ? tripInfo.driver_info.driver_code : '')  
+
+      SAPData.append('TOLL_AMOUNT', tripsettlementData.toll_amount ? tripsettlementData.toll_amount : 0)
+      SAPData.append('BATA', tripsettlementData.bata ? tripsettlementData.bata : 0)
+      SAPData.append('LOADING_CHARG', tripsettlementData.loading_charges ? tripsettlementData.loading_charges : 0)
+      SAPData.append('UNLOADING_CHARG', tripsettlementData.unloading_charges ? tripsettlementData.unloading_charges : 0)
+      SAPData.append('OTHER_CHARG', tripsettlementData.misc_charges ? tripsettlementData.misc_charges : 0)
+      SAPData.append('TOTAL_EXP_AMT', tripsettlementData.driver_expenses ? tripsettlementData.driver_expenses : 0)
+
+      SAPData.append('TAX_TYPE', '') /* Own Vehicle Process */
+      SAPData.append('TDS', '')
+      SAPData.append('TDS_VALUE', '')
+      SAPData.append('HSN', '')
+      SAPData.append('REMARKS', tripsettlementData.sap_text ? tripsettlementData.sap_text : '')
+      SAPData.append('POST_DATE', values.expense_posting_date)
+      SAPData.append('PLANT', 'NLMD') 
+        
+      console.log(SAPData,'SAPData1')
+      console.log(formData,'SAPData2')
+
+      // setFetch(true)
+      // toast.success('success')
+      // return false
+
+      NlmtTripSheetClosureSapService.driverExpensePost(SAPData).then((res) => {
+
+        console.log(res, 'driverExpensePost-response')
+
+        let sap_ts_no = res.data.TRIP_SHEET
+        let sap_status = res.data.STATUS
+        let sap_expense_post_document = res.data.DOCUMENT_NO
+        let sap_expense_post_message = res.data.MESSAGE
+
+        console.log(sap_ts_no, 'sap_ts_no')
+        console.log(sap_status, 'sap_status')
+        console.log(sap_expense_post_document, 'sap_expense_post_document')
+        console.log(sap_expense_post_message, 'sap_expense_post_message')
+
+        if (
+            sap_status == '1' &&
+            res.status == 200 &&
+            sap_expense_post_document &&
+            sap_expense_post_message &&
+            sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
+          ){
+
+          formData.append('expense_sap_document_no', sap_expense_post_document)
+          formData.append('sap_expense_amount', tripsettlementData.driver_expenses)
+          formData.append('expense_posting_date', values.expense_posting_date)
+          formData.append('_method', 'PUT')
+          let tripSettlementID = tripsettlementData.id
+          // setFetch(true)
+          // return false
       
-    }
+          NlmtTripSheetClosureService.updateTripsheetSettlement(tripSettlementID, formData).then((res) => {
+            console.log(res)
+            setFetch(true)
+            if (res.status == 200) {
+              setFetch(true) 
+              Swal.fire({
+                title: "Tripsheet Expense Closure Approval Process Done Successfully!",
+                icon: "success",
+                html: 'SAP Expense Document No : ' + sap_expense_post_document,  
+                confirmButtonText: "OK",
+              }).then(function () {
+                navigation('/NlmtTSOwnExpenseClosureApprovalHome')
+              })
 
-    /* Values Assigning To Save Details into DB Part End*/
+            } else {
+              setFetch(true)
+              toast.warning('Tripsheet Expense Approval Process Failed..')
+              // navigation('/NlmtTSExpenseClosureHome')
+            }
+          })
+          .catch((err) => {
+            console.error('NLMT Expense Approval Submission Error:', err)
+            toast.error('Failed to submit expense approval in PRO. Please try again.')
+            setFetch(true)
+          }) 
+
+        } else if (
+            (sap_status == '2') &&
+            res.status == 200 &&
+            sap_expense_post_document == '' &&
+            sap_expense_post_message &&
+            sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
+          ) {
+            setFetch(true)
+            Swal.fire({
+              title: sap_expense_post_message + ' Kindly Contact Admin..',
+              icon: "warning",
+              confirmButtonText: "OK",
+            }).then(function () {
+              // window.location.reload(false)
+            })
+  
+          } else {
+            setFetch(true)
+            toast.warning('Driver Expense Posting Failed in SAP.. Kindly Contact Admin!')
+          }
+
+      })
+      .catch((err) => {
+        console.error('NLMT Expense Approval Submission Error:', err)
+        toast.error('Failed to submit expense approval in SAP. Please try again.')
+        setFetch(true)
+      }) 
+
+    } else if (process == 'reject') {
+    
+      if(values.approval_remarks == '' || values.approval_remarks.trim() == ''){
+        setFetch(true)
+        toast.warning(`Approval Remarks Should be required for Rejection Process.`)
+        return false
+      } 
+
+      const formData = new FormData() 
+      formData.append('vehicle_id', tripInfo.vehicle_id)
+      formData.append('parking_id', tripInfo.nlmt_trip_in_id) 
+      formData.append(
+        'expense_approval_remarks',
+        values.approval_remarks ? values.approval_remarks : 'reject'
+      )
+      formData.append('expense_approval_by', user_id) 
+      formData.append('approval_status', 4) /* 4 - Expense Rejected */
+      formData.append('closure_id', tripsettlementData.id)   
+
+      setFetch(true)
+      NlmtTripSheetClosureService.ownExpApprovalRejectionProcess(formData).then((res) => {
+        console.log(res)
+        if (res.status == 200) {
+          setFetch(true)
+          toast.success('Expense Approval Process Rejected Successfully!')
+          navigation('/NlmtTSOwnExpenseClosureApprovalHome')
+        } else {
+          setFetch(true)
+          toast.warning('Expense Approval Rejection Process Failed..')
+          navigation('/NlmtTSOwnExpenseClosureApprovalHome')
+        }
+      })
+      .catch((err) => {
+        console.error('NLMT Expense Approval Rejection Error:', err)
+        toast.error('Failed to reject expense approval in PRO. Please try again.')
+        setFetch(true)
+      })  
+    } 
   }
 
   return (
@@ -6011,111 +5112,19 @@ const NlmtTripSheetClosure = () => {
                             </CNavLink>
                           </CNavItem>
                         </>
-                      )}
-
-                      {stoTableDataFGSTO.length > 0 && (
-                        <>
-                          <CNavItem>
-                            <CNavLink
-                              style={{ backgroundColor: 'green' }}
-                              // disabled={!tabGISuccess}
-                              active={activeKey === 9}
-                              onClick={() => setActiveKey(9)}
-                            >
-                              SAP : FGSTO Information
-                            </CNavLink>
-                          </CNavItem>
-                        </>
-                      )}
-
-                      {/* {sto_enable && tripInfo.trip_sheet_info.purpose == '2' && ( */}
-                      {sto_enable &&
-                        tripInfo &&
-                        tripInfo.tripsheet_info &&
-                        stoTableDataFGSTO.length == 0 && (
-                          <>
-                            <CNavItem>
-                              <CNavLink
-                                active={activeKey === 4}
-                                style={{ backgroundColor: tabFGSTOHireSuccess ? 'green' : 'red' }}
-                                onClick={() => setActiveKey(4)}
-                              >
-                                FGSTO Information
-                              </CNavLink>
-                            </CNavItem>
-                          </>
-                        )}
-
-                      {sto_enable && tripInfo && (
-                        <>
-                          <CNavItem>
-                            <CNavLink
-                              active={activeKey === 8}
-                              style={{ backgroundColor: tabRMSTOHireSuccess ? 'green' : 'red' }}
-                              onClick={() => setActiveKey(8)}
-                            >
-                              RMSTO Information
-                            </CNavLink>
-                          </CNavItem>
-                        </>
-                      )}
-
-                      {sto_enable && tripInfo && (
-                        <>
-                          <CNavItem>
-                            <CNavLink
-                              active={activeKey === 8}
-                              style={{ backgroundColor: tabOthersHireSuccess ? 'green' : 'red' }}
-                              onClick={() => setActiveKey(10)}
-                            >
-                              Others Information
-                            </CNavLink>
-                          </CNavItem>
-                        </>
-                      )}
+                      )}                  
 
                       <CNavItem>
                         <CNavLink
-                          active={activeKey === 7}
-                          style={{ backgroundColor: tabFreightHireSuccess ? 'green' : 'red' }}
-                          disabled={
-                            !(
-                              tabFGSALESHireSuccess ||
-                              (stoTableData && stoTableData.length > 0) ||
-                              (stoTableDataFGSTO && stoTableDataFGSTO.length > 0) ||
-                              (stoTableDataRMSTO && stoTableDataRMSTO.length > 0) ||
-                              (stoOthersTableData && stoOthersTableData.length > 0)
-                            )
-                          }
-                          onClick={() => setActiveKey(7)}
+                          active={activeKey === 5}
+                          style={{ backgroundColor: tabDISuccess ? 'green' : 'red' }}
+                          disabled={!tabDieselAvailable}
+                          onClick={() => setActiveKey(5)}
                         >
-                          Freight
+                          Diesel Information
                         </CNavLink>
-                      </CNavItem>
-
-                      {(tripInfo?.diesel_intent_info && tripInfo.vehicle_info && tripInfo.vehicle_info.vehicle_type_id == 21) && (
-                        <CNavItem>
-                          <CNavLink
-                            active={activeKey === 5}
-                            style={{ backgroundColor: tabDISuccess ? 'green' : 'red' }}
-                            disabled={!tabDieselAvailable}
-                            onClick={() => setActiveKey(5)}
-                          >
-                            Diesel Information
-                          </CNavLink>
-                        </CNavItem>
-                      )}
-                      {/* Sales Return Start */}
-                      {/* <CNavItem>
-                      <CNavLink
-                        // href="javascript:void(0);"
-                        active={activeKey === 6}
-                        onClick={() => setActiveKey(6)}
-                      >
-                        Return
-                      </CNavLink>
-                    </CNavItem> */}
-                      {/* Sales Return End */}
+                      </CNavItem> 
+                      
                       <CNavItem>
                         <CNavLink
                           active={activeKey === 3}
@@ -6128,3225 +5137,7 @@ const NlmtTripSheetClosure = () => {
                       </CNavItem>
                     </CNav>
                     {/* Hire Vehicles Part Header Tab End */}
-                    {/* Hire Vehicles Part Start */}
-                    <CTabContent>
-                      <CTabPane role="tabpanel" aria-labelledby="home-tab" visible={activeKey === 1}>
-                        {/* Hire Vehicle General Info Part Start */}
-                        <CRow className="mt-2">
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="tNum">Tripsheet Number</CFormLabel>
-
-                            <CFormInput
-                              size="sm"
-                              id="tNum"
-                              value={
-                                tripInfo && tripInfo.tripsheet_info
-                                  ? tripInfo.tripsheet_info?.nlmt_tripsheet_no
-                                  : ''
-                              }
-                              readOnly
-                            />
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="vNum">Vehicle Number</CFormLabel>
-
-                            <CFormInput
-                              size="sm"
-                              id="vNum"
-                              value={tripInfo?.vehicle_info?.vehicle_number}
-                              readOnly
-                            />
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="vCap">Vehicle Capacity</CFormLabel>
-
-                            <CFormInput
-                              size="sm"
-                              id="vCap"
-                              value={
-                                mastersLoaded
-                                  ? `${getDefinitionName(
-                                      vehicleCapacity,
-                                      tripInfo?.vehicle_info?.vehicle_capacity_id
-                                    )} MTS`
-                                  : ''
-                              }
-                              readOnly
-                            />
-                          </CCol>
-
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="vType">Vehicle Type</CFormLabel>
-
-                            <CFormInput
-                              size="sm"
-                              id="vType"
-                              value={
-                                VEHICLE_TYPE_MAP[
-                                  tripInfo?.tripsheet_info?.trip_vehicle_info?.vehicle_type_id
-                                    ? tripInfo?.tripsheet_info?.trip_vehicle_info?.vehicle_type_id
-                                    : ''
-                                ] ?? '-'
-                              }
-                              readOnly
-                            />
-                          </CCol>
-                          {tripInfo && tripInfo?.vehicle_info?.vehicle_type_id === 22 && (
-                            <>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="dName">Driver Name</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="dName"
-                                  value={tripInfo.driver_name}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="dMob">Driver Cell Number</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="dMob"
-                                  value={tripInfo.driver_phone_1}
-                                  readOnly
-                                />
-                              </CCol>
-                            </>
-                          )}
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="advance_need">Trip Advance Eligibility</CFormLabel>
-
-                            <CFormInput
-                              size="sm"
-                              id="advance_need"
-                              value={tripInfo && tripInfo.advance_payment_info ? 'YES' : 'NO'}                              readOnly
-                            />
-                          </CCol>
-
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="gateInDateTime">Trip-In Date & Time</CFormLabel>
-                            <CFormInput
-                              size="sm"
-                              id="gateInDateTime"
-                              value={tripInfo.gate_in_date_time_string}
-                              readOnly
-                            />
-                          </CCol>
-                          {tripInfo && tripInfo.vehicle_info && tripInfo.vehicle_info.vehicle_type_id === 21 && (
-                            <CCol xs={12} md={3}>
-                              <CFormLabel htmlFor="inspectionDateTime">
-                                Vehicle Inspection Date & Time
-                              </CFormLabel>
-
-                              <CFormInput
-                                size="sm"
-                                id="inspectionDateTime"
-                                value={
-                                  tripInfo.vehicle_inspection_trip
-                                    ? tripInfo.vehicle_inspection_trip.inspection_time_string
-                                    : 'No Inspection'
-                                }
-                                readOnly
-                              />
-                            </CCol>
-                          )}
-                          {tripInfo && tripInfo.vehicle_info && tripInfo.vehicle_info.vehicle_type_id === 22 && (
-                            <CCol xs={12} md={3}>
-                              <CFormLabel htmlFor="verifyDate">
-                                Doc. Verification Date & Time
-                              </CFormLabel>
-                              <CFormInput
-                                size="sm"
-                                id="verifyDate"
-                                value={formatDateTimeIST(
-                                  tripInfo.vendor_info ? tripInfo.vendor_info.created_at : ''
-                                )}
-                                readOnly
-                              />
-                            </CCol>
-                          )}
-                          {tripInfo && tripInfo.vehicle_info && tripInfo.vehicle_info.vehicle_type_id === 21 && (
-                            <>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="gateoutDate">Gate Out Date & Time</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="gateoutDate"
-                                  value={tripInfo.gate_out_date_time_string}
-                                  readOnly
-                                />
-                              </CCol>
-                            </>
-                          )}
-                          {tripInfo && tripInfo.vehicle_info && tripInfo.vehicle_info.vehicle_type_id === 22 && (
-                            <>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="shedName">Shed Name</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="shedName"
-                                  value={
-                                    tripInfo.vendor_info
-                                      ? tripInfo.vendor_info.nlmt_shed_info.shed_name
-                                      : ''
-                                  }
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="shedOwnerName">Shed Owner Name</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="shedOwnerName"
-                                  value={
-                                    tripInfo.vendor_info
-                                      ? tripInfo.vendor_info.nlmt_shed_info.shed_owner_name
-                                      : ''
-                                  }
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="shedOwnerMob">Shed Owner Cell Number</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="shedOwnerMob"
-                                  value={
-                                    tripInfo.vendor_info
-                                      ? tripInfo.vendor_info.nlmt_shed_info.shed_owner_phone_1
-                                      : ''
-                                  }
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="vendorName">Vendor Name</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="vendorName"
-                                  value={tripInfo.vendor_info ? tripInfo.vendor_info.owner_name : ''}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="vendorCode">Vendor Code</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="vendorCode"
-                                  // value={tripInfo.vendor_info ? tripInfo.vendor_info.vendor_code : ''}
-                                  value={tripInfo.vendor_info ? vendorCodeFinder(tripInfo) : ''}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="vendorMob">Vendor Cell Number</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="vendorMob"
-                                  value={tripInfo.vendor_info ? tripInfo.vendor_info.owner_number : '-'}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="vendorPanNo">Vendor PAN Number</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="vendorPanNo"
-                                  value={
-                                    tripInfo.vendor_info ? tripInfo.vendor_info.pan_card_number : ''
-                                  }
-                                  readOnly
-                                />
-                              </CCol>
-                              
-                              {(tripInfo?.vendor_info?.vendor_code == null || tripInfo?.vendor_info?.vendor_code == 0) && (
-                                <>
-                                  <CCol
-                                    xs={12}
-                                    md={6}
-                                    style={{ border: '1px solid black', background: 'aliceblue' }}
-                                  >
-                                    <CFormLabel>Note :</CFormLabel>
-
-                                    <span
-                                      style={{ display: 'block', fontWeight: 'bold' }}
-                                      className="big text-danger"
-                                    >
-                                      Vendor Creation Process Not Completed..
-                                    </span>
-                                  </CCol>
-                                </>
-                              )}
-                            </>
-                          )}
-                        </CRow>
-                      </CTabPane>
-                      {/* Hire Vehicle General Info Part End */}
-
-                      {/* Hire Vehicle FG-SALES Part Start */}
-                      <CTabPane role="tabpanel" aria-labelledby="profile-tab" visible={activeKey === 2}>
-                        {shipmentInfo.map((data, index) => {
-                          return (
-                            <>
-                              <CRow key={`HireshipmentData${index}`} className="mt-2" hidden>
-                                <CCol xs={12} md={6}>
-                                  <CFormLabel
-                                    htmlFor="inputAddress"
-                                    style={{
-                                      backgroundColor: '#4d3227',
-                                      color: 'white',
-                                    }}
-                                  >
-                                    {`Shipment Number : ${data.shipment_no} , Shipment Qty. : ${data.billed_net_qty} TON`}
-                                  </CFormLabel>
-                                </CCol>
-                                {tripsettlementData && tripsettlementData.expense_form &&
-                                  <CCol xs={12} md={3}>
-                                    <CFormLabel htmlFor="remarks">Expense Attachment</CFormLabel>
-                                    <CButton className="w-100 m-0" color="info" size="sm" id="inputAddress">
-                                      <span className="float-start">
-                                        <a style={{color:'black'}} target='_blank' rel="noreferrer" href={tripsettlementData.expense_form}>
-                                          <i className="fa fa-eye" aria-hidden="true">&nbsp;View</i>
-                                        </a>
-                                      </span> 
-                                    </CButton> 
-                                  </CCol>
-                                }
-                                <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="expense_form">
-                                    Expense Attachment <REQ />
-                                  </CFormLabel>
-                                  <CFormInput 
-                                    type="file"
-                                    name="expense_form"
-                                    id="expense_form"
-                                    size="sm"
-                                    accept=".pdf,.jpg,.jpeg,.png" 
-                                    onChange={handleChange} 
-                                  />    
-                                </CCol>
-                              </CRow>
-                              {data.shipment_child_info.map((val, val_index) => {
-                                return (
-                                  <>
-                                    <CRow key={`HireshipmentChildData_${index}_${val_index}`}>
-                                      <CCol xs={12} md={3}>
-                                        <CFormLabel htmlFor="sNum">Delivery Number</CFormLabel>
-                                        <CFormInput
-                                          size="sm"
-                                          id="sNum"
-                                          value={val.delivery_no}
-                                          readOnly
-                                        />
-                                      </CCol>
-                                      <CCol xs={12} md={3}>
-                                        <CFormLabel htmlFor="sNum">Delivery Qty. in MTS</CFormLabel>
-
-                                        <CFormInput
-                                          size="sm"
-                                          id="sNum"
-                                          value={val.delivery_net_qty}
-                                          readOnly
-                                        />
-                                      </CCol>
-                                      <CCol xs={12} md={3}>
-                                        <CFormLabel htmlFor="sInvoice">Invoice Number</CFormLabel>
-
-                                        <CFormInput
-                                          size="sm"
-                                          id="sInvoice"
-                                          value={val.invoice_no}
-                                          readOnly
-                                        />
-                                      </CCol>
-                                      <CCol xs={12} md={3}>
-                                        <CFormLabel htmlFor="sNum">Invoice Qty.</CFormLabel>
-
-                                        <CFormInput
-                                          size="sm"
-                                          id="sNum"
-                                          value={`${val.invoice_net_quantity} - ${val.invoice_uom}`}
-                                          readOnly
-                                        />
-                                      </CCol>
-                                      
-                                      <CCol xs={12} md={3}>
-                                        <CFormLabel htmlFor="cNum">Customer Name</CFormLabel>
-                                        <CFormInput
-                                          size="sm"
-                                          id="cNum"
-                                          value={val.customer_info.CustomerName}
-                                          readOnly
-                                        />
-                                      </CCol>
-                                      <CCol xs={12} md={3}>
-                                        <CFormLabel htmlFor="cNum">Customer Code</CFormLabel>
-
-                                        <CFormInput
-                                          size="sm"
-                                          id="cNum"
-                                          value={val.customer_info.CustomerCode}
-                                          readOnly
-                                        />
-                                      </CCol>
-                                      <CCol xs={12} md={3}>
-                                        <CFormLabel htmlFor="cNum">Customer City</CFormLabel>
-
-                                        <CFormInput
-                                          size="sm"
-                                          id="cNum"
-                                          value={val.customer_info.CustomerCity}
-                                          readOnly
-                                        />
-                                      </CCol> 
-
-                                      {/* <CCol xs={12} md={2}>
-                                        <CFormLabel htmlFor="ddt">Delivery Date & Time</CFormLabel>
-
-                                        <CFormInput
-                                          size="sm"
-                                          id="ddt"
-                                          value={
-                                            val.delivered_date_time ? val.delivered_date_time : '-'
-                                          }
-                                          readOnly
-                                        />
-                                      </CCol>
-                                      <CCol xs={12} md={2}>
-                                        <CFormLabel htmlFor="ddt">Invoice Copy</CFormLabel>
-
-                                        <CButton
-                                          className="w-100"
-                                          color="info"
-                                          size="sm"
-                                          id="inputAddress"
-                                        >
-                                          {shipmentInfo[index].shipment_child_info[val_index]
-                                            .fj_pod_copy ? (
-                                            <CNavLink
-                                              style={{ color: 'blue' }}
-                                              href={
-                                                shipmentInfo[index].shipment_child_info[val_index]
-                                                  .fj_pod_copy
-                                              }
-                                              target={'_blank'}
-                                            >
-                                              <span className="float-start">
-                                                <i className="fa fa-eye" aria-hidden="true"></i>{' '}
-                                                &nbsp;View
-                                              </span>
-                                            </CNavLink>
-                                          ) : (
-                                            <CNavLink
-                                              style={{ color: 'red' }}
-                                              disabled={true}
-                                              href={
-                                                shipmentInfo[index].shipment_child_info[val_index]
-                                                  .fj_pod_copy
-                                                  ? shipmentInfo[index].shipment_child_info[val_index]
-                                                      .fj_pod_copy
-                                                  : 'Image Not Found..'
-                                              }
-                                              target={'_blank'}
-                                            >
-                                              <span className="float-start">
-                                                <i className="fa fa-eye" aria-hidden="true"></i>{' '}
-                                                &nbsp;Image Not Found..
-                                              </span>
-                                            </CNavLink>
-                                          )}
-                                        </CButton>
-                                      </CCol>                                      
-                                      <CCol md={2}>
-                                        <CFormLabel htmlFor="DefectType">Defect Type</CFormLabel>
-
-                                        <CFormSelect
-                                          size="sm"
-                                          onChange={(e) => {
-                                            changeVadTableItem(e, 'defect_type', index, val_index)
-                                          }}
-                                          value={vadDataUpdate(val.defect_type, val.defect_type_input)}
-                                        >
-                                          <option value="">Select...</option>
-                                          <option value="1">Shortage</option>
-                                          <option value="2">Rain Damage</option>
-                                          <option value="3">Sales Diversion</option>
-                                          <option value="4">Sales Return</option>
-                                          <option value="4">Halting</option>
-                                        </CFormSelect>
-                                      </CCol> */}
-                                    </CRow>
-                                  </>
-                                )
-                              })}
-                            </>
-                          )
-                        })}
-                      </CTabPane>
-                      {/* Hire Vehicle FG-SALES Part End */}
-                      {/* Hire Vehicle SAP : FG-STO Info Tab START================================= */}
-                      <CTabPane role="tabpanel" aria-labelledby="contact-tab" visible={activeKey === 9}>
-                        <div className="App">
-                          <div>
-                            {stoTableDataFGSTO.map((data_val, index_val) => {
-                              //console.log(data_val, 'data_val-stoTableDataFGSTO.map')
-                              return (
-                                <>
-                                  <CRow className="mt-2" key={`fgsto_data_${index_val}`}>
-                                    <CCol md={2}>
-                                      <CFormLabel>STO Delivery Number</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_delivery_number_fgsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>STO PO Number</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_po_number_fgsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>Division</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_delivery_division_fgsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>From Location</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_from_location_fgsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>To Location</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_to_location_fgsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>Delivery Qty in MTS</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_delivery_quantity_fgsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>Freight Amount</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_freight_amount_fgsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol xs={12} md={2}>
-                                      <CFormLabel>Delivery Date and Time</CFormLabel>
-
-                                      <CFormInput
-                                        size="sm"
-                                        type="datetime-local"
-                                        name="sto_delivery_date_time_fgsto"
-                                        // value={stoValuesRMSTO[index_val].sto_delivery_date_time_rmsto}
-                                        onChange={(e) => handleStoValueChangeFGSTO(e, index_val)}
-                                      />
-                                    </CCol>
-                                    {stoValuesFGSTO && stoValuesFGSTO.length > 0 && (
-                                      <CCol xs={12} md={2}>
-                                        <CFormLabel>POD Copy</CFormLabel>{' '}
-                                        {/* Own Vehicle FGSTO POD Copy - OVRPC */}
-                                        <CButton
-                                          className="w-100 m-0"
-                                          color="info"
-                                          size="sm"
-                                          id="inputAddress"
-                                        >
-                                          {/* {//console.log(stoValuesRMSTO,'stoValuesRMSTO')} */}
-                                          {!(
-                                            stoValuesFGSTO[index_val] &&
-                                            stoValuesFGSTO[index_val].sto_pod_copy_fgsto_file_upload
-                                          ) ? (
-                                            <>
-                                              <span
-                                                className="float-start"
-                                                onClick={() => {
-                                                  uploadClick(index_val)
-                                                }}
-                                              >
-                                                <CIcon
-                                                  style={{ color: 'red' }}
-                                                  icon={icon.cilFolderOpen}
-                                                  size="lg"
-                                                />
-                                                &nbsp;Upload
-                                              </span>
-                                              <span
-                                                style={{ marginRight: '10%' }}
-                                                className="mr-10 float-end"
-                                                onClick={() => {
-                                                  setFileImageKey(index_val)
-                                                  setCamEnableType('fgsto')
-                                                  setCamEnable(true)
-                                                }}
-                                              >
-                                                <CIcon
-                                                  style={{ color: 'red' }}
-                                                  icon={icon.cilCamera}
-                                                  size="lg"
-                                                />
-                                                &nbsp;Camera
-                                              </span>
-                                            </>
-                                          ) : (
-                                            <>
-                                              <span className="float-start">
-                                                &nbsp;
-                                                {stoValuesFGSTO[index_val]
-                                                  ? stoValuesFGSTO[index_val]
-                                                      .sto_pod_copy_fgsto_file_name
-                                                  : ''}
-                                              </span>
-                                              <span className="float-end">
-                                                <i
-                                                  className="fa fa-trash"
-                                                  aria-hidden="true"
-                                                  onClick={() => {
-                                                    clearValues(index_val, 'fgsto')
-                                                  }}
-                                                ></i>
-                                              </span>
-                                            </>
-                                          )}
-                                        </CButton>
-                                        <CFormInput
-                                          onBlur={onBlur}
-                                          onChange={(e) => handleStoFileUploadChangeFGSTO(e, index_val)}
-                                          type="file"
-                                          accept=".jpg,.jpeg,.png,.pdf"
-                                          name={'sto_pod_copy_fgsto'}
-                                          size="sm"
-                                          id={`sto_pod_copy_fgsto_upload_yes_${index_val}`}
-                                          style={{ display: 'none' }}
-                                        />
-                                      </CCol>
-                                    )}
-
-                                    {/* Without Camera : Own Vehicle RMSTO POD Copy - OVRPC */}
-                                    {/* <CCol xs={12} md={2} style={{display:'none'}}>
-                                    <CFormLabel>POD Copy</CFormLabel>
-                                    <CFormInput
-                                      type="file"
-                                      size="sm"
-                                      accept=".jpg,.jpeg,.png,.pdf"
-                                      name="sto_pod_copy_rmsto"
-                                      onChange={(e) => handleStoFileUploadChangeRMSTO(e, index_val)}
-                                    />
-                                  </CCol> */}
-                                  </CRow>
-                                  <hr />
-                                </>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      </CTabPane>
-                      {/* Hire Vehicle SAP : FGSTO Info Tab END====================================== */}
-                      {/* ===== Hire Vehicle Others Info Tab START ASK3 ===== */}
-                      <CTabPane
-                        role="tabpanel"
-                        aria-labelledby="profile-tab"
-                        visible={activeKey === 10}
-                      >
-                        <div className="App">
-                          <div>
-                            <CRow className="mt-2">
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="ot_veh_insurence_valid">
-                                  Process Type
-                                  <REQ />{' '}
-                                </CFormLabel>
-                                {!stoOthersDeliveryEdit && (
-                                  <>
-                                    <CFormSelect
-                                      size="sm"
-                                      name="ot_process_type"
-                                      id="ot_process_type"
-                                      onFocus={onFocus}
-                                      onBlur={onBlur}
-                                      onChange={handleChange}
-                                      value={values.ot_process_type}
-                                    >
-                                      <option value="">Select ...</option>
-                                      <option value="1">Returnable No.</option>
-                                      <option value="2">Non Returnable No.</option>
-                                      <option value="3">Returnable Receipt No.</option>
-                                      <option value="4">Purchase PO No.</option>
-                                      <option value="5">STO PO No.</option>
-                                      <option value="6">Delivery No.</option>
-                                      <option value="7">Purchase Migo No.</option>
-                                      <option value="8">STO Migo No.</option>
-                                      <option value="9">FG-Sales Return / Credit Memo No.</option>
-                                      <option value="10">RM Sales / Bill Of Supply No.</option>
-                                      {/* <option value="11">Gate Pass No.</option> */}
-                                      <option value="12">Delivery Challan No.</option>
-                                    </CFormSelect>
-                                  </>
-                                )}
-                                {stoOthersDeliveryEdit && (
-                                  <CFormInput
-                                    size="sm"
-                                    value={stoOthersValues.others_sto_process_type}
-                                    id="others_sto_process_type"
-                                    readOnly
-                                  />
-                                )}
-                              </CCol>
-                              {values.ot_process_type != '' && (
-                                <>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      Document Number <REQ />
-                                    </CFormLabel>
-                                    <CInputGroup>
-                                      {!stoOthersDeliveryEdit && (
-                                        <>
-                                          <CFormInput
-                                            size="sm"
-                                            value={stoOthersValues.others_sto_doc_number}
-                                            onChange={(e) => handleStoOthersValueChange(e)}
-                                            name={'others_sto_doc_number'}
-                                            // maxLength={values.ot_process_type == 11 ? 14 : 10}
-                                            maxLength={12}
-                                          />
-                                          <CInputGroupText className="p-0">
-                                            <CButton
-                                              size="sm"
-                                              color="success"
-                                              onClick={(e) => {
-                                                setFetch(false)
-                                                getOthersSapData(e)
-                                              }}
-                                            >
-                                              <i className="fa fa-check px-1"></i>
-                                            </CButton>
-                                          </CInputGroupText>
-                                        </>
-                                      )}
-                                      {stoOthersDeliveryEdit && (
-                                        <CFormInput
-                                          size="sm"
-                                          value={stoOthersValues.others_sto_doc_number}
-                                          id="others_sto_doc_number"
-                                          readOnly
-                                        />
-                                      )}
-                                    </CInputGroup>
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>Doc. date</CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_doc_date || '-'}
-                                      name={others_sto_doc_date}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      STO PO Number <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_po_number || '-'}
-                                      name={others_sto_po_number}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      Vendor Code <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_vendor_code || '-'}
-                                      name={others_sto_vendor_code}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      Vendor name <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_vendor_name || '-'}
-                                      name={others_sto_vendor_name}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      From Plant Code <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_from_plant_code || '-'}
-                                      name={others_sto_from_plant_code}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      From Plant name <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_from_plant_name || '-'}
-                                      name={others_sto_from_plant_name}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      To Plant Code <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_to_plant_code || '-'}
-                                      name={others_sto_to_plant_code}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      To Plant name <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_to_plant_name || '-'}
-                                      name={others_sto_to_plant_name}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      Inco term <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_incoterm || '-'}
-                                      name={others_sto_incoterm}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      Net Weight <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_net_weight || '-'}
-                                      name={others_sto_net_weight}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      Customer Code
-                                      <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_customer_code || '-'}
-                                      name={others_sto_customer_code}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      Assignment <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_assignment || '-'}
-                                      name={others_sto_assignment}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      VA number <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_va_no || '-'}
-                                      name={others_sto_va_no}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-
-                                  <CCol md={2}>
-                                    <CFormLabel>
-                                      Truck no <REQ />
-                                    </CFormLabel>
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoOthersValues.others_sto_truck_no || '-'}
-                                      name={others_sto_truck_no}
-                                      maxLength={1}
-                                      readOnly
-                                    />
-                                  </CCol>
-                                  <CCol xs={12} md={2}>
-                                    <CFormLabel>
-                                      Delivery Qty in MTS <REQ />
-                                    </CFormLabel>
-
-                                    <CFormInput
-                                      size="sm"
-                                      // type="number"
-                                      value={
-                                        stoOthersValues.others_sto_delivery_quantity
-                                          ? stoOthersValues.others_sto_delivery_quantity
-                                          : stoDeliveryEdit
-                                          ? stoValues.others_sto_delivery_quantity
-                                          : ''
-                                      }
-                                      onChange={(e) => handleStoOthersValueChange(e)}
-                                      name={others_sto_delivery_quantity}
-                                      maxLength={5}
-                                    />
-                                  </CCol>
-                                  <CCol xs={12} md={2}>
-                                    <CFormLabel>
-                                      Inc.Freight Amount <REQ />
-                                    </CFormLabel>
-
-                                    <CFormInput
-                                      size="sm"
-                                      value={
-                                        stoOthersValues.others_sto_freight_amount
-                                          ? stoOthersValues.others_sto_freight_amount
-                                          : stoDeliveryEdit
-                                          ? stoValues.freight_amount
-                                          : ''
-                                      }
-                                      onChange={(e) => handleStoOthersValueChange(e)}
-                                      name={others_sto_freight_amount}
-                                      maxLength={6}
-                                    />
-                                  </CCol>
-                                  {/* <CCol xs={12} md={2}>
-                                  <CFormLabel>Delivery Date and Time</CFormLabel>
-
-                                  <CFormInput
-                                    size="sm"
-                                    type="datetime-local"
-                                    value={
-                                      stoValues.others_sto_delivered_date
-                                        ? stoValues.others_sto_delivered_date
-                                        : stoDeliveryEdit
-                                        ? stoValues.delivered_date_time
-                                        : ''
-                                    }
-                                    onChange={(e) => handleStoValueChange(e)}
-                                    name={others_sto_delivered_date}
-                                  />
-                                </CCol>
-                                <CCol xs={12} md={2}>
-                                  <CFormLabel>POD Copy</CFormLabel>
-                                  {stoFileUploadVisible ? (
-                                    <CFormInput
-                                      type="file"
-                                      size="sm"
-                                      value={stoValues.sto_pod_copy}
-                                      // onChange={(e) => handleStoValueChange(e)}
-                                      onChange={(e) => handleStoFileUploadChange(e)}
-                                      name={sto_pod_copy}
-                                    />
-                                  ) : (
-                                    <CButton className="w-100 m-0" color="info" size="sm" id="dInvoice">
-                                      <span className="float-start" onClick={() => setStoPodVisible(true)}>
-                                        <i className="fa fa-eye" aria-hidden="true"></i> &nbsp;View
-                                      </span>
-                                      <span
-                                        className="float-end"
-                                        onClick={() => {
-                                          if (window.confirm('Are you sure to remove this file?')) {
-                                            stoPodUploadResetEdit()
-                                          }
-                                        }}
-                                      >
-                                        <i className="fa fa-trash" aria-hidden="true"></i>
-                                      </span>
-                                    </CButton>
-                                  )}
-                                </CCol> */}
-                                </>
-                              )}
-
-                              {/* <CCol md={2}>
-                              <CFormLabel>
-                                Driver Name <REQ />{' '}
-                              </CFormLabel>
-                              <CFormSelect
-                                size="sm"
-                                value={stoValues.sto_delivery_driver_name}
-                                onChange={(e) => handleStoValueChange(e)}
-                                name={sto_delivery_driver_name}
-                              >
-                                <AllDriverListNameSelectComponent />
-                              </CFormSelect>{' '}
-                            </CCol> */}
-                              {/* <CCol xs={12} md={2}>
-                              <CFormLabel>Expense To Be Capture</CFormLabel>
-
-                              <CTableDataCell scope="row">
-                                <input
-                                  className="form-check-input"
-                                  style={{ minHeight: '18px !important' }}
-                                  type="checkbox"
-                                  checked={stoValues.sto_delivery_expense_capture}
-                                  value={stoValues.sto_delivery_expense_capture}
-                                  onChange={(e) => handleStoExpenseCaptureChange(e)}
-                                  name={sto_delivery_expense_capture}
-                                />
-                              </CTableDataCell>
-                            </CCol> */}
-                            </CRow>
-                          </div>
-                        </div>
-
-                        {stoOthersTableData && (stoOthersTableData.length < 1 || isOthersStoEditMode) && (
-                          <div
-                            className="App"
-                            style={{ display: 'flex', flexDirection: 'row-reverse' }}
-                          >
-                            <CButton
-                              className="m-2"
-                              disabled={!isOthersStoEditMode && stoOthersDeliveryInvalid ? true : false}
-                              onClick={(e) =>
-                                onOthersStoSubmitBtn(e, isOthersStoEditMode ? 'Update' : 'Add')
-                              }
-                              // onClick={onOthersStoSubmitBtn}
-                              color="primary"
-                            >
-                              {isOthersStoEditMode ? 'Update' : 'Add'}
-                            </CButton>{' '}
-                            <CButton
-                              className="m-2"
-                              onClick={onOthersStoSubmitCancelBtn}
-                              color="primary"
-                            >
-                              Clear
-                            </CButton>
-                            {isOthersStoEditMode && (
-                              <CButton className="m-2" onClick={stoOthersResetEdit} color="primary">
-                                Cancel Edit
-                              </CButton>
-                            )}
-                            <br />
-                          </div>
-                        )}
-                        <hr />
-                        <StoTableOthersComponent
-                          stoOthersTableData={stoOthersTableData}
-                          tripInfo={tripInfo}
-                          title="Others Information Table"
-                          onEdit={onOthersStoEditcallback}
-                          onDelete={onOthersStoDeleteCallback}
-                          isOthersStoEditMode={isOthersStoEditMode}
-                          hireVehicle={
-                            tripInfo.tripsheet_info && tripInfo.tripsheet_info.trip_vehicle_info && tripInfo.tripsheet_info.trip_vehicle_info.vehicle_type_id &&
-                            tripInfo.tripsheet_info.trip_vehicle_info.vehicle_type_id == 22
-                              ? true
-                              : false
-                          }
-                        />
-                      </CTabPane>
-                      {/* ===== HIre Vehicle Others Info Tab END ASK4 ===== */}
-                      {/* Hire Vehicle FG-STO Info Tab START================================ */}
-                      <CTabPane role="tabpanel" aria-labelledby="profile-tab" visible={activeKey === 4}>
-                        <div className="App">
-                          <div>
-                            <CRow className="mt-2">
-                              {/* <CCol md={2}>
-                              <CFormLabel>
-                                STO Delivery Number <REQ />
-                              </CFormLabel>
-                              <CFormInput
-                                size="sm"
-                                value={stoValues.sto_delivery_number}
-                                onChange={(e) => handleStoValueChange(e)}
-                                name={sto_delivery_number}
-                                maxLength={10}
-                              />
-                            </CCol> */}
-                              <CCol md={2}>
-                                <CFormLabel>
-                                  STO Delivery Number <REQ />
-                                </CFormLabel>
-                                <CInputGroup>
-                                  {!stoDeliveryEdit && (
-                                    <>
-                                      <CFormInput
-                                        size="sm"
-                                        value={stoValues.sto_delivery_number}
-                                        onChange={(e) => handleStoValueChange(e)}
-                                        name={sto_delivery_number}
-                                        maxLength={10}
-                                      />
-                                      <CInputGroupText className="p-0">
-                                        <CButton
-                                          size="sm"
-                                          color="success"
-                                          onClick={(e) => getStoDeliveryData(e)}
-                                        >
-                                          <i className="fa fa-check px-1"></i>
-                                        </CButton>
-                                      </CInputGroupText>
-                                    </>
-                                  )}
-                                  {stoDeliveryEdit && (
-                                    <CFormInput
-                                      size="sm"
-                                      value={stoValues.sto_delivery_number || stoValues.sto_delivery_no}
-                                      id="sto_delivery_number"
-                                      readOnly
-                                    />
-                                  )}
-                                </CInputGroup>
-                              </CCol>
-                              <CCol md={2}>
-                                <CFormLabel>
-                                  STO PO Number <REQ />
-                                </CFormLabel>
-                                <CFormInput
-                                  size="sm"
-                                  value={
-                                    stoValues.sto_po_number
-                                      ? stoValues.sto_po_number
-                                      : stoDeliveryEdit
-                                      ? stoValues.sto_po_no
-                                      : ''
-                                  }
-                                  // value={
-                                  //   stoValues.sto_po_number || stoDeliveryEdit ? stoValues.sto_po_no : ''
-                                  // }
-                                  // onChange={(e) => handleStoValueChange(e)}
-                                  name={sto_po_number}
-                                  maxLength={10}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol md={2}>
-                                <CFormLabel>Division</CFormLabel>
-                                <CFormInput
-                                  size="sm"
-                                  value={stoValues.sto_delivery_division}
-                                  // onChange={(e) => handleStoValueChange(e)}
-                                  name={sto_delivery_division}
-                                  maxLength={1}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel>
-                                  From Location <REQ />
-                                </CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  value={
-                                    stoValues.sto_from_location
-                                      ? location_name(stoValues.sto_from_location)
-                                      : stoDeliveryEdit
-                                      ? location_name(stoValues.from_location)
-                                      : ''
-                                  }
-                                  // onChange={(e) => handleStoValueChange(e)}
-                                  name={sto_from_location}
-                                  maxLength={30}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel>
-                                  To Location <REQ />
-                                </CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  value={
-                                    stoValues.sto_to_location
-                                      ? location_name(stoValues.sto_to_location)
-                                      : stoDeliveryEdit
-                                      ? location_name(stoValues.to_location)
-                                      : ''
-                                  }
-                                  // onChange={(e) => handleStoValueChange(e)}
-                                  name={sto_to_location}
-                                  maxLength={30}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel>
-                                  Delivery Qty in MTS <REQ />
-                                </CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  // type="number"
-                                  value={
-                                    stoValues.sto_delivery_quantity
-                                      ? stoValues.sto_delivery_quantity
-                                      : stoDeliveryEdit
-                                      ? stoValues.sto_delivery_quantity
-                                      : ''
-                                  }
-                                  // onChange={(e) => handleStoValueChange(e)}
-                                  name={sto_delivery_quantity}
-                                  maxLength={5}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel>
-                                  Freight Amount <REQ />
-                                </CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  value={
-                                    stoValues.sto_freight_amount
-                                      ? stoValues.sto_freight_amount
-                                      : stoDeliveryEdit
-                                      ? stoValues.freight_amount
-                                      : ''
-                                  }
-                                  // onChange={(e) => handleStoValueChange(e)}
-                                  name={sto_freight_amount}
-                                  maxLength={6}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel>Delivery Date and Time</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  type="datetime-local"
-                                  value={
-                                    stoValues.sto_delivery_date_time
-                                      ? stoValues.sto_delivery_date_time
-                                      : stoDeliveryEdit
-                                      ? stoValues.delivered_date_time
-                                      : ''
-                                  }
-                                  onChange={(e) => handleStoValueChange(e)}
-                                  name={sto_delivery_date_time}
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel>POD Copy</CFormLabel>
-                                {stoFileUploadVisible ? (
-                                  <CFormInput
-                                    type="file"
-                                    size="sm"
-                                    value={stoValues.sto_pod_copy}
-                                    // onChange={(e) => handleStoValueChange(e)}
-                                    onChange={(e) => handleStoFileUploadChange(e)}
-                                    name={sto_pod_copy}
-                                  />
-                                ) : (
-                                  <CButton className="w-100 m-0" color="info" size="sm" id="dInvoice">
-                                    <span
-                                      className="float-start"
-                                      onClick={() => setStoPodVisible(true)}
-                                    >
-                                      <i className="fa fa-eye" aria-hidden="true"></i> &nbsp;View
-                                    </span>
-                                    <span
-                                      className="float-end"
-                                      onClick={() => {
-                                        if (window.confirm('Are you sure to remove this file?')) {
-                                          stoPodUploadResetEdit()
-                                        }
-                                      }}
-                                    >
-                                      <i className="fa fa-trash" aria-hidden="true"></i>
-                                    </span>
-                                  </CButton>
-                                )}
-                              </CCol>
-
-                              {/* <CCol md={2}>
-                              <CFormLabel>
-                                Driver Name <REQ />{' '}
-                              </CFormLabel>
-                              <CFormSelect
-                                size="sm"
-                                value={stoValues.sto_delivery_driver_name}
-                                onChange={(e) => handleStoValueChange(e)}
-                                name={sto_delivery_driver_name}
-                              >
-                                <AllDriverListNameSelectComponent />
-                              </CFormSelect>{' '}
-                            </CCol> */}
-                              {/* <CCol xs={12} md={2}>
-                              <CFormLabel>Expense To Be Capture</CFormLabel>
-
-                              <CTableDataCell scope="row">
-                                <input
-                                  className="form-check-input"
-                                  style={{ minHeight: '18px !important' }}
-                                  type="checkbox"
-                                  checked={stoValues.sto_delivery_expense_capture}
-                                  value={stoValues.sto_delivery_expense_capture}
-                                  onChange={(e) => handleStoExpenseCaptureChange(e)}
-                                  name={sto_delivery_expense_capture}
-                                />
-                              </CTableDataCell>
-                            </CCol> */}
-
-                              <CCol xs={12} md={2}>
-                                {' '}
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                {' '}
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                {' '}
-                              </CCol>
-                            </CRow>
-                          </div>
-                        </div>
-
-                        {stoTableData && (stoTableData.length < 1 || isStoEditMode) && (
-                          <div
-                            className="App"
-                            style={{ display: 'flex', flexDirection: 'row-reverse' }}
-                          >
-                            <CButton
-                              className="m-2"
-                              disabled={!isStoEditMode && stoDeliveryInvalid ? true : false}
-                              onClick={onStoSubmitBtn}
-                              color="primary"
-                            >
-                              {isStoEditMode ? 'Update' : 'Add'}
-                            </CButton>{' '}
-                            <CButton className="m-2" onClick={onStoSubmitCancelBtn} color="primary">
-                              Clear
-                            </CButton>
-                            {isStoEditMode && (
-                              <CButton className="m-2" onClick={stoResetEdit} color="primary">
-                                Cancel Edit
-                              </CButton>
-                            )}
-                            <br />
-                          </div>
-                        )}
-                        <hr />
-                        <StoTableComponent
-                          stoTableData={stoTableData}
-                          title="STO Information Table"
-                          onEdit={onStoEditcallback}
-                          onDelete={onStoDeleteCallback}
-                          isStoEditMode={isStoEditMode}
-                          hireVehicle={
-                            tripInfo.tripsheet_info && tripInfo.tripsheet_info.trip_vehicle_info && tripInfo.tripsheet_info.trip_vehicle_info.vehicle_type_id &&
-                            tripInfo.tripsheet_info.trip_vehicle_info.vehicle_type_id == 22
-                              ? true
-                              : false
-                          }
-                        />
-                      </CTabPane>
-                      {/* HIre Vehicle FG-STO Info Tab END ===============================*/}
-                      {/* Hire Vehicle RMSTO Info Tab START================================ */}
-                      <CTabPane role="tabpanel" aria-labelledby="profile-tab" visible={activeKey === 8}>
-                        <div className="App">
-                          <div>
-                            {stoTableDataRMSTO.length == 0 && (
-                              <>
-                                <div className="m-5">
-                                  <h2>There are no delivery records to display..</h2>
-                                </div>
-                              </>
-                            )}
-                            {stoTableDataRMSTO.map((data_val, index_val) => {
-                              //console.log(data_val, 'data_val-stoTableDataRMSTO.map hire')
-                              return (
-                                <>
-                                  <CRow className="mt-2" key={`rmsto_data_${index_val}`}>
-                                    <CCol md={2}>
-                                      <CFormLabel>STO Delivery Number</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_delivery_number_rmsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>STO PO Number</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_po_number_rmsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>Division</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_delivery_division_rmsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>From Location</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_from_location_rmsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>To Location</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_to_location_rmsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>Delivery Qty in MTS</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_delivery_quantity_rmsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol md={2}>
-                                      <CFormLabel>Freight Amount</CFormLabel>
-                                      <CFormInput
-                                        size="sm"
-                                        value={data_val.sto_freight_amount_rmsto}
-                                        readOnly
-                                      />
-                                    </CCol>
-                                    <CCol xs={12} md={2}>
-                                      <CFormLabel>Delivery Date and Time</CFormLabel>
-
-                                      <CFormInput
-                                        size="sm"
-                                        type="datetime-local"
-                                        name="sto_delivery_date_time_rmsto"
-                                        // value={stoValuesRMSTO[index_val].sto_delivery_date_time_rmsto}
-                                        onChange={(e) => handleStoValueChangeRMSTO(e, index_val)}
-                                      />
-                                    </CCol>
-                                    {stoValuesRMSTO && stoValuesRMSTO.length > 0 && (
-                                      <CCol xs={12} md={2}>
-                                        <CFormLabel>POD Copy</CFormLabel>{' '}
-                                        {/* Hire Vehicle RMSTO POD Copy - HVRPC */}
-                                        <CButton
-                                          className="w-100 m-0"
-                                          color="info"
-                                          size="sm"
-                                          id="inputAddress"
-                                        >
-                                          {console.log(
-                                            stoValuesRMSTO,
-                                            'stoValuesRMSTO - Hire Vehicle RMSTO POD Copy - HVRPC'
-                                          )}
-                                          {!(
-                                            stoValuesRMSTO[index_val] &&
-                                            stoValuesRMSTO[index_val].sto_pod_copy_rmsto_file_upload
-                                          ) ? (
-                                            <>
-                                              <span
-                                                className="float-start"
-                                                onClick={() => {
-                                                  uploadClick(index_val)
-                                                }}
-                                              >
-                                                <CIcon
-                                                  style={{ color: 'red' }}
-                                                  icon={icon.cilFolderOpen}
-                                                  size="lg"
-                                                />
-                                                &nbsp;Upload
-                                              </span>
-                                              <span
-                                                style={{ marginRight: '10%' }}
-                                                className="mr-10 float-end"
-                                                onClick={() => {
-                                                  setFileImageKey(index_val)
-                                                  setCamEnableType('rmsto')
-                                                  setCamEnable(true)
-                                                }}
-                                              >
-                                                <CIcon
-                                                  style={{ color: 'red' }}
-                                                  icon={icon.cilCamera}
-                                                  size="lg"
-                                                />
-                                                &nbsp;Camera
-                                              </span>
-                                            </>
-                                          ) : (
-                                            <>
-                                              <span className="float-start">
-                                                &nbsp;
-                                                {stoValuesRMSTO[index_val]
-                                                  ? stoValuesRMSTO[index_val]
-                                                      .sto_pod_copy_rmsto_file_name
-                                                  : ''}
-                                              </span>
-                                              <span className="float-end">
-                                                <i
-                                                  className="fa fa-trash"
-                                                  aria-hidden="true"
-                                                  onClick={() => {
-                                                    clearValues(index_val, 'rmsto')
-                                                  }}
-                                                ></i>
-                                              </span>
-                                            </>
-                                          )}
-                                        </CButton>
-                                        <CFormInput
-                                          onBlur={onBlur}
-                                          onChange={(e) => handleStoFileUploadChangeRMSTO(e, index_val)}
-                                          type="file"
-                                          accept=".jpg,.jpeg,.png,.pdf"
-                                          name={'sto_pod_copy_rmsto'}
-                                          size="sm"
-                                          id={`sto_pod_copy_rmsto_upload_yes_${index_val}`}
-                                          style={{ display: 'none' }}
-                                        />
-                                      </CCol>
-                                    )}
-
-                                    {/* Without Camera : Own Vehicle RMSTO POD Copy - OVRPC */}
-                                    {/* <CCol xs={12} md={2} style={{display:'none'}}>
-                                            <CFormLabel>POD Copy</CFormLabel>
-                                            <CFormInput
-                                              type="file"
-                                              size="sm"
-                                              accept=".jpg,.jpeg,.png,.pdf"
-                                              name="sto_pod_copy_rmsto"
-                                              onChange={(e) => handleStoFileUploadChangeRMSTO(e, index_val)}
-                                            />
-                                          </CCol> */}
-                                  </CRow>
-                                  <hr />
-                                </>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      </CTabPane>
-                      {/* ==================== Hire Vehicle RMSO Info Tab END =================== */}
-
-                      {/* ==================== Hire Vehicle Freight Tab Start ==================== */}
-                      <CTabPane role="tabpanel" aria-labelledby="profile-tab" visible={activeKey === 7}>
-                        {incotermFreightInfo.length > 0 && tripInfo.tripsheet_info.to_divison == 1 && (
-                          <>
-                            <CRow className="mt-2" hidden>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel
-                                  htmlFor="inputAddress"
-                                  style={{
-                                    backgroundColor: '#4d3227',
-                                    marginTop: '5px 0',
-                                    color: 'white',
-                                  }}
-                                >
-                                  IncoTerm wise Freight Information
-                                </CFormLabel>
-                              </CCol>
-                              <CCol md={3}>
-                                <CFormLabel htmlFor="dname">Freight Paid Tonnage in MTS</CFormLabel>
-                                <CFormInput
-                                  name="dname"
-                                  size="sm"
-                                  id="dname"
-                                  readOnly
-                                  value={totalvaluefinder(3, tripInfo.shipment_info[0])}
-                                />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CTable
-                                style={{ height: '40vh', width: 'auto' }}
-                                className="overflow-scroll"
-                              >
-                                <CTableHead style={{ backgroundColor: '#4d3227', color: 'white' }}>
-                                  <CTableRow style={{ width: '100%' }}>
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                                    >
-                                      S.No
-                                    </CTableHeaderCell>
-
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ color: 'white', width: '9%', textAlign: 'center' }}
-                                    >
-                                      Inco Term
-                                    </CTableHeaderCell>
-
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                                    >
-                                      QTY in MTS
-                                    </CTableHeaderCell>
-
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                                    >
-                                      Rate Per TON
-                                    </CTableHeaderCell>
-
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                                    >
-                                      Amount
-                                    </CTableHeaderCell>
-                                  </CTableRow>
-                                </CTableHead>
-                                <CTableBody>
-                                  {incotermFreightInfo.map((data, index) => {
-                                    //console.log(data, 'rowData-data')
-
-                                    return (
-                                      <>
-                                        <CTableRow style={{ width: '100%' }}>
-                                          <CTableHeaderCell
-                                            scope="col"
-                                            style={{ width: '5%', textAlign: 'center' }}
-                                          >
-                                            {index + 1}
-                                          </CTableHeaderCell>
-
-                                          <CTableHeaderCell
-                                            scope="col"
-                                            style={{ width: '9%', textAlign: 'center' }}
-                                          >
-                                            {data.inco_term}
-                                          </CTableHeaderCell>
-
-                                          <CTableHeaderCell
-                                            scope="col"
-                                            style={{ width: '5%', textAlign: 'center' }}
-                                          >
-                                            {Number(parseFloat(data.qty).toFixed(2))}
-                                          </CTableHeaderCell>
-
-                                          <CTableHeaderCell
-                                            scope="col"
-                                            style={{ width: '5%', textAlign: 'center' }}
-                                          >
-                                            {JavascriptInArrayComponent(data.inco_term_id, [381, 382])
-                                              ? 0
-                                              : tripInfo.tripsheet_info.freight_rate_per_tone}
-                                          </CTableHeaderCell>
-
-                                          <CTableHeaderCell
-                                            scope="col"
-                                            style={{
-                                              width: '5%',
-                                              color: `${
-                                                JavascriptInArrayComponent(
-                                                  data.inco_term_id,
-                                                  [381, 382]
-                                                )
-                                                  ? 'white'
-                                                  : ''
-                                              }`,
-                                              textAlign: 'center',
-                                              background: `${
-                                                JavascriptInArrayComponent(
-                                                  data.inco_term_id,
-                                                  [381, 382]
-                                                )
-                                                  ? 'red'
-                                                  : ''
-                                              }`,
-                                            }}
-                                          >
-                                            {/* {data.amount} */}
-                                            {Math.round(
-                                              Number(
-                                                parseFloat(
-                                                  Number(
-                                                    tripInfo.tripsheet_info.freight_rate_per_tone
-                                                  ) * Number(data.qty)
-                                                ).toFixed(2)
-                                              )
-                                            )}
-                                          </CTableHeaderCell>
-                                        </CTableRow>
-                                      </>
-                                    )
-                                  })}
-                                  <CTableRow style={{ width: '100%', background: 'cyan' }}>
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ width: '5%', textAlign: 'center' }}
-                                    >
-                                      -
-                                    </CTableHeaderCell>
-
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ width: '9%', textAlign: 'center', color: 'indigo' }}
-                                    >
-                                      BILLED TONNAGE TOTAL
-                                    </CTableHeaderCell>
-
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ width: '5%', textAlign: 'center' }}
-                                    >
-                                      {totalvaluefinder(1, tripInfo.shipment_info[0])}
-                                    </CTableHeaderCell>
-
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ width: '5%', textAlign: 'center', color: 'green' }}
-                                    >
-                                      Total
-                                    </CTableHeaderCell>
-
-                                    <CTableHeaderCell
-                                      scope="col"
-                                      style={{ width: '5%', textAlign: 'center' }}
-                                    >
-                                      {totalvaluefinder(2, tripInfo.shipment_info[0])}
-                                    </CTableHeaderCell>
-                                  </CTableRow>
-                                </CTableBody>
-                              </CTable>
-                            </CRow>
-                          </>
-                        )}
-
-                        {!tripInfo.advance_payment_info &&
-                          idt.length > 0 &&
-                          tripInfo.tripsheet_info.to_divison == 1 && (
-                            <>
-                              <CRow className="mt-2" hidden>
-                                <CCol xs={12} md={3}>
-                                  <CFormLabel
-                                    htmlFor="inputAddress"
-                                    style={{
-                                      backgroundColor: '#4d3227',
-                                      marginTop: '5px 0',
-                                      color: 'white',
-                                    }}
-                                  >
-                                    IncoTerm wise Freight Information
-                                  </CFormLabel>
-                                </CCol>
-                                <CCol md={3}>
-                                  <CFormLabel htmlFor="dname">Freight Paid Tonnage in MTS</CFormLabel>
-                                  <CFormInput
-                                    name="dname"
-                                    size="sm"
-                                    id="dname"
-                                    readOnly
-                                    value={totalvaluefinder(3, tripInfo.shipment_info[0])}
-                                  />
-                                </CCol>
-                              </CRow>
-                              <CRow>
-                                <CTable
-                                  style={{ height: '40vh', width: 'auto' }}
-                                  className="overflow-scroll"
-                                >
-                                  <CTableHead style={{ backgroundColor: '#4d3227', color: 'white' }}>
-                                    <CTableRow style={{ width: '100%' }}>
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                                      >
-                                        S.No
-                                      </CTableHeaderCell>
-
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ color: 'white', width: '9%', textAlign: 'center' }}
-                                      >
-                                        Inco Term
-                                      </CTableHeaderCell>
-
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                                      >
-                                        QTY in MTS
-                                      </CTableHeaderCell>
-
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                                      >
-                                        Rate Per TON
-                                      </CTableHeaderCell>
-
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                                      >
-                                        Amount
-                                      </CTableHeaderCell>
-                                    </CTableRow>
-                                  </CTableHead>
-                                  <CTableBody>
-                                    {idt.map((data, index) => {
-                                      //console.log(data, 'rowData-data')
-
-                                      return (
-                                        <>
-                                          <CTableRow style={{ width: '100%' }}>
-                                            <CTableHeaderCell
-                                              scope="col"
-                                              style={{ width: '5%', textAlign: 'center' }}
-                                            >
-                                              {index + 1}
-                                            </CTableHeaderCell>
-
-                                            <CTableHeaderCell
-                                              scope="col"
-                                              style={{ width: '9%', textAlign: 'center' }}
-                                            >
-                                              {data.inco_term}
-                                            </CTableHeaderCell>
-
-                                            <CTableHeaderCell
-                                              scope="col"
-                                              style={{ width: '5%', textAlign: 'center' }}
-                                            >
-                                              {Number(parseFloat(data.qty).toFixed(2))}
-                                            </CTableHeaderCell>
-
-                                            <CTableHeaderCell
-                                              scope="col"
-                                              style={{ width: '5%', textAlign: 'center' }}
-                                            >
-                                              {JavascriptInArrayComponent(data.inco_term_id, [381, 382])
-                                                ? 0
-                                                : tripInfo.tripsheet_info.freight_rate_per_tone}
-                                            </CTableHeaderCell>
-
-                                            <CTableHeaderCell
-                                              scope="col"
-                                              style={{
-                                                width: '5%',
-                                                color: `${
-                                                  JavascriptInArrayComponent(
-                                                    data.inco_term_id,
-                                                    [381, 382]
-                                                  )
-                                                    ? 'white'
-                                                    : ''
-                                                }`,
-                                                textAlign: 'center',
-                                                background: `${
-                                                  JavascriptInArrayComponent(
-                                                    data.inco_term_id,
-                                                    [381, 382]
-                                                  )
-                                                    ? 'red'
-                                                    : ''
-                                                }`,
-                                              }}
-                                            >
-                                              {/* {data.amount} */}
-                                              {Math.round(
-                                                Number(
-                                                  parseFloat(
-                                                    Number(
-                                                      tripInfo.tripsheet_info.freight_rate_per_tone
-                                                    ) * Number(data.qty)
-                                                  ).toFixed(2)
-                                                )
-                                              )}
-                                            </CTableHeaderCell>
-                                          </CTableRow>
-                                        </>
-                                      )
-                                    })}
-                                    <CTableRow style={{ width: '100%', background: 'cyan' }}>
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ width: '5%', textAlign: 'center' }}
-                                      >
-                                        -
-                                      </CTableHeaderCell>
-
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ width: '9%', textAlign: 'center', color: 'indigo' }}
-                                      >
-                                        BILLED TONNAGE TOTAL
-                                      </CTableHeaderCell>
-
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ width: '5%', textAlign: 'center' }}
-                                      >
-                                        {totalvaluefinder(1, tripInfo.shipment_info[0])}
-                                      </CTableHeaderCell>
-
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ width: '5%', textAlign: 'center', color: 'green' }}
-                                      >
-                                        Total
-                                      </CTableHeaderCell>
-
-                                      <CTableHeaderCell
-                                        scope="col"
-                                        style={{ width: '5%', textAlign: 'center' }}
-                                      >
-                                        {totalvaluefinder(2, tripInfo.shipment_info[0])}
-                                      </CTableHeaderCell>
-                                    </CTableRow>
-                                  </CTableBody>
-                                </CTable>
-                              </CRow>
-                            </>
-                          )}
-
-                          {tripInfo?.vehicle_info?.vehicle_type_id == 22 && (
-                            <>
-                              <CTable style={{ height: '15vh', width: 'auto' }} caption="top" hover>
-                                <CTableHead style={{ backgroundColor: '#4d3227', color: 'white' }}>
-                                  <CTableRow>
-                                    <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                      Freight Amount
-                                    </CTableHeaderCell>
-                                    {tripInfo?.tripsheet_info?.freight_approval_status == 2 && (
-                                      <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                        Approved Freight Amount
-                                      </CTableHeaderCell>
-                                    )}
-                                    <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                      Billed Qty in MTS
-                                    </CTableHeaderCell>
-                                    <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                      Total Freight Amount
-                                    </CTableHeaderCell>
-                                    <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                      Advance
-                                    </CTableHeaderCell>
-                                    <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                      Balance
-                                    </CTableHeaderCell>                           
-                                  </CTableRow>
-                                </CTableHead>
-
-                                <CTableBody>
-                                  <CTableRow>
-                                    {/* Freight : Load Tonnage in MTS Part Start */}
-                                    {tripInfo && tripInfo.vehicle_info && tripInfo.vehicle_info.vehicle_type_id === 22 && (
-                                      <>
-                                        <CTableDataCell>
-                                          <CFormInput
-                                            size="sm"
-                                            id="freight_rate"
-                                            maxLength={5}
-                                            name="freight_rate"
-                                            value={
-                                              tripInfo.tripsheet_info.trip_freight_rate
-                                                ? tripInfo.tripsheet_info.trip_freight_rate
-                                                : '0'
-                                            }
-                                            readOnly
-                                          />
-                                        </CTableDataCell>
-                                        {tripInfo?.tripsheet_info?.freight_approval_status == 2 && (
-                                          <CTableDataCell>
-                                            <CFormInput
-                                              size="sm"
-                                              id="freight_rate"
-                                              maxLength={5}
-                                              name="freight_rate"
-                                              value={
-                                                tripInfo.tripsheet_info.trip_updated_freight_rate
-                                                ? tripInfo.tripsheet_info.trip_updated_freight_rate
-                                                : '0'
-                                              }
-                                              readOnly
-                                            />
-                                          </CTableDataCell>
-                                        )}
-                                        <CTableDataCell>
-                                          <CFormInput
-                                            size="sm"
-                                            id="billed_qty"
-                                            maxLength={5}
-                                            name="billed_qty"
-                                            value={
-                                              tripInfo.vehicle_assignment[0]?.billed_qty
-                                                ? tripInfo.vehicle_assignment[0].billed_qty
-                                                : '0'
-                                            }
-                                            readOnly
-                                          />
-                                        </CTableDataCell>
-                                        
-                                        <CTableDataCell>
-                                          <CFormInput
-                                            size="sm"
-                                            id="total_freight_amt"
-                                            maxLength={5}
-                                            name="total_freight_amt"
-                                            value={totalFreightAmountFinder(tripInfo)}                       
-                                            readOnly
-                                          />
-                                        </CTableDataCell>
-
-                                        <CTableDataCell key={`freight_total_advance_amount_data`}>
-                                          <CFormInput
-                                            size="sm"
-                                            id={`freight_total_advance_amount`}
-                                            maxLength={5}
-                                            name={`freight_total_advance_amount`}
-                                            value={tripInfo.advance_payment_info ? tripInfo.advance_payment_info?.advance_payment : '0'}
-                                            readOnly
-                                          />
-                                        </CTableDataCell>
-
-                                        <CTableDataCell key={`freight_balance_amount_data`}>
-                                          <CFormInput
-                                            size="sm"
-                                            id={`freight_balance_amount`}
-                                            maxLength={5}
-                                            name={`freight_balance_amount`}
-                                            value={tripInfo.advance_payment_info ? freight_balance_amount_calculator(tripInfo.advance_payment_info.actual_freight, tripInfo.advance_payment_info?.advance_payment) : totalFreightAmountFinder(tripInfo)} 
-                                            readOnly
-                                          />
-                                        </CTableDataCell>                                                            
-                                        
-                                      </>
-                                    )}
-
-                                    {tripInfo && tripInfo.vehicle_info && tripInfo.vehicle_info.vehicle_type_id === 21 && (
-                                      <>
-                                        <CTableDataCell key={`freight_diesel_advance_amount_data`}>
-                                          <CFormInput
-                                            size="sm"
-                                            id={`freight_diesel_advance_amount`}
-                                            maxLength={5}
-                                            name={`freight_diesel_advance_amount`}
-                                            value={
-                                              tripInfo.diesel_intent_info
-                                                ? tripInfo.diesel_intent_info.total_amount
-                                                : 0
-                                            }
-                                            readOnly
-                                          />
-                                        </CTableDataCell>
-
-                                        {/* Freight : Advance in Diesel Part End */}
-                                        {/* Freight : Advance in Bank Part Start */}
-
-                                        <CTableDataCell key={`freight_bank_advance_amount_data`}>
-                                          <CFormInput
-                                            size="sm"
-                                            id={`freight_bank_advance_amount`}
-                                            maxLength={5}
-                                            name={`freight_bank_advance_amount`}
-                                            value={
-                                              tripInfo.advance_payment_info
-                                                ? tripInfo.advance_payment_info.advance_payment
-                                                : 0
-                                            }
-                                            readOnly
-                                          />
-                                        </CTableDataCell>
-                                      </>
-                                    )}
-                                    {/* Freight : Advance in Bank Part End */}
-                                    {/* Freight : Total Advance Part Start */}
-
-                                    {/* Freight : Balance Part End */}
-                                  </CTableRow>
-                                </CTableBody>
-                              </CTable>
-                              {(!tripInfo.advance_payment_info && (tripInfo.tripsheet_info.freight_approval_status == 0 || tripInfo.tripsheet_info.freight_approval_status == 2)) && (
-                                
-                                 <CRow>
-                                  <CCol xs={12} md={3}></CCol>
-                                  <CCol xs={12} md={6}>
-                                    <CFormLabel htmlFor="rejRemarks">Freight Rejection Remarks<REQ /></CFormLabel>
-                                    <CFormTextarea
-                                      id="rejRemarks"
-                                      name="rejRemarks"
-                                      onFocus={onFocus}
-                                      onBlur={onBlur}
-                                      onChange={handleChangenew1}
-                                      value={rejRemarks}
-                                      rows="1"
-                                      maxLength={"50"}
-                                    >
-                                    </CFormTextarea>
-                                     
-                                  </CCol>
-                                  <CCol xs={12} md={3}>
-                                    <CButton
-                                      size="sm"
-                                      color="danger"
-                                      className="mt-3 text-white" 
-                                      onClick={() => {
-                                        setFetch(false)
-                                        RejectionProcess()
-                                      }} 
-                                    >
-                                      Freight Reject
-                                    </CButton>
-                                    
-                                  </CCol>
-                                </CRow>
-                              )}  
-                                     
-                              <ColoredLine color="red" /> 
-                              <CRow key={`HireshipmentDeliveryData`} hidden>
-                                <CCol xs={12} md={6}>
-                                  <CFormLabel
-                                    htmlFor="inputAddress"
-                                    style={{
-                                      backgroundColor: '#4d3227',
-                                      color: 'white',
-                                    }}
-                                  >
-                                    Freight Update Process History
-                                  </CFormLabel>
-                                </CCol>
-                              </CRow>         
-                                        
-                              <CustomTable
-                                columns={columns}
-                                pagination={false}
-                                data={rowDatan}
-                                fieldName={'Driver_Name'}
-                                showSearchFilter={true}
-                              />
-                              <ColoredLine color="red" />
-                              {tripInfo.advance_payment_info && (
-                                <CRow className="mt-2">
-                                  <CCol xs={12} md={2}>
-                                    <CFormLabel htmlFor="remarks">SAP Total Freight Amount</CFormLabel>
-                                    <CFormInput size="sm" value={tripInfo.advance_payment_info.sap_freight_payment_amount} readOnly />
-                                  </CCol>
-                                  <CCol xs={12} md={2}>
-                                    <CFormLabel htmlFor="remarks">SAP Bank Advance Amount</CFormLabel>
-                                    <CFormInput size="sm" value={tripInfo.advance_payment_info.sap_bank_payment_amount} readOnly />
-                                  </CCol>
-                                  <CCol xs={12} md={2}>
-                                    <CFormLabel htmlFor="remarks">SAP Freight Payment Doc.</CFormLabel>
-                                    <CFormInput size="sm" value={tripInfo.advance_payment_info.sap_freight_payment_document_no} readOnly />
-                                  </CCol>
-                                  <CCol xs={12} md={2}>
-                                    <CFormLabel htmlFor="remarks">SAP Advance Payment Doc.</CFormLabel>
-                                    <CFormInput size="sm" value={tripInfo.advance_payment_info.sap_bank_payment_document_no} readOnly />
-                                  </CCol>
-                                  <CCol xs={12} md={2}>
-                                    <CFormLabel htmlFor="remarks">Freight / Bank Posting date</CFormLabel>
-                                    <CFormInput size="sm" value={formatDate(tripInfo.advance_payment_info.sap_invoice_posting_date) + '  //  ' + formatDate(tripInfo.advance_payment_info.bank_date)} readOnly />
-                                  </CCol>
-                                  <CCol xs={12} md={2}>
-                                    <CFormLabel htmlFor="remarks">Advance Attachment</CFormLabel>
-                                    <CButton className="w-100 m-0" color="info" size="sm" id="inputAddress">
-                                      <span className="float-start">
-                                        <a style={{color:'black'}} target='_blank' rel="noreferrer" href={tripInfo.advance_payment_info?.advance_form}>
-                                          <i className="fa fa-eye" aria-hidden="true">&nbsp;View</i>
-                                        </a>
-                                      </span> 
-                                    </CButton> 
-                                  </CCol>
-                                </CRow>
-                              )}
-                            </>
-                          )}
-                      </CTabPane>
-                      {/* ======= Hire Vehicle Freight Tab End ================================= */}
-
-                      {/* Hire Vehicle Expenses Capture Start */}
-                      {vehicleTypeId === 22 && (
-                        <CTabPane
-                          role="tabpanel"
-                          aria-labelledby="contact-tab"
-                          visible={activeKey === 3}
-                        >
-                          <CTable caption="top" hover style={{ height: '45vh' }}>
-                            <CTableCaption style={{ color: 'maroon' }}>Expenses</CTableCaption>
-
-                            {/* ================== Expense Table Header Part Start ====================== */}
-                            <CTableHead
-                              style={{
-                                backgroundColor: '#4d3227',
-                                color: 'white',
-                              }}
-                            >
-                              <CTableRow>
-                                <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                  S.No
-                                </CTableHeaderCell>
-
-                                <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                  Type
-                                </CTableHeaderCell>
-
-                                <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                  Expense Amount
-                                </CTableHeaderCell>
-
-                                <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                  Total Expense Amount
-                                </CTableHeaderCell>
-                              </CTableRow>
-                            </CTableHead>
-                            {/* ================== Expense Table Header Part End ======================= */}
-                            {/* ================== Expense Table Body Part Start ======================= */}
-                            <CTableBody>
-                              {/* ================== Nlmt Freight Charges Part Start ======================= */}
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>1</b>
-                                </CTableDataCell>                           
-                                  <CTableDataCell>Freight Charges</CTableDataCell>
-                                  <CTableDataCell>                                  
-                                    <CFormInput
-                                      id="freight_charges"
-                                      value={totalFreightAmountFinder(tripInfo)}
-                                      readOnly
-                                    />
-                                  </CTableDataCell>
-                                  <CTableDataCell>                                  
-                                    <CFormInput
-                                      id="freight_charges"
-                                      value={totalFreightAmountFinder(tripInfo)}
-                                      readOnly
-                                    />
-                                  </CTableDataCell>                            
-                              </CTableRow>
-                              {/* ================== Nlmt Freight Charges Part End ======================= */}
-
-                              {/* === LowTonnage,Unloading,Weighment,Halting,Subdelivery,TollAmount Charges Part Start ==== */}
-                              {/* <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>2</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Low Tonnage Charges</CTableDataCell>
-                                <CTableDataCell>                                                           
-                                  <>
-                                    <CFormInput
-                                      className={`${errors.low_tonnage_charges && 'is-invalid'}`}
-                                      id="low_tonnage_charges"
-                                      name="low_tonnage_charges"
-                                      maxLength={5}
-                                      onFocus={onFocus}
-                                      onBlur={onBlur}
-                                      onChange={handleChange}
-                                      required={errors.low_tonnage_charges ? true : false}
-                                      size="sm"
-                                      value={values.low_tonnage_charges}
-                                    />
-                                    {errors.low_tonnage_charges && (
-                                      <span className="small text-danger">
-                                        {errors.low_tonnage_charges}
-                                      </span>
-                                    )}
-                                  </>                              
-                                </CTableDataCell>
-                                <CTableDataCell scope="row">
-                                  <CFormInput
-                                    size="sm"
-                                    id="expense_row_low_tonage_freight_charge"
-                                    name="expense_row_low_tonage_freight_charge"
-                                    value={
-                                      errors.low_tonnage_charges
-                                        ? 0
-                                        : values.low_tonnage_charges
-                                        ? values.low_tonnage_charges
-                                        : 0
-                                    }
-                                    readOnly
-                                  />
-                                </CTableDataCell>
-                              </CTableRow>                          
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>3</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Unloading Charges</CTableDataCell>
-                                <CTableDataCell>
-                                  <CFormInput
-                                    className={`${errors.unloading_charges && 'is-invalid'}`}
-                                    id="unloading_charges"
-                                    name="unloading_charges"
-                                    maxLength={5}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
-                                    required={errors.unloading_charges ? true : false}
-                                    size="sm"
-                                    value={values.unloading_charges}
-                                  />
-                                  {errors.unloading_charges && (
-                                    <span className="small text-danger">
-                                      {errors.unloading_charges}
-                                    </span>
-                                  )}
-                                </CTableDataCell>
-                                <CTableDataCell scope="row">
-                                  <CFormInput
-                                    size="sm"
-                                    id="expense_row_total_unloading_charge"
-                                    name="expense_row_total_unloading_charge"
-                                    value={errors.unloading_charges ? 0 : values.unloading_charges}
-                                    readOnly
-                                  />
-                                </CTableDataCell>
-                              </CTableRow>                          
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>4</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Weighment Charges</CTableDataCell>
-                                <CTableDataCell>
-                                  <CFormInput
-                                    className={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? ''
-                                        : `${errors.weighment_charges && 'is-invalid'}`
-                                    }
-                                    id="weighment_charges"
-                                    name="weighment_charges"
-                                    maxLength={5}
-                                    onFocus={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? undefined
-                                        : onFocus
-                                    }
-                                    onBlur={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? undefined
-                                        : onBlur
-                                    }
-                                    readOnly={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? true
-                                        : false
-                                    }
-                                    // onChange={handleChange}
-                                    onChange={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? ''
-                                        : handleChange
-                                    }
-                                    required={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? false
-                                        : errors.weighment_charges
-                                        ? true
-                                        : false
-                                    }
-                                    size="sm"
-                                    value={values.weighment_charges}
-                                  />
-                                  {tripInfo.tripsheet_info &&
-                                    tripInfo.tripsheet_info.to_divison != 2 &&
-                                    errors.weighment_charges && (
-                                      <span className="small text-danger">
-                                        {errors.weighment_charges}
-                                      </span>
-                                    )}
-                                </CTableDataCell>
-                                <CTableDataCell scope="row">
-                                  <CFormInput
-                                    size="sm"
-                                    id="expense_row_total_weighment_charge"
-                                    name="expense_row_total_weighment_charge"
-                                    value={errors.weighment_charges ? 0 : values.weighment_charges}
-                                    readOnly
-                                  />
-                                </CTableDataCell>
-                              </CTableRow>                          
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>5</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Halting Charges</CTableDataCell>
-                                <CTableDataCell>
-                                  <CFormInput
-                                    className={`${errors.halting_charges && 'is-invalid'}`}
-                                    id="halting_charges"
-                                    name="halting_charges"
-                                    maxLength={5}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
-                                    required={errors.halting_charges ? true : false}
-                                    size="sm"
-                                    value={values.halting_charges}
-                                  />
-                                  {errors.halting_charges && (
-                                    <span className="small text-danger">{errors.halting_charges}</span>
-                                  )}
-                                </CTableDataCell>
-                                <CTableDataCell scope="row">
-                                  <CFormInput
-                                    size="sm"
-                                    id="expense_row_total_halting_charge"
-                                    name="expense_row_total_halting_charge"
-                                    value={errors.halting_charges ? 0 : values.halting_charges}
-                                    readOnly
-                                  />
-                                </CTableDataCell>
-                              </CTableRow>                          
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>6</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Subdelivery Charges</CTableDataCell>
-                                <CTableDataCell>
-                                  <CFormInput
-                                    className={`${errors.sub_delivery_charges && 'is-invalid'}`}
-                                    id="sub_delivery_charges"
-                                    name="sub_delivery_charges"
-                                    maxLength={5}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
-                                    required={errors.sub_delivery_charges ? true : false}
-                                    size="sm"
-                                    value={values.sub_delivery_charges}
-                                  />
-                                  {errors.sub_delivery_charges && (
-                                    <span className="small text-danger">
-                                      {errors.sub_delivery_charges}
-                                    </span>
-                                  )}
-                                </CTableDataCell>
-                                <CTableDataCell scope="row">
-                                  <CFormInput
-                                    size="sm"
-                                    id="expense_row_total_subdelivery_charge"
-                                    name="expense_row_total_subdelivery_charge"
-                                    value={
-                                      errors.sub_delivery_charges ? 0 : values.sub_delivery_charges
-                                    }
-                                    readOnly
-                                  />
-                                </CTableDataCell>
-                              </CTableRow>                           
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>7</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Toll Amount</CTableDataCell>
-                                <CTableDataCell>
-                                  <CFormInput
-                                    className={`${errors.toll_amount && 'is-invalid'}`}
-                                    id="toll_amount"
-                                    name="toll_amount"
-                                    maxLength={5}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
-                                    required={errors.toll_amount ? true : false}
-                                    size="sm"
-                                    value={values.toll_amount}
-                                  />
-                                  {errors.toll_amount && (
-                                    <span className="small text-danger">{errors.toll_amount}</span>
-                                  )}
-                                </CTableDataCell>
-                                <CTableDataCell scope="row">
-                                  <CFormInput
-                                    size="sm"
-                                    id="expense_row_total_toll_amount"
-                                    name="expense_row_total_toll_amount"
-                                    value={errors.toll_amount ? 0 : values.toll_amount}
-                                    readOnly
-                                  />
-                                </CTableDataCell>
-                              </CTableRow> */}
-                            {/* === LowTonnage,Unloading,Weighment,Halting,Subdelivery,TollAmount Charges Part End ==== */}
-
-                              {/* ================== Deduction Charges Part Start ========= */}
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>2</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Deduction </CTableDataCell>
-                                <CTableDataCell>
-                                  <CFormInput
-                                    // onClick={handleStockDiversionClick}
-                                    className={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? ''
-                                        : `${errors.diversion_return_charges && 'is-invalid'}`
-                                    }
-                                    id="diversion_return_charges"
-                                    name="diversion_return_charges"
-                                    maxLength={5}
-                                    onFocus={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? undefined
-                                        : onFocus
-                                    }
-                                    onBlur={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? undefined
-                                        : onBlur
-                                    }
-                                    readOnly={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? true
-                                        : false
-                                    }
-                                    onChange={
-                                      tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                        ? ''
-                                        : handleChange
-                                    }
-                                    // required={
-                                    //   tripInfo.tripsheet_info && tripInfo.tripsheet_info.to_divison == 2
-                                    //     ? false
-                                    //     : errors.diversion_return_charges
-                                    //     ? true
-                                    //     : false
-                                    // }
-                                    size="sm"
-                                    value={values.diversion_return_charges}
-                                  />
-                                  {tripInfo.tripsheet_info && errors.diversion_return_charges && (
-                                    <span className="small text-danger">
-                                      {errors.diversion_return_charges}
-                                    </span>
-                                  )}
-                                </CTableDataCell>
-                                <CTableDataCell scope="row">
-                                  <CFormInput
-                                    size="sm"
-                                    id="expense_row_total_stock_return_charge"
-                                    name="expense_row_total_stock_return_charge"
-                                    value={
-                                      errors.diversion_return_charges
-                                        ? 0
-                                        : values.diversion_return_charges
-                                    }
-                                    readOnly
-                                  />
-                                </CTableDataCell>
-                              </CTableRow>
-
-                              {values.diversion_return_charges > 0 && (
-                                <>
-                                  <CTableRow style={{ backgroundColor: '#f8d7da' }}>
-                                    <CTableDataCell scope="row" style={{ width: '120px' }}>
-                                      <CFormLabel>
-                                        Cost Center
-                                        <REQ />
-                                      </CFormLabel>
-                                      <CFormSelect
-                                        size="sm"
-                                        name="cost_center"
-                                        value={values.cost_center}
-                                        onChange={handleChange}
-                                      >
-                                        <option value="">Select</option>
-                                        {costCenterData.map(
-                                          ({ definition_list_id, definition_list_name }) => (
-                                            <option
-                                              key={definition_list_id}
-                                              value={String(definition_list_id)}
-                                            >
-                                              {definition_list_name}
-                                            </option>
-                                          )
-                                        )}
-                                      </CFormSelect>
-                                    </CTableDataCell>
-                                    {/* <CTableDataCell style={{ width: '180px' }}>
-                                      <CFormLabel>
-                                        Posting Date
-                                        <REQ />
-                                      </CFormLabel>
-
-                                      <CFormInput
-                                        size="sm"
-                                        type="date"
-                                        id="ded_posting_date"
-                                        name="ded_posting_date"
-                                        onChange={handleChangepostingDate}
-                                        // min={Expense_Income_Posting_Date.min_date}
-                                        // max={Expense_Income_Posting_Date.max_date}
-                                        onKeyDown={(e) => {
-                                          e.preventDefault()
-                                        }}
-                                        value={ded_posting_date}
-                                      />
-                                    </CTableDataCell> */}
-                                    <CTableDataCell style={{ width: '150px' }}>
-                                      <CFormLabel>
-                                        Ref. No
-                                        <REQ />
-                                      </CFormLabel>
-                                      <CFormTextarea
-                                        size="sm"
-                                        name="ded_ref"
-                                        value={values.ded_ref}
-                                        onChange={handleChange}
-                                      />
-                                    </CTableDataCell>
-                                    <CTableDataCell style={{ width: '150px' }}>
-                                      <CFormLabel>
-                                        Remarks
-                                        <REQ />
-                                      </CFormLabel>
-                                      <CFormTextarea
-                                        size="sm"
-                                        name="ded_remarks"
-                                        value={values.ded_remarks}
-                                        onChange={handleChange}
-                                      />
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                </>
-                              )}
-                              {/* ================== Stock Diversion / Return Charges Part End ========== */}
-
-                              {/* ================== Total Charges Part Start ============ */}
-                              {/* <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>*</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Total Trip Additional Charges</CTableDataCell>
-                                <CTableDataCell> </CTableDataCell>
-                                <CTableDataCell scope="row">
-                                  <CFormInput
-                                    size="sm"
-                                    id="expense_row_additional_total_charge"
-                                    name="expense_row_additional_total_charge"
-                                    value={totalAdditionalChargesCalculator(
-                                      values,
-                                      totalChargesHire ? totalChargesHire : 0
-                                    )}
-                                    readOnly
-                                  />
-                                </CTableDataCell>
-                              </CTableRow> */}
-                              {/* ================== Total Charges Part End ========== */}
-
-                              {/* ================== Total Charges Part Start ============ */}
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>*</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Total Trip Expense Charges</CTableDataCell>
-                                <CTableDataCell> </CTableDataCell>
-                                <CTableDataCell scope="row">
-                                  <CFormInput
-                                    size="sm"
-                                    id="expense_row_total_total_charge"
-                                    name="expense_row_total_total_charge"
-                                    value={totalChargesHire ? totalChargesHire : 0}
-                                    readOnly
-                                  />
-                                </CTableDataCell>
-                              </CTableRow>
-                              {/* ================== Total Charges Part End ========== */}
-                            </CTableBody>
-                          </CTable>
-                          {/* ================== Expense Table Body Part Start ======================= */}
-
-                          <CTable caption="top" hover style={{ height: '45vh' }}>
-                            <CTableCaption style={{ color: 'maroon' }}>Others</CTableCaption>
-
-                            {/* ================== Others Table Header Part Start ====================== */}
-                            <CTableHead
-                              style={{
-                                backgroundColor: '#4d3227',
-                                color: 'white',
-                              }}
-                            >
-                              <CTableRow>
-                                <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                  S.No
-                                </CTableHeaderCell>
-
-                                <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                  Type
-                                </CTableHeaderCell>
-
-                                {/* <CTableHeaderCell></CTableHeaderCell> */}
-
-                                <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                  Total
-                                </CTableHeaderCell>
-                              </CTableRow>
-                            </CTableHead>
-                            {/* ================== Others Table Header Part End ======================= */}
-                            {/* ================== Others Table Body Part Start ======================= */}
-                            <CTableBody>
-                              {/* ================== Others Halt Days Part Start ======================= */}
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>1</b>
-                                </CTableDataCell>
-                                <CTableDataCell>Halt Days</CTableDataCell>
-                                <CTableDataCell>
-                                  <CFormInput
-                                    className={`${errors.halt_days && 'is-invalid'}`}
-                                    id="halt_days"
-                                    name="halt_days"
-                                    type="number"
-                                    maxLength={2}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
-                                    // required={errors.halt_days ? true : false}
-                                    size="sm"
-                                    value={values.halt_days}
-                                  />
-                                  {errors.halt_days && (
-                                    <span className="small text-danger">{errors.halt_days}</span>
-                                  )}
-                                </CTableDataCell>
-                              </CTableRow>
-
-                              {/* ================== Others Halt Days Part End ======================= */}
-
-                              {/* ================== Tds Having Part Start ======================= */}
-                              {tripInfo && tripInfo.advance_payment_info && tripInfo.advance_payment_info.tds_type ? (
-                                <>
-                                  <CTableRow>
-                                    <CTableDataCell scope="row">
-                                      <b>2</b>
-                                    </CTableDataCell>
-                                    <CTableDataCell>Tds Having</CTableDataCell>
-                                    <CTableDataCell>
-                                      <CFormInput
-                                        size="sm"
-                                        value={getTdsTypeHaving(tripInfo.advance_payment_info.tds_type)}
-                                        readOnly
-                                      />
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                  {tripInfo.advance_payment_info && tripInfo.advance_payment_info.vendor_tds && (
-                                    <CTableRow>
-                                      <CTableDataCell scope="row">
-                                        <b>2 A</b>
-                                      </CTableDataCell>
-                                      <CTableDataCell>Tds Tax Type</CTableDataCell>
-                                      <CTableDataCell>
-                                        <CFormInput
-                                          size="sm"
-                                          value={`${tdsTaxCodeName(tripInfo.advance_payment_info.vendor_tds)}`}
-                                          readOnly
-                                        />
-                                      </CTableDataCell>
-                                    </CTableRow>
-                                  )}
-                                </>
-                              ) : (
-                                <>
-                                  <CTableRow>
-                                    <CTableDataCell scope="row">
-                                      <b>2</b>
-                                    </CTableDataCell>
-                                    <CTableDataCell>
-                                      Tds Tax Type <REQ />{' '}
-                                    </CTableDataCell>
-                                    <CTableDataCell>
-                                      <CFormSelect
-                                        size="sm"
-                                        id="TdsHaving"
-                                        name="TdsHaving"
-                                        onFocus={onFocus}
-                                        onBlur={onBlur}
-                                        onChange={handleChange}
-                                        value={values.TdsHaving}
-                                        className={`${errors.TdsHaving && 'is-invalid'}`}
-                                        aria-label="Small select example"
-                                      >
-                                        <option value="">Select ...</option>
-                                        <option value="0">No Tax</option>
-
-                                        {tdsTaxTermsData.map(
-                                          ({ definition_list_code, definition_list_name }) => {
-                                            if (definition_list_code) {
-                                              return (
-                                                <>
-                                                  <option
-                                                    key={definition_list_code}
-                                                    value={definition_list_code}
-                                                  >
-                                                    {definition_list_name}
-                                                  </option>
-                                                </>
-                                              )
-                                            }
-                                          }
-                                        )}
-                                      </CFormSelect>
-
-                                      {errors.TdsHaving && (
-                                        <span className="small text-danger">{errors.TdsHaving}</span>
-                                      )}
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                </>
-                              )}
-                              {/* ================== Tds Having Part End ======================= */}
-
-                              {/* ================== SAP Text Part Start ======================= */}
-                              <CTableRow>
-                                <CTableDataCell scope="row">
-                                  <b>3</b>
-                                </CTableDataCell>
-                                <CTableDataCell>SAP Text</CTableDataCell>
-                                <CTableDataCell>
-                                  <CFormInput
-                                    id="sap_text"
-                                    name="sap_text"
-                                    // maxLength={20}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
-                                    size="sm"
-                                    value={values.sap_text}
-                                  />
-                                </CTableDataCell>
-                              </CTableRow>
-
-                              {/* ================== SAP Text Part End ======================= */}
-                              {/* ================== GST Tax Type Part Start ======================= */}
-                              {tripInfo &&
-                              tripInfo.advance_payment_info &&
-                              tripInfo.advance_payment_info.gst_tax_type ? (
-                                <CTableRow>
-                                  <CTableDataCell scope="row">
-                                    <b>4</b>
-                                  </CTableDataCell>
-                                  <CTableDataCell>GST Tax Type</CTableDataCell>
-                                  <CTableDataCell>
-                                    <CFormInput
-                                      size="sm"
-                                      value={`${gstTaxCodeName(tripInfo.advance_payment_info.gst_tax_type)}`}
-                                      readOnly
-                                    />
-                                  </CTableDataCell>
-                                </CTableRow>
-                              ) : (
-                                <CTableRow>
-                                  <CTableDataCell scope="row">
-                                    <b>4</b>
-                                  </CTableDataCell>
-                                  <CTableDataCell>GST Tax Type</CTableDataCell>
-                                  <CTableDataCell>
-                                    <CFormSelect
-                                      size="sm"
-                                      id="GSTtax"
-                                      name="GSTtax"
-                                      value={values.GSTtax}
-                                      onFocus={onFocus}
-                                      onBlur={onBlur}
-                                      onChange={handleChange}
-                                      className={`${errors.GSTtax && 'is-invalid'}`}
-                                      aria-label="Small select example"
-                                    >
-                                      <option value="">Select ...</option>
-                                      {/* <option value="Empty">No Tax</option>
-                                  <option value="R5">Input Tax RCM (SGST,CGST @ 2.5% & 2.5%)</option>
-                                  <option value="F6">Input Tax (SGST,CGST @ 6% & 6%)</option> */}
-                                      {gstTaxTermsData.map(
-                                        ({ definition_list_code, definition_list_name }) => {
-                                          return (
-                                            <>
-                                              <option
-                                                key={definition_list_code}
-                                                value={definition_list_code}
-                                              >
-                                                {definition_list_name}
-                                              </option>
-                                            </>
-                                          )
-                                        }
-                                      )}
-                                    </CFormSelect>
-                                    {errors.GSTtax && (
-                                      <span className="small text-danger">{errors.GSTtax}</span>
-                                    )}
-                                  </CTableDataCell>
-                                </CTableRow>
-                              )}
-                              {/* ================== GST Tax Type Part End ======================= */}
-                              {/* ================== HSN TYpe Part Start ======================= */}
-                              {tripInfo && tripInfo.advance_payment_info && tripInfo.advance_payment_info.vendor_hsn ? (
-                                <>
-                                  <CTableRow>
-                                    <CTableDataCell scope="row">
-                                      <b>5</b>
-                                    </CTableDataCell>
-                                    <CTableDataCell>HSN Code</CTableDataCell>
-                                    <CTableDataCell>
-                                      <CFormInput
-                                        size="sm"
-                                        value={getHSNTypeDesc(tripInfo.advance_payment_info.vendor_hsn)}
-                                        readOnly
-                                      />
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                </>
-                              ) : (
-                                <>
-                                  <CTableRow>
-                                    <CTableDataCell scope="row">
-                                      <b>5</b>
-                                    </CTableDataCell>
-                                    <CTableDataCell>
-                                      HSN Type <REQ />{' '}
-                                    </CTableDataCell>
-                                    <CTableDataCell>
-                                      <CFormSelect
-                                        size="sm"
-                                        id="HSNtax"
-                                        name="HSNtax"
-                                        onFocus={onFocus}
-                                        onBlur={onBlur}
-                                        onChange={handleChange}
-                                        value={values.HSNtax}
-                                        className={`${errors.HSNtax && 'is-invalid'}`}
-                                        aria-label="Small select example"
-                                      >
-                                        <option value="">Select ...</option>
-
-                                        {sapHsnData.map(
-                                          ({ definition_list_code, definition_list_name }) => {
-                                            if (definition_list_code) {
-                                              return (
-                                                <>
-                                                  <option
-                                                    key={definition_list_code}
-                                                    value={definition_list_code}
-                                                  >
-                                                    {definition_list_name}
-                                                  </option>
-                                                </>
-                                              )
-                                            }
-                                          }
-                                        )}
-                                      </CFormSelect>
-
-                                      {errors.HSNtax && (
-                                        <span className="small text-danger">{errors.HSNtax}</span>
-                                      )}
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                </>
-                              )}
-                              {/* ================== HSN Type Part End ======================= */}
-                            </CTableBody>
-                            {/* ================== Expense Table Body Part End ======================= */}
-                          </CTable>
-
-                          <CRow className="mt-2">
-                            { tripInfo && tripInfo.vehicle_current_position == '24' &&  
-                              <>
-                                <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="remarks">Deduction Rejection Remarks</CFormLabel>
-                                  <CFormTextarea
-                                    name="remarks"
-                                    id="remarks"
-                                    rows="1" 
-                                    value={tripInfo.trip_settlement_info.deduction_approval_remarks}
-                                    readOnly
-                                  ></CFormTextarea>
-                                </CCol>
-                                <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="remarks">Deduction Rejection Time</CFormLabel>
-                                  <CFormTextarea
-                                    name="remarks"
-                                    id="remarks"
-                                    rows="1" 
-                                    value={tripInfo.trip_settlement_info.deduction_approval_at}
-                                    readOnly
-                                  ></CFormTextarea>
-                                </CCol>
-                              </>
-                            }
-
-                            { tripInfo && tripInfo.vehicle_current_position == '25' &&  
-                              <>
-                                {tripInfo.trip_settlement_info.deduction_approval_by && (
-                                  <>
-                                    <CCol xs={12} md={3}>
-                                      <CFormLabel htmlFor="remarks">Deduction Approval Remarks</CFormLabel>
-                                      <CFormTextarea
-                                        name="remarks"
-                                        id="remarks"
-                                        rows="1" 
-                                        value={tripInfo.trip_settlement_info.deduction_approval_remarks}
-                                        readOnly
-                                      ></CFormTextarea>
-                                    </CCol>
-                                    <CCol xs={12} md={3}>
-                                      <CFormLabel htmlFor="remarks">Deduction Approval Time</CFormLabel>
-                                      <CFormTextarea
-                                        name="remarks"
-                                        id="remarks"
-                                        rows="1" 
-                                        value={tripInfo.trip_settlement_info.deduction_approval_at}
-                                        readOnly
-                                      ></CFormTextarea>
-                                    </CCol>
-                                  </>
-                                )}
-                                
-                                <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="remarks">Expense Rejection Remarks</CFormLabel>
-                                  <CFormTextarea
-                                    name="remarks"
-                                    id="remarks"
-                                    rows="1" 
-                                    value={tripInfo.trip_settlement_info.expense_approval_remarks}
-                                    readOnly
-                                  ></CFormTextarea>
-                                </CCol>
-                                <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="remarks">Expense Rejection Time</CFormLabel>
-                                  <CFormTextarea
-                                    name="remarks"
-                                    id="remarks"
-                                    rows="1" 
-                                    value={tripInfo.trip_settlement_info.expense_approval_at}
-                                    readOnly
-                                  ></CFormTextarea>
-                                </CCol>
-                              </>
-                            }
-
-                            { tripInfo && tripInfo.vehicle_current_position == '26' &&  
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="remarks">Exp. Approval Remarks</CFormLabel>
-                                <CFormTextarea
-                                  name="remarks"
-                                  id="remarks"
-                                  rows="1" 
-                                  value={tripInfo.trip_settlement_info.approval_remarks}
-                                  readOnly
-                                ></CFormTextarea>
-                              </CCol>
-                            }
-                            
-                            {/* {((values.diversion_return_charges == 0 || values.diversion_return_charges == '') && !tripInfo.advance_payment_info) && (
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="expense_posting_date">
-                                  Expense Posting Date <REQ />{' '}                                   
-                                </CFormLabel>
-                                <CFormInput
-                                  size="sm"
-                                  type="date"
-                                  id="expense_posting_date"
-                                  name="expense_posting_date"
-                                  onFocus={onFocus}
-                                  onBlur={onBlur}
-                                  onChange={handleChange}
-                                  min={Expense_Income_Posting_Date.min_date}
-                                  max={Expense_Income_Posting_Date.max_date}
-                                  onKeyDown={(e) => {
-                                    e.preventDefault();
-                                  }}
-                                  value={values.expense_posting_date}
-                                />
-                              </CCol>
-                            )} */}
-                            {!tripInfo.advance_payment_info && (
-                              <>
-                                <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="supplier_ref_no">Vendor Bill No/Reference
-                                    
-                                  </CFormLabel>
-                                  <CFormInput
-                                    size="sm"
-                                    id="supplier_ref_no"
-                                    name="supplier_ref_no"
-                                    value={values.supplier_ref_no}
-                                    type="text"
-                                    maxLength="50"
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
-                                  />
-                                </CCol>
-                                <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="supplier_posting_date">Vendor Bill/Reference Date                         
-                                  </CFormLabel>
-                                  <CFormInput
-                                    size="sm"
-                                    id="supplier_posting_date"
-                                    name="supplier_posting_date"
-                                    // value={values.supplier_posting_date}
-                                    value={currentDateVbr}  
-                                    onChange={(e) => {
-                                      setCurrentDateVbr(e.target.value)
-                                      values.supplier_posting_date = e.target.value
-                                    }}   
-                                    type="date"
-                                    onFocus={onFocus}
-                                    onBlur={onBlur} 
-                                  />
-                                </CCol>
-                              </>
-                            )}
-                            {/* Hire Process remarks */}
-                            
-                            <CCol xs={12} md={3}>
-                              <CFormLabel htmlFor="remarks">Remarks</CFormLabel>
-                              <CFormTextarea
-                                name="remarks"
-                                id="remarks"
-                                rows="1"
-                                onFocus={onFocus}
-                                onBlur={onBlur}
-                                onChange={handleChange}
-                                value={values.remarks}
-                              ></CFormTextarea>
-                            </CCol>
-                            <CCol xs={12} md={3}>
-                              <CButton
-                                size="sm"
-                                color="success"
-                                style={{marginLeft:'5px'}}
-                                className="mt-3 text-white" 
-                                onClick={() => {
-                                  setFetch(false)
-                                  SAPSimulateProcess()
-                                }} 
-                              >
-                                SAP Simulate
-                              </CButton>
-                            </CCol>
-                          </CRow>
-                          <CRow>
-                            {tripInfo.tripsheet_info.sap_flag == 1 ? (
-                              <CCol
-                                className="offset-md-9"
-                                xs={12}
-                                sm={12}
-                                md={3}
-                                // style={{ display: 'flex', justifyContent: 'space-between' }}
-                                style={{
-                                  display: 'flex',
-                                  flexDirection: 'row-reverse',
-                                  cursor: 'pointer',
-                                }}
-                              >
-                                <CButton 
-                                  color="primary" 
-                                  onClick={() => {
-                                    sapStatusChange()
-                                  }}
-                                >
-                                  SAP Trip Stop Call to SAP
-                                </CButton>
-                              </CCol>
-                            ) : (
-                              <>
-                                {(tripInfo.tripsheet_info.freight_approval_status == 0 || tripInfo.tripsheet_info.freight_approval_status == 2) ? (
-                                  <CCol
-                                    className="offset-md-9"
-                                    xs={12}
-                                    sm={12}
-                                    md={3}
-                                    // style={{ display: 'flex', justifyContent: 'space-between' }}
-                                    style={{
-                                      display: 'flex',
-                                      flexDirection: 'row-reverse',
-                                      cursor: 'pointer',
-                                    }}
-                                  >
-                                    <CButton
-                                      size="sm"
-                                      color="warning"
-                                      disabled={enableSubmit}
-                                      className="mx-3 text-white"
-                                      // className="align-self-end ml-auto"
-                                      onClick={() => {
-                                        setFetch(false)
-                                        TripsheetClosureSubmit(settlementAvailable ? 'update' : 'submit')
-                                      }}
-                                      type="submit"
-                                    >
-                                      Submit {/* Hire Vehicles Process Submit */}
-                                    </CButton>
-                                  </CCol>
-                                ) : (
-                                  <CCol md={6} style={{ border: "1px solid black", marginTop: "2px", background: "aliceblue" }}>
-                                    <CFormLabel>
-                                      Note :
-                                    </CFormLabel>
-                                    <span style={{ display: "block", fontWeight: "bold" }} className="big text-danger">
-                                      The tripsheet is awaiting freight approval; therefore, Expense entry cannot be booked.
-                                    </span>
-                                  </CCol>
-                                )}
-                              </>
-                            )}     
-                          </CRow>
-                        </CTabPane>
-                      )}
-                      {/* Hire Vehicle Expenses Capture End */}
-                    </CTabContent>
+                   
                   </CTabPane>
 
                   <CTabPane role="tabpanel" aria-labelledby="profile-tab" visible={mainKey === 2}>
@@ -9682,16 +5473,17 @@ const NlmtTripSheetClosure = () => {
 
                               <CCol xs={12} md={3}>
                                 <CFormLabel htmlFor="budgetKM">
-                                  Budgeted KM <REQ />
+                                  Budgeted KM  
                                 </CFormLabel>
 
                                 <CFormInput
                                   size="sm"
                                   id="budgetKM"
-                                  onChange={(e) => (e.target.validity.valid ? onChangeItem(e) : '')}
+                                  // onChange={(e) => (e.target.validity.valid ? onChangeItem(e) : '')}
                                   name="budgetKM"
                                   pattern="[0-9]*"
                                   maxLength={7}
+                                  readOnly
                                   value={calculationValues.budgetKM || ''}
                                 />
                               </CCol>
@@ -9715,12 +5507,13 @@ const NlmtTripSheetClosure = () => {
                               </CCol>
                               <CCol xs={12} md={3}>
                                 <CFormLabel htmlFor="tripIdleHours">
-                                  Idle Hrs <REQ />
+                                  Idle Hrs 
                                 </CFormLabel>
                                 <CFormInput
                                   size="sm"
                                   id="tripIdleHours"
-                                  onChange={(e) => (e.target.validity.valid ? onChangeIdleHrs(e) : '')}
+                                  readOnly
+                                  // onChange={(e) => (e.target.validity.valid ? onChangeIdleHrs(e) : '')}
                                   name="tripIdleHours"
                                   pattern="[0-9]*"
                                   maxLength={3}
@@ -9730,13 +5523,14 @@ const NlmtTripSheetClosure = () => {
 
                               <CCol xs={12} md={3}>
                                 <CFormLabel htmlFor="budgetMileage">
-                                  Budgeted Mileage <REQ />
+                                  Budgeted Mileage  
                                 </CFormLabel>
 
                                 <CFormInput
                                   size="sm"
                                   id="budgetMileage"
-                                  onChange={(e) => onChangeItem(e)}
+                                   readOnly
+                                  // onChange={(e) => onChangeItem(e)}
                                   name="budgetMileage"
                                   maxLength={4}
                                   value={calculationValues.budgetMileage || ''}
@@ -9744,13 +5538,14 @@ const NlmtTripSheetClosure = () => {
                               </CCol>
                               <CCol xs={12} md={3}>
                                 <CFormLabel htmlFor="actualMileage">
-                                  Actual Mileage <REQ />
+                                  Actual Mileage  
                                 </CFormLabel>
 
                                 <CFormInput
                                   size="sm"
                                   id="actualMileage"
-                                  onChange={(e) => onChangeItem(e)}
+                                  readOnly
+                                  // onChange={(e) => onChangeItem(e)}
                                   name="actualMileage"
                                   maxLength={4}
                                   value={calculationValues.actualMileage || ''}
@@ -9771,34 +5566,7 @@ const NlmtTripSheetClosure = () => {
                               
                             </>
                           )}
-                          {/* <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="diffmil">Trip Purpose</CFormLabel>
-
-                            <CFormInput size="sm" id="diffmil" value={tripInfo && tripInfo.trip_sheet_info ? tripPurposeFinder(tripInfo.trip_sheet_info.purpose) : ''} readOnly />
-                          </CCol> */}
-                          {/* {((sto_enable && tripInfo.trip_sheet_info.purpose != '2') || !sto_enable) && ( */}
-                          {tripInfo && tripInfo.tripsheet_info && !(stoTableDataFGSTO.length == 0) && (
-                            <CCol xs={12} md={3}>
-                              <CFormLabel htmlFor="fgsto_trip_addon_availability">
-                                FG-STO Availability
-                              </CFormLabel>
-                              <CFormSelect
-                                size="sm"
-                                onChange={(e) => {
-                                  fgstoaddonTabEnableCheck(e)
-                                }}
-                                name="fgsto_trip_addon_availability"
-                                value={fgsto_tripAddonAvailability}
-                                id="fgsto_trip_addon_availability"
-                              >
-                                {/* <option value="">Select...</option> */}
-                                <option value="1">Yes</option>
-                                <option value="2" selected>
-                                  No
-                                </option>
-                              </CFormSelect>
-                            </CCol>
-                          )}
+                         
                           
                         </CRow>
 
@@ -9827,19 +5595,17 @@ const NlmtTripSheetClosure = () => {
                                       {`Shipment Number : ${data.shipment_no} , Shipment Qty. : ${data.billed_net_qty} TON`}
                                     </CFormLabel>
                                   </CCol>
-                                  {tripsettlementData && tripsettlementData.expense_form &&
-                                    <CCol xs={12} md={3}>
-                                      <CFormLabel htmlFor="remarks">Expense Attachment</CFormLabel>
-                                      <CButton className="w-100 m-0" color="info" size="sm" id="inputAddress">
-                                        <span className="float-start">
-                                          <a style={{color:'black'}} target='_blank' rel="noreferrer" href={tripsettlementData.expense_form}>
-                                            <i className="fa fa-eye" aria-hidden="true">&nbsp;View</i>
-                                          </a>
-                                        </span> 
-                                      </CButton> 
-                                    </CCol>
-                                  }
-                                  <CCol xs={12} md={3}>
+                                  <CCol xs={12} md={2}>
+                                    <CFormLabel htmlFor="remarks">Expense Attachment</CFormLabel>
+                                    <CButton className="w-100 m-0" color="info" size="sm" id="inputAddress">
+                                      <span className="float-start">
+                                        <a style={{color:'black'}} target='_blank' rel="noreferrer" href={tripsettlementData.expense_form}>
+                                          <i className="fa fa-eye" aria-hidden="true">&nbsp;View</i>
+                                        </a>
+                                      </span> 
+                                    </CButton> 
+                                  </CCol>
+                                  {/* <CCol xs={12} md={3}>
                                     <CFormLabel htmlFor="expense_form">
                                       Expense Attachment <REQ />
                                     </CFormLabel>
@@ -9851,8 +5617,8 @@ const NlmtTripSheetClosure = () => {
                                       accept=".pdf,.jpg,.jpeg,.png" 
                                       onChange={handleChange} 
                                     />    
-                                  </CCol>
-                                </CRow>
+                                  </CCol>*/}
+                                </CRow> 
                                 {data.shipment_child_info.map((val, val_index) => {
                                   return (
                                     <>
@@ -11358,7 +7124,6 @@ const NlmtTripSheetClosure = () => {
                                         readOnly
                                       />
                                     </CCol>
-                                    
                                     <CCol xs={12} md={2}>
                                       <CFormLabel htmlFor="dInvoice">Invoice Copy</CFormLabel>
 
@@ -11399,240 +7164,147 @@ const NlmtTripSheetClosure = () => {
                             }
                           })}
                         {/* -----------------------------Unregistered Vendor---------------------------------*/}
-                        {tripsettlementData ? (
-                          <>
-                            <CRow className="mt-2" hidden>
-                              <CCol md={2}>
-                                <CFormLabel htmlFor="enroute_vendor">Enroute Vendor</CFormLabel>
+                        <CRow className="mt-2" hidden>
+                          <CCol md={2}>
+                            <CFormLabel htmlFor="urvName">Enroute Vendor</CFormLabel>
 
-                                <CFormInput
-                                  size="sm"
-                                  id="enroute_vendor"
-                                  onChange={(e) => enrouteDieselInfoChange(e)}
-                                  name="enroute_vendor"
-                                  maxLength={30}
-                                  value={erVendorName}
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="enroute_diesel_liter">Diesel Liter</CFormLabel>
+                            <CFormInput
+                              size="sm"
+                              id="urvName"
+                              readOnly
+                              name="urvName"
+                              maxLength={30}
+                              value={tripsettlementData.enroute_vendor || '-'}
+                            />
+                          </CCol>
+                          <CCol xs={12} md={2}>
+                            <CFormLabel htmlFor="urvDieselLiter">Diesel Liter</CFormLabel>
 
-                                <CFormInput
-                                  size="sm"
-                                  id="enroute_diesel_liter"
-                                  onChange={(e) => enrouteDieselInfoChange(e)}
-                                  name="enroute_diesel_liter"
-                                  maxLength={7}
-                                  value={erVendorLtr}
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="enroute_diesel_rate">Rate Per Liter</CFormLabel>
+                            <CFormInput
+                              size="sm"
+                              id="urvDieselLiter"
+                              readOnly
+                              name="urvDieselLiter"
+                              maxLength={7}
+                              value={tripsettlementData.enroute_diesel_liter || '-'}
+                            />
+                          </CCol>
+                          <CCol xs={12} md={2}>
+                            <CFormLabel htmlFor="urvDieselRate">Rate Per Liter</CFormLabel>
 
-                                <CFormInput
-                                  size="sm"
-                                  id="enroute_diesel_rate"
-                                  onChange={(e) => enrouteDieselInfoChange(e)}
-                                  name="enroute_diesel_rate"
-                                  maxLength={7}
-                                  value={erVendorDslRate}
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="enroute_diesel_amount">Total Amount </CFormLabel>
+                            <CFormInput
+                              size="sm"
+                              id="urvDieselRate"
+                              readOnly
+                              name="urvDieselRate"
+                              maxLength={7}
+                              value={tripsettlementData.enroute_diesel_rate || '-'}
+                            />
+                          </CCol>
+                          <CCol xs={12} md={2}>
+                            <CFormLabel htmlFor="urvDieselAmount">Total Amount </CFormLabel>
 
-                                <CFormInput
-                                  size="sm"
-                                  id="enroute_diesel_amount"
-                                  // onChange={(e) => enrouteDieselInfoChange(e)}
-                                  name="enroute_diesel_amount"
-                                  maxLength={5}
-                                  value={erDslAmount}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="enroute_payment">Payment Mode </CFormLabel>
-                                <CFormSelect
-                                  size="sm"
-                                  name="enroute_payment"
-                                  onFocus={onFocus}
-                                  onBlur={onBlur}
-                                  onChange={handleChange}
-                                  value={values.enroute_payment}
-                                  aria-label="Small select example"
-                                  id="enroute_payment"
-                                >
-                                  <option value="1" selected>
-                                    Cash Payment
-                                  </option>
-                                  <option value="2">Bank Payment</option>
-                                </CFormSelect>
-                              </CCol>
-                              {tripsettlementData && tripsettlementData.enroute_invoice_copy &&
-                                <CCol xs={12} md={2}>
-                                  <CFormLabel htmlFor="remarks">Enroute Invoice Copy</CFormLabel>
-                                  <CButton className="w-100 m-0" color="info" size="sm" id="inputAddress">
-                                    <span className="float-start">
-                                      <a style={{color:'black'}} target='_blank' rel="noreferrer" href={tripsettlementData.enroute_invoice_copy}>
-                                        <i className="fa fa-eye" aria-hidden="true">&nbsp;View</i>
-                                      </a>
-                                    </span> 
-                                  </CButton> 
-                                </CCol>
-                              }
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="enroute_invoice_copy">
-                                  Invoice Copy <REQ />
-                                </CFormLabel>
-                                <CFormInput 
-                                  type="file"
-                                  name="enroute_invoice_copy"
-                                  id="enroute_invoice_copy"
-                                  size="sm"
-                                  accept=".pdf,.jpg,.jpeg,.png" 
-                                  onChange={handleChange} 
-                                />    
-                              </CCol> 
-                            </CRow>
-                          </> 
-                        ) : (
-                          <>
-                            <CRow className="mt-2" hidden>
-                              <CCol md={2}>
-                                <CFormLabel htmlFor="urvName">Enroute Vendor</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="urvName"
-                                  onChange={(e) => onChangeURVItem(e)}
-                                  name="urvName"
-                                  maxLength={30}
-                                  value={urvValues.urvName || ''}
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="urvDieselLiter">Diesel Liter</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="urvDieselLiter"
-                                  onChange={(e) => onChangeURVItem(e)}
-                                  name="urvDieselLiter"
-                                  maxLength={7}
-                                  value={urvValues.urvDieselLiter || ''}
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="urvDieselRate">Rate Per Liter</CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="urvDieselRate"
-                                  onChange={(e) => onChangeURVItem(e)}
-                                  name="urvDieselRate"
-                                  maxLength={7}
-                                  value={urvValues.urvDieselRate || ''}
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="urvDieselAmount">Total Amount </CFormLabel>
-
-                                <CFormInput
-                                  size="sm"
-                                  id="urvDieselAmount"
-                                  // onChange={(e) => onChangeURVItem(e)}
-                                  name="urvDieselAmount"
-                                  maxLength={5}
-                                  value={urvTotalAmountFinder}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="enroute_payment">Payment Mode </CFormLabel>
-                                <CFormSelect
-                                  size="sm"
-                                  name="enroute_payment"
-                                  onFocus={onFocus}
-                                  onBlur={onBlur}
-                                  onChange={handleChange}
-                                  value={values.enroute_payment}
-                                  aria-label="Small select example"
-                                  id="enroute_payment"
-                                >
-                                  <option value="1" selected>
-                                    Cash Payment
-                                  </option>
-                                  <option value="2">Bank Payment</option>
-                                </CFormSelect>
-                              </CCol>
-
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="urvInvoice">Invoice Copy</CFormLabel>
-                                <CFormInput
-                                  type="file"
-                                  size="sm"
-                                  id="urvInvoice"
-                                  onChange={(e) => onChangeURVItem(e)}
-                                  name="urvInvoice"
-                                  value={urvValues.urvInvoice || ''}
-                                />
-                              </CCol>
-                            </CRow>
-                          </>
-                        )}
-                       
-                        {tripsettlementData ? (
-                          <></>
-                        ) : (
-                          <CRow className="mt-2" hidden>
+                            <CFormInput
+                              size="sm"
+                              id="urvDieselAmount"
+                              readOnly
+                              name="urvDieselAmount"
+                              maxLength={5}
+                              value={tripsettlementData.enroute_diesel_amount || 0} 
+                            />
+                          </CCol>
+                          <CCol xs={12} md={2}>
+                            <CFormLabel htmlFor="enroute_payment">Payment Mode </CFormLabel>
+                            <CFormSelect
+                              size="sm"
+                              name="enroute_payment"
+                              onFocus={onFocus}
+                              onBlur={onBlur}
+                              onChange={handleChange}
+                              value={tripsettlementData.enroute_payment || 1} 
+                              aria-label="Small select example"
+                              id="enroute_payment"
+                              disabled
+                            >
+                              <option value="1" selected>
+                                Cash Payment
+                              </option>
+                              <option value="2">Bank Payment</option>
+                            </CFormSelect>
+                          </CCol>
+                          {tripsettlementData && tripsettlementData.enroute_invoice_copy &&
                             <CCol xs={12} md={2}>
-                              <CFormLabel
-                                htmlFor="inputAddress"
-                                style={{
-                                  backgroundColor: '#4d3227',
-                                  color: 'white',
-                                }}
-                              ></CFormLabel>
+                              <CFormLabel htmlFor="remarks">Enroute Invoice Copy</CFormLabel>
+                              <CButton className="w-100 m-0" color="info" size="sm" id="inputAddress">
+                                <span className="float-start">
+                                  <a style={{color:'black'}} target='_blank' rel="noreferrer" href={tripsettlementData.enroute_invoice_copy}>
+                                    <i className="fa fa-eye" aria-hidden="true">&nbsp;View</i>
+                                  </a>
+                                </span> 
+                              </CButton> 
                             </CCol>
+                          }
+                          {/* 
                             <CCol xs={12} md={2}>
-                              <CFormLabel htmlFor="urvInvoice">Total Diesel Liter</CFormLabel>
-
+                              <CFormLabel htmlFor="urvInvoice">Invoice Copy</CFormLabel>
                               <CFormInput
+                                type="file"
                                 size="sm"
                                 id="urvInvoice"
+                                readOnly
                                 name="urvInvoice"
-                                value={parseFloat(tdlDieselInfo.toFixed(2))}
-                                readOnly
+                                value={urvValues.urvInvoice || ''}
                               />
-                            </CCol>
-                            <CCol xs={12} md={2}>
-                              <CFormLabel htmlFor="rvAverageRatePerLiter">
-                                Average Rate Per Liter
-                              </CFormLabel>
+                            </CCol> 
+                          */}
+                        </CRow>
 
-                              <CFormInput
-                                size="sm"
-                                id="rvAverageRatePerLiter"
-                                name="rvAverageRatePerLiter"
-                                value={parseFloat(arplDieselInfo.toFixed(2))}
-                                readOnly
-                              />
-                            </CCol>
-                            <CCol xs={12} md={2}>
-                              <CFormLabel htmlFor="rvTotalDieselAmount">Total Diesel Amount</CFormLabel>
+                        {/* <CRow className="mt-2" hidden>
+                          <CCol xs={12} md={2}>
+                            <CFormLabel
+                              htmlFor="inputAddress"
+                              style={{
+                                backgroundColor: '#4d3227',
+                                color: 'white',
+                              }}
+                            ></CFormLabel>
+                          </CCol>
+                          <CCol xs={12} md={2}>
+                            <CFormLabel htmlFor="urvInvoice">Total Diesel Liter</CFormLabel>
 
-                              <CFormInput
-                                size="sm"
-                                id="rvTotalDieselAmount"
-                                name="rvTotalDieselAmount"
-                                value={parseFloat(tdaDieselInfo.toFixed(2))}
-                                readOnly
-                              />
-                            </CCol>
-                          </CRow>
-                        )}
-                        
+                            <CFormInput
+                              size="sm"
+                              id="urvInvoice"
+                              name="urvInvoice"
+                              value={parseFloat(tdlDieselInfo.toFixed(2))}
+                              readOnly
+                            />
+                          </CCol>
+                          <CCol xs={12} md={2}>
+                            <CFormLabel htmlFor="rvAverageRatePerLiter">
+                              Average Rate Per Liter
+                            </CFormLabel>
+
+                            <CFormInput
+                              size="sm"
+                              id="rvAverageRatePerLiter"
+                              name="rvAverageRatePerLiter"
+                              value={parseFloat(arplDieselInfo.toFixed(2))}
+                              readOnly
+                            />
+                          </CCol>
+                          <CCol xs={12} md={2}>
+                            <CFormLabel htmlFor="rvTotalDieselAmount">Total Diesel Amount</CFormLabel>
+
+                            <CFormInput
+                              size="sm"
+                              id="rvTotalDieselAmount"
+                              name="rvTotalDieselAmount"
+                              value={parseFloat(tdaDieselInfo.toFixed(2))}
+                              readOnly
+                            />
+                          </CCol>
+                        </CRow> */}
                         <hr /> 
 
                         {/* ============ Own Vehicle Diesel Indent Info Tab End ==================== */}
@@ -11930,9 +7602,7 @@ const NlmtTripSheetClosure = () => {
                                     id="toll_amount"
                                     name="toll_amount"
                                     maxLength={5}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
+                                    readOnly
                                     required={errors.toll_amount ? true : false}
                                     size="sm"
                                     value={values.toll_amount}
@@ -11965,9 +7635,7 @@ const NlmtTripSheetClosure = () => {
                                     id="bata"
                                     name="bata"
                                     maxLength={5}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
+                                    readOnly
                                     required={errors.bata ? true : false}
                                     size="sm"
                                     value={values.bata}
@@ -12028,7 +7696,7 @@ const NlmtTripSheetClosure = () => {
                                     size="sm"
                                     id="expense_row_total_enroute_diesel"
                                     name="expense_row_total_enroute_diesel"
-                                    value={erDslAmount}
+                                    value={tripsettlementData.enroute_diesel_amount}
                                     readOnly
                                   />
                                 </CTableDataCell>
@@ -12037,7 +7705,7 @@ const NlmtTripSheetClosure = () => {
                                     size="sm"
                                     id="expense_row_total_enroute_diesel"
                                     name="expense_row_total_enroute_diesel"
-                                    value={erDslAmount}
+                                    value={tripsettlementData.enroute_diesel_amount}
                                     readOnly
                                   />
                                 </CTableDataCell>
@@ -12057,9 +7725,7 @@ const NlmtTripSheetClosure = () => {
                                     id="misc_charges"
                                     name="misc_charges"
                                     maxLength={5}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
+                                    readOnly 
                                     required={errors.misc_charges ? true : false}
                                     size="sm"
                                     value={values.misc_charges}
@@ -12092,9 +7758,7 @@ const NlmtTripSheetClosure = () => {
                                     id="loading_charges"
                                     name="loading_charges"
                                     maxLength={5}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
+                                    readOnly
                                     required={errors.loading_charges ? true : false}
                                     size="sm"
                                     value={values.loading_charges}
@@ -12127,9 +7791,7 @@ const NlmtTripSheetClosure = () => {
                                     id="unloading_charges"
                                     name="unloading_charges"
                                     maxLength={5}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
+                                    readOnly
                                     required={errors.unloading_charges ? true : false}
                                     size="sm" 
                                     value={values.unloading_charges ? values.unloading_charges : 0}
@@ -12165,7 +7827,7 @@ const NlmtTripSheetClosure = () => {
                                     size="sm"
                                     id="expense_row_total_total_charge"
                                     name="expense_row_total_total_charge"
-                                    value={totalChargesOwn ? totalChargesOwn : 0}
+                                    value={tripsettlementData.expense}
                                     readOnly
                                   />
                                 </CTableDataCell>
@@ -12217,9 +7879,7 @@ const NlmtTripSheetClosure = () => {
                                     id="halt_days"
                                     name="halt_days"
                                     maxLength={2}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onChange={handleChange}
+                                    readOnly
                                     required={errors.halt_days ? true : false}
                                     size="sm"
                                     value={values.halt_days}
@@ -12245,7 +7905,7 @@ const NlmtTripSheetClosure = () => {
                           </CTable>
                           <CRow className="mt-2">
 
-                            <CCol xs={12} md={2}>
+                            <CCol xs={12} md={3}>
                               <CFormLabel htmlFor="remarks">Driver Expenses</CFormLabel>
                               <CFormInput
                                 id="drive_exp"
@@ -12256,15 +7916,15 @@ const NlmtTripSheetClosure = () => {
                               />
 
                             </CCol>
-                            {/* <CCol xs={12} md={3}>
+                            <CCol xs={12} md={3}>
                               <CFormLabel htmlFor="expense_posting_date">
-                                Expense Posting Date <REQ />{' '}                                   
+                                Expense Posting Date  <REQ />                               
                               </CFormLabel>
                               <CFormInput
                                 size="sm"
                                 type="date"
                                 id="expense_posting_date"
-                                name="expense_posting_date"
+                                name="expense_posting_date" 
                                 onFocus={onFocus}
                                 onBlur={onBlur}
                                 onChange={handleChange}
@@ -12275,93 +7935,78 @@ const NlmtTripSheetClosure = () => {
                                 }}
                                 value={values.expense_posting_date}
                               />
-                            </CCol>                              */}
+                            </CCol>                              
                             <CCol xs={12} md={3}>
                               <CFormLabel htmlFor="remarks">SAP Text</CFormLabel>
                               <CFormInput
                                 id="sap_text"
                                 name="sap_text" 
-                                onFocus={onFocus}
-                                onBlur={onBlur}
-                                onChange={handleChange}
+                                readOnly
                                 size="sm"
                                 value={values.sap_text}
                               />
 
                             </CCol>
                             <CCol xs={12} md={3}>
-                              <CFormLabel htmlFor="remarks">Remarks</CFormLabel>
+                              <CFormLabel htmlFor="remarks">Expense Remarks</CFormLabel>
                               <CFormTextarea
                                 name="remarks"
                                 id="remarks"
-                                onFocus={onFocus}
-                                onBlur={onBlur}
-                                onChange={handleChange}
+                                readOnly
                                 rows="1"
                                 value={values.remarks}
                               ></CFormTextarea>
                             </CCol>
-
-                            {tripsettlementData && tripsettlementData.own_closure_status == 2 && (
-                              <>
-                                <CCol xs={12} md={2}>
-                                  <CFormLabel htmlFor="remarks">Rejection Remarks</CFormLabel>
-                                  <CFormInput
-                                    id="drive_exp"
-                                    name="drive_exp"                                 
-                                    size="sm"
-                                    value={tripsettlementData.expense_approval_remarks}
-                                    readOnly
-                                  />
-                                </CCol>
-                                <CCol xs={12} md={2}>
-                                  <CFormLabel htmlFor="remarks">Rejection Time</CFormLabel>
-                                  <CFormInput
-                                    id="drive_exp"
-                                    name="drive_exp"                                 
-                                    size="sm"
-                                    value={tripsettlementData.expense_approval_at}
-                                    readOnly
-                                  />
-                                </CCol>
-                              </>
-                            )}
+                            <CCol xs={12} md={3}>
+                              <CFormLabel htmlFor="approval_remarks">Approval Remarks</CFormLabel>
+                              <CFormTextarea
+                                name="approval_remarks"
+                                id="approval_remarks" 
+                                value={values.approval_remarks}                               
+                                onChange={handleChange}
+                                rows="1" 
+                              ></CFormTextarea>
+                            </CCol>
                             
                           </CRow>
-
-                          <CRow>
-                            {/* {tripInfo && tripInfo.tic_parent_info && tripInfo.tic_parent_info.status == '6' && (*/}
-
+                          
+                          <CRow>                             
                             <CCol
-                              className="offset-md-9"
+                              className="offset-md-6"
                               xs={12}
                               sm={12}
-                              md={3}
-                              // style={{ display: 'flex', justifyContent: 'space-between' }}
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'row-reverse',
-                                cursor: 'pointer',
-                              }}
-                            >
+                              md={6}
+                              style={{ display: 'flex', marginTop:'5px', justifyContent: 'end' }}
+                            >  
                               <CButton
                                 size="sm"
-                                color="warning"
-                                disabled={enableSubmit}
+                                color="success" 
                                 className="mx-3 text-white"
                                 // className="align-self-end ml-auto"
                                 onClick={() => {
-                                  setFetch(false)  
-                                  tripInfo.driver_id ? ( settlementAvailable ? OwnTripsheetClosureUpdateProcess() : TripsheetClosureSubmit('submit')): TripsheetClosureSubmit(settlementAvailable ? 'update' : 'submit')
+                                  setFetch(false)
+                                  TripsheetClosureSubmit('submit')
                                 }}
-                                type="Submit"
+                                type="submit"
                               >
-                                {settlementAvailable ? 'Update' : 'Submit'}
+                                Approve
+                              </CButton>
+                              <CButton
+                                size="sm"
+                                color="danger" 
+                                className="mx-3 text-white"
+                                // className="align-self-end ml-auto"
+                                onClick={() => {
+                                  setFetch(false)
+                                  TripsheetClosureSubmit('reject')
+                                }}
+                                type="submit"
+                              >
+                                Reject
                               </CButton>
                             </CCol>
-                            {/* )
-                          } */}
                           </CRow>
+                           
                         </CTabPane>
                       )}
                       {/* Own Vehicles Expenses Capture End */}
@@ -13057,4 +8702,4 @@ const NlmtTripSheetClosure = () => {
   )
 }
 
-export default NlmtTripSheetClosure
+export default NlmtTSOwnExpenseClosureApproval

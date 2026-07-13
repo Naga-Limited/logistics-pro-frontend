@@ -51,8 +51,8 @@ const CustomTable = ({ columns, pagination = true, data, fieldName, showSearchFi
         padding: 'auto',
         margin: 'auto',
         textTransform: 'uppercase',
-        paddingLeft: '1px', // override the cell padding for head cells
-        paddingRight: '10px',
+        // paddingLeft: '1px', // override the cell padding for head cells
+        // paddingRight: '10px',
         backgroundColor: '#4d3227',
         color: '#fff',
         fontSize: '0.8rem',

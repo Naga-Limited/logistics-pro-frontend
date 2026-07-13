@@ -487,6 +487,11 @@ const NlmtAfterDeliveryTripInDetails = () => {
         return false
       }
     })
+    .catch((err) => {
+      console.error('NLMT SAP Stop Flag Error:', err)
+      toast.error('Failed to set stop flag in SAP. Please try again.')
+      setFetch(true)
+    })
   }
 
   const getRndInteger = (min, max) => {

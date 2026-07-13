@@ -111,7 +111,9 @@ const NlmtTSExpenseClosureHome = () => {
     TRIPSHEET_CREATED: 16,
     ADVANCE_CREATED: 18,
     NLFD_SHIPMENT_COMPLETED: 22,
-    NLCD_SHIPMENT_COMPLETED: 25,
+    OWN_EXPENSE_CLOSURE_REJECTED: 24,
+    EXPENSE_CLOSURE_REJECTED: 25,
+    DEDUCTION_REJECTED: 24,
     EXPENSE_CLOSURE_COMPLETED: 26,
     DIESEL_INDENT_CREATION_COMPLETED: 37,
     DIESEL_INDENT_CONFIRMATION_COMPLETED: 39,
@@ -260,9 +262,19 @@ const NlmtTSExpenseClosureHome = () => {
             (data.vehicle_current_position == VEHICLE_CURRENT_POSITION.EXPENSE_CLOSURE_COMPLETED &&
             (data.trip_settlement_info.approval_status == 2 || !data.trip_settlement_info)) ||
             /* Hire Vehicles After Shipment Completion (No Advance) */
-            (data.vehicle_current_position == VEHICLE_CURRENT_POSITION.NLFD_SHIPMENT_COMPLETED &&
-            (data.tripsheet_info.advance_amount == null && !data.advance_payment_info)) || 
-            /* Own vehciles Process */
+            ( data.vehicle_current_position == VEHICLE_CURRENT_POSITION.NLFD_SHIPMENT_COMPLETED &&
+              (data.tripsheet_info.advance_amount == null && !data.advance_payment_info)
+              && Number(data.vehicle_info.vehicle_type_id) == 22 
+            ) || 
+            /* Hire Vehicles After Deduction Rejection */
+            ( data.vehicle_current_position == VEHICLE_CURRENT_POSITION.DEDUCTION_REJECTED &&
+              Number(data.vehicle_info.vehicle_type_id) == 22 
+            ) || 
+            /* Hire Vehicles After Expense Closure Rejection */
+            ( data.vehicle_current_position == VEHICLE_CURRENT_POSITION.EXPENSE_CLOSURE_REJECTED &&
+              Number(data.vehicle_info.vehicle_type_id) == 22 
+            ) || 
+            /* Own vehicles Process */
             Number(data.vehicle_info.vehicle_type_id) == 21
         )
 
@@ -352,29 +364,7 @@ const NlmtTSExpenseClosureHome = () => {
                         VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSALES_NLCD_GATEOUT ||
                       data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_OTHERS_GATEOUT)
                   ? 'ADVANCE ✔️'
-                  : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_CREATED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_RMSTO_GATEOUT
-                  ? 'RMSTO ✔️'
-                  : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_CREATED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_OTHERS_GATEOUT
-                  ? 'OTHERS ✔️'
-                  : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_CREATED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSTO_NLCD_GATEOUT
-                  ? 'FGSTO - NLCD ✔️'
-                  : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_CREATED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSTO_NLFD_GATEOUT
-                  ? 'FGSTO - NLFD ✔️'
-                  : data.vehicle_current_position ==
-                      VEHICLE_CURRENT_POSITION.NLCD_SHIPMENT_COMPLETED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSALES_NLCD_GATEOUT
-                  ? 'FGSALES - NLCD ✔️'
-                  : data.vehicle_current_position ==
-                      VEHICLE_CURRENT_POSITION.NLFD_SHIPMENT_COMPLETED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSALES_NLFD_GATEOUT
-                  ? 'FGSALES - NLFD ✔️'
-                  : data.vehicle_current_position == ACTION.VEHICLE_MAINTENANCE_ENDED
-                  ? 'VM Completed'
-                  : data.vehicle_current_position ==
+                  :  data.vehicle_current_position ==
                       VEHICLE_CURRENT_POSITION.INCOME_CLOSURE_REJECTED &&
                     data.trip_settlement_info.rejected_by == '2'
                   ? 'SETTLEMENT ❌'
@@ -391,7 +381,7 @@ const NlmtTSExpenseClosureHome = () => {
                     data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.AFTER_DELIVERY_GATEIN
                   ? 'DI CONFIRMATION ✔️'
                   : data.vehicle_current_position ==
-                  VEHICLE_CURRENT_POSITION.ADVANCE_CREATED && getVehicleTypeId(data) == 22
+                  VEHICLE_CURRENT_POSITION.ADVANCE_CREATED && (getVehicleTypeId(data) == 21 || getVehicleTypeId(data) == 22)
                   ? 'ADVANCE ✔️'
                   : data.vehicle_current_position ==
                   VEHICLE_CURRENT_POSITION.EXPENSE_CLOSURE_COMPLETED && getVehicleTypeId(data) == 22 && (data.trip_settlement_info && data.trip_settlement_info.approval_status == 2)
@@ -399,6 +389,15 @@ const NlmtTSExpenseClosureHome = () => {
                   : data.vehicle_current_position ==
                   VEHICLE_CURRENT_POSITION.NLFD_SHIPMENT_COMPLETED && getVehicleTypeId(data) == 22 && (!data.advance_payment_info && data.tripsheet_info.advance_amount == null)
                   ? 'Shipment ✔️'
+                  :  data.vehicle_current_position ==
+                  VEHICLE_CURRENT_POSITION.DEDUCTION_REJECTED && getVehicleTypeId(data) == 22  
+                  ? 'Deduction ❌'
+                  : data.vehicle_current_position ==
+                  VEHICLE_CURRENT_POSITION.EXPENSE_CLOSURE_REJECTED && getVehicleTypeId(data) == 22  
+                  ? 'Ex. Approval ❌'
+                  : data.vehicle_current_position ==
+                  VEHICLE_CURRENT_POSITION.OWN_EXPENSE_CLOSURE_REJECTED && getVehicleTypeId(data) == 21  
+                  ? 'Ex. Approval ❌'
                   : 'Gate Out',
 
             Action: (
@@ -454,8 +453,18 @@ const NlmtTSExpenseClosureHome = () => {
               (data.trip_settlement_info.approval_status == 2 || !data.trip_settlement_info)) ||
               /* Hire Vehicles After Shipment Completion (No Advance) */
               (data.vehicle_current_position == VEHICLE_CURRENT_POSITION.NLFD_SHIPMENT_COMPLETED &&
-              (data.tripsheet_info.advance_amount == null && !data.advance_payment_info)) ||
-              /* Own vehciles Process */
+                (data.tripsheet_info.advance_amount == null && !data.advance_payment_info)
+                && Number(data.vehicle_info.vehicle_type_id) == 22
+              ) ||
+              /* Hire Vehicles After Deduction Rejection */
+              ( data.vehicle_current_position == VEHICLE_CURRENT_POSITION.DEDUCTION_REJECTED &&
+                Number(data.vehicle_info.vehicle_type_id) == 22 
+              ) || 
+              /* Hire Vehicles After Expense Closure Rejection */
+              ( data.vehicle_current_position == VEHICLE_CURRENT_POSITION.EXPENSE_CLOSURE_REJECTED &&
+                Number(data.vehicle_info.vehicle_type_id) == 22 
+              ) || 
+              /* Own vehicles Process */
               Number(data.vehicle_info.vehicle_type_id) == 21
           )
 
@@ -529,29 +538,7 @@ const NlmtTSExpenseClosureHome = () => {
                       data.parking_status ==
                         VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSALES_NLCD_GATEOUT ||
                       data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_OTHERS_GATEOUT)
-                  ? 'ADVANCE ✔️'
-                  : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_CREATED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_RMSTO_GATEOUT
-                  ? 'RMSTO ✔️'
-                  : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_CREATED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_OTHERS_GATEOUT
-                  ? 'OTHERS ✔️'
-                  : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_CREATED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSTO_NLCD_GATEOUT
-                  ? 'FGSTO - NLCD ✔️'
-                  : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_CREATED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSTO_NLFD_GATEOUT
-                  ? 'FGSTO - NLFD ✔️'
-                  : data.vehicle_current_position ==
-                      VEHICLE_CURRENT_POSITION.NLCD_SHIPMENT_COMPLETED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSALES_NLCD_GATEOUT
-                  ? 'FGSALES - NLCD ✔️'
-                  : data.vehicle_current_position ==
-                      VEHICLE_CURRENT_POSITION.NLFD_SHIPMENT_COMPLETED &&
-                    data.parking_status == VEHICLE_CURRENT_PARKING_STATUS.HIRE_FGSALES_NLFD_GATEOUT
-                  ? 'FGSALES - NLFD ✔️'
-                  : data.vehicle_current_position == ACTION.VEHICLE_MAINTENANCE_ENDED
-                  ? 'VM Completed'
+                  ? 'ADVANCE ✔️' 
                   : data.vehicle_current_position ==
                       VEHICLE_CURRENT_POSITION.INCOME_CLOSURE_REJECTED &&
                     data.trip_settlement_info.rejected_by == '2'
@@ -577,6 +564,15 @@ const NlmtTSExpenseClosureHome = () => {
                   : data.vehicle_current_position ==
                   VEHICLE_CURRENT_POSITION.NLFD_SHIPMENT_COMPLETED && getVehicleTypeId(data) == 22 && (!data.advance_payment_info && data.tripsheet_info.advance_amount == null)
                   ? 'Shipment ✔️'
+                  : data.vehicle_current_position ==
+                  VEHICLE_CURRENT_POSITION.DEDUCTION_REJECTED && getVehicleTypeId(data) == 22  
+                  ? 'Deduction ❌'
+                  : data.vehicle_current_position ==
+                  VEHICLE_CURRENT_POSITION.EXPENSE_CLOSURE_REJECTED && getVehicleTypeId(data) == 22  
+                  ? 'Ex. Approval ❌'
+                  : data.vehicle_current_position ==
+                  VEHICLE_CURRENT_POSITION.OWN_EXPENSE_CLOSURE_REJECTED && getVehicleTypeId(data) == 21  
+                  ? 'Ex. Approval ❌'
                   : 'Gate Out',
               // </span>
               Waiting_At: 'Expense Closure',

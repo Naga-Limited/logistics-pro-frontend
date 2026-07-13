@@ -130,7 +130,7 @@ const NlmtTSClosureApproval = () => {
   /* ==================== Access Part Start ========================*/
   const [screenAccess, setScreenAccess] = useState(false)
   const [restrictScreenById, setRestrictScreenById] = useState(true)
-  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.Nlmt_Expenses_Closure_Approval
+  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.NLMT_Deduction_Approval
 
   useEffect(()=>{
 
@@ -642,6 +642,8 @@ const NlmtTSClosureApproval = () => {
 
           setTdsType(res.data.data[0]?.tds_type ?? '')
           values.TdsType = res.data.data[0]?.tds_type ?? ''
+          values.TdsHaving = res.data.data[0]?.tds_having ?? ''
+          values.TdsTax = res.data.data[0]?.vendor_tds ?? ''
 
           values.sap_text = res.data.data[0]?.sap_text ?? ''
 
@@ -3212,6 +3214,18 @@ const NlmtTSClosureApproval = () => {
       COST_CENTER: getCostCenterName(tripInfo?.trip_settlement_info?.cost_center),
     }
 
+    const now = new Date();
+
+    const closure_updation_time =
+      now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0') + ' ' +
+      String(now.getHours()).padStart(2, '0') + ':' +
+      String(now.getMinutes()).padStart(2, '0') + ':' +
+      String(now.getSeconds()).padStart(2, '0');
+
+    console.log(closure_updation_time, 'closure_updation_time');
+
     if (process == 'Approve') {
 
       let advance_percentage = tripInfo.trip_settlement_info.advance_amount
@@ -3245,6 +3259,10 @@ const NlmtTSClosureApproval = () => {
           let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
           let from_date = Expense_Income_Posting_Date_Taken.min_date
           let to_date = Expense_Income_Posting_Date_Taken.max_date
+
+          console.log(from_date,'qqqqq from_date')
+          console.log(to_date,'qqqqq to_date')
+          console.log(values.ded_posting_date,'qqqqq ded_posting_date')
       
           if(JavascriptDateCheckComponent(from_date,values.ded_posting_date,to_date)){
             //
@@ -3255,76 +3273,81 @@ const NlmtTSClosureApproval = () => {
           }
           // ============= Posting date Validation Part =================== //
         
-        let SAPData = new FormData()
+        // let SAPData = new FormData()
                   
-        SAPData.append('TRIP_SHEET', settlement_data.tripsheet_no) 
-        SAPData.append('VEHICLE_NO', settlement_data.vehicle_number)
-        SAPData.append('TAX_TYPE', settlement_data.gst_tax_type != 'Empty' ? settlement_data.gst_tax_type : '')
-        SAPData.append('TDS', settlement_data.tds_having == 0 ? 'NO' : 'YES')
-        SAPData.append('TDS_VALUE', settlement_data.tds_having == 0 ? '' : settlement_data.tds_type)
-        SAPData.append('REMARKS', settlement_data.sap_text ? settlement_data.sap_text : '')
-        SAPData.append('LIFNR', settlement_data.vendor_code)         
-        SAPData.append('TOTAL_FRE', settlement_data.expense)
-        SAPData.append('POST_DATE', values.ded_posting_date)
-        SAPData.append('REF_NO', values.ded_ref)          
-        SAPData.append('HSN', settlement_data.vendor_hsn ? settlement_data.vendor_hsn : '')
-        SAPData.append('PLANT', 'NLMD')
-        SAPData.append('DEDUCT_AMT', settlement_data.diversion_return_charges ? settlement_data.diversion_return_charges : '')
-        SAPData.append('DEDUCT_REMARKS', values.ded_remarks)
-        SAPData.append('COST_CENTER', getCostCenterName(settlement_data.cost_center))
-        SAPData.append('REF_NO', settlement_data.supplier_ref_no ? settlement_data.supplier_ref_no : tripInfo.tripsheet_info.nlmt_tripsheet_no)
-        SAPData.append('REF_DATE', settlement_data.supplier_posting_date) 
+        // SAPData.append('TRIP_SHEET', settlement_data.tripsheet_no) 
+        // SAPData.append('VEHICLE_NO', settlement_data.vehicle_number)
+        // SAPData.append('TAX_TYPE', settlement_data.gst_tax_type != 'Empty' ? settlement_data.gst_tax_type : '')
+        // SAPData.append('TDS', settlement_data.tds_having == 0 ? 'NO' : 'YES')
+        // SAPData.append('TDS_VALUE', settlement_data.tds_having == 0 ? '' : settlement_data.tds_type)
+        // SAPData.append('REMARKS', settlement_data.sap_text ? settlement_data.sap_text : '')
+        // SAPData.append('LIFNR', settlement_data.vendor_code)         
+        // SAPData.append('TOTAL_FRE', settlement_data.expense)
+        // SAPData.append('POST_DATE', values.ded_posting_date)
+        // SAPData.append('REF_NO', values.ded_ref)          
+        // SAPData.append('HSN', settlement_data.vendor_hsn ? settlement_data.vendor_hsn : '')
+        // SAPData.append('PLANT', 'NLMD')
+        // SAPData.append('DEDUCT_AMT', settlement_data.diversion_return_charges ? settlement_data.diversion_return_charges : '')
+        // SAPData.append('DEDUCT_REMARKS', values.ded_remarks)
+        // SAPData.append('COST_CENTER', getCostCenterName(settlement_data.cost_center))
+        // SAPData.append('REF_NO', settlement_data.supplier_ref_no ? settlement_data.supplier_ref_no : tripInfo.tripsheet_info.nlmt_tripsheet_no)
+        // SAPData.append('REF_DATE', settlement_data.supplier_posting_date) 
         
-        console.log(SAPData,'SAPData1')
+        // console.log(SAPData,'SAPData1')
         console.log(values,'SAPData2')
         console.log(ded_posting_date,'SAPData3')
+
+        
+        // 2026-07-06 02:15:30
 
         // setFetch(true)
         // return false
           
-        NlmtTripSheetClosureSapService.hireTripsheetExpenseWithoutDeductionPost(SAPData).then((res) => {
+        // NlmtTripSheetClosureSapService.hireTripsheetExpenseWithoutDeductionPost(SAPData).then((res) => {
 
-          let sap_ts_no = res.data.TRIP_SHEET
-          let sap_expense_document_no = res.data.DOCUMENT_NO
-          let sap_expense_amount = res.data.EXP_DOC_AMT
-          let sap_expense_status = res.data.STATUS
-          let sap_expense_message = res.data.MESSAGE
-          let sap_expense_deduction_document_no = res.data.DEDUCTION_DOCUMENT_NO
-          let sap_expense_deduction_status = res.data.DEDUCTION_STATUS
-          let sap_expense_deduction_message = res.data.DEDUCTION_MESSAGE
+        //   let sap_ts_no = res.data.TRIP_SHEET
+        //   let sap_expense_document_no = res.data.DOCUMENT_NO
+        //   let sap_expense_amount = res.data.EXP_DOC_AMT
+        //   let sap_expense_status = res.data.STATUS
+        //   let sap_expense_message = res.data.MESSAGE
+        //   let sap_expense_deduction_document_no = res.data.DEDUCTION_DOCUMENT_NO
+        //   let sap_expense_deduction_status = res.data.DEDUCTION_STATUS
+        //   let sap_expense_deduction_message = res.data.DEDUCTION_MESSAGE
 
-          console.log('hireTripsheetExpenseWithoutDeductionPost',
-            sap_ts_no + '/' + sap_expense_amount + '/' + sap_expense_document_no + '/' + sap_expense_status + '/' + sap_expense_message + '/' + sap_expense_deduction_document_no + '/' + sap_expense_deduction_status + '/' + sap_expense_deduction_message
-          )
+        //   console.log('hireTripsheetExpenseWithoutDeductionPost',
+        //     sap_ts_no + '/' + sap_expense_amount + '/' + sap_expense_document_no + '/' + sap_expense_status + '/' + sap_expense_message + '/' + sap_expense_deduction_document_no + '/' + sap_expense_deduction_status + '/' + sap_expense_deduction_message
+        //   )
 
-          if (
-            sap_expense_status == '1' &&
-            res.status == 200 &&
-            sap_expense_document_no &&
-            sap_expense_message &&
-            sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no && 
-            sap_expense_deduction_document_no &&
-            sap_expense_deduction_message &&
-            sap_expense_deduction_status == '1' 
-          ){
+        //   if (
+        //     sap_expense_status == '1' &&
+        //     res.status == 200 &&
+        //     sap_expense_document_no &&
+        //     sap_expense_message &&
+        //     sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no && 
+        //     sap_expense_deduction_document_no &&
+        //     sap_expense_deduction_message &&
+        //     sap_expense_deduction_status == '1' 
+        //   ){
 
             const formData = new FormData()
 
-            formData.append('expense_sap_document_no', sap_expense_document_no)
-            formData.append('sap_expense_amount', sap_expense_amount)
-            formData.append('expense_posting_date', values.ded_posting_date)
-            formData.append('tripsheet_is_settled', 3)
+            // formData.append('expense_sap_document_no', sap_expense_document_no)
+            // formData.append('sap_expense_amount', sap_expense_amount) 
+            // formData.append('tripsheet_is_settled', 3)
             formData.append('shipment_id',tripInfo.vehicle_assignment[0].shipment_id)
             formData.append('vehicle_number',tripInfo.vehicle_info.vehicle_number)
-            formData.append('approval_status',1)
-            formData.append('approval_remarks',values.approval_remarks ? values.approval_remarks : 'approve') 
+            formData.append('approval_status',1) /* 1 - Deduction Approved */
+            formData.append('deduction_approval_remarks',values.approval_remarks ? values.approval_remarks : 'approve') 
+            formData.append('deduction_approval_by',user_id) 
+            formData.append('deduction_approval_at',closure_updation_time) 
             formData.append('ded_remarks', values.ded_remarks ? values.ded_remarks : '') 
             formData.append('ded_ref', values.ded_ref ? values.ded_ref : '') 
-            formData.append('deduction_doc', sap_expense_deduction_document_no) 
+            // formData.append('deduction_doc', sap_expense_deduction_document_no) 
             formData.append('ded_posting_date', values.ded_posting_date ? values.ded_posting_date : '') 
             // setFetch(true)
             // return false
-
+            formData.append('hire_closure_status', 2) /* 2 - Deduction Approved (27) */
+            formData.append('closure_updation_time', closure_updation_time)
             formData.append('advance_amount',advance_percentage)
             formData.append('parking_id', tripInfo.nlmt_trip_in_id)
             formData.append('vehicle_id', tripInfo.vehicle_id)
@@ -3335,9 +3358,9 @@ const NlmtTSClosureApproval = () => {
               setFetch(true)
               if (res.status == 200) {
                 Swal.fire({
-                  title: "Tripsheet Settlement Expense Approval Process Done Successfully!",
+                  title: "Tripsheet Expense Deduction Approval Process Done Successfully!",
                   icon: "success",
-                  html: 'SAP Expense Amount : ' + sap_expense_amount + '<br />' + 'SAP Expense Document No : ' + sap_expense_document_no + '<br />' + ' SAP Deduction Doc. No. : ' + sap_expense_deduction_document_no,  
+                  // html: 'SAP Expense Amount : ' + sap_expense_amount + '<br />' + 'SAP Expense Document No : ' + sap_expense_document_no + '<br />' + ' SAP Deduction Doc. No. : ' + sap_expense_deduction_document_no,  
                   confirmButtonText: "OK",
                 }).then(function () { 
                   navigation('/NlmtTSExpenseClosureApprovalHome')
@@ -3352,59 +3375,53 @@ const NlmtTSClosureApproval = () => {
                 });
               } else {
                 toast.warning(
-                  'Expense Closure - Approval Cannot Be Updated From LP.. Kindly Contact Admin!'
+                  'Expense Deduction - Approval Cannot Be Updated From LP.. Kindly Contact Admin!'
                 )
               }
             })
-            .catch((error) => {
-              setFetch(true) 
-              console.log(error)
-              var object = error.response.data.errors
-              var output = ''
-              for (var property in object) {
-                output += '*' + object[property] + '\n'
-              }
-              setError(output)
-              setErrorModal(true)
-            })
+            .catch((err) => {
+              console.error('NLMT Deduction Approval Rejection Error:', err)
+              toast.error('Failed to Approve expense deduction in PRO. Please try again.')
+              setFetch(true)
+            }) 
 
-          } else if (
-            (sap_expense_status == '2') &&
-            res.status == 200 &&
-            sap_expense_document_no == '' &&
-            sap_expense_message &&
-            sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
-          ) {
-            setFetch(true)
-            Swal.fire({
-              title: sap_expense_message + ' Kindly Contact Admin..',
-              icon: "warning",
-              confirmButtonText: "OK",
-            }).then(function () {
-              // window.location.reload(false)
-            })
+          // } else if (
+          //   (sap_expense_status == '2') &&
+          //   res.status == 200 &&
+          //   sap_expense_document_no == '' &&
+          //   sap_expense_message &&
+          //   sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
+          // ) {
+          //   setFetch(true)
+          //   Swal.fire({
+          //     title: sap_expense_message + ' Kindly Contact Admin..',
+          //     icon: "warning",
+          //     confirmButtonText: "OK",
+          //   }).then(function () {
+          //     // window.location.reload(false)
+          //   })
   
-          } else if (
-            (sap_expense_deduction_status == '2') &&
-            res.status == 200 &&
-            sap_expense_deduction_document_no == '' &&
-            sap_expense_deduction_message &&
-            sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
-          ) {
-            setFetch(true)
-            Swal.fire({
-              title: sap_expense_deduction_message + ' Kindly Contact Admin..',
-              icon: "warning",
-              confirmButtonText: "OK",
-            }).then(function () {
-              // window.location.reload(false)
-            })
+          // } else if (
+          //   (sap_expense_deduction_status == '2') &&
+          //   res.status == 200 &&
+          //   sap_expense_deduction_document_no == '' &&
+          //   sap_expense_deduction_message &&
+          //   sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no 
+          // ) {
+          //   setFetch(true)
+          //   Swal.fire({
+          //     title: sap_expense_deduction_message + ' Kindly Contact Admin..',
+          //     icon: "warning",
+          //     confirmButtonText: "OK",
+          //   }).then(function () {
+          //     // window.location.reload(false)
+          //   })
   
-          } else {
-            setFetch(true)
-            toast.warning('Expense Approval Submission Failed in SAP.. Kindly Contact Admin!')
-          }
-        })
+          // } else {
+          //   setFetch(true)
+          //   toast.warning('Expense Approval Submission Failed in SAP.. Kindly Contact Admin!')
+          // }
+        // })
         
       } else { /* Deduction Entry Only */
 
@@ -3419,75 +3436,114 @@ const NlmtTSClosureApproval = () => {
           return false
         }
 
-        NlmtTripSheetClosureService.hireDeductionPayment(sap_data).then((res) => {
-          let sap_deduction_doc = res.data.DEDUCT_DOCUMENT_NO
-          let sap_deduction_status = res.data.STATUS
-          let sap_deduction_message = res.data.MESSAGE
+        let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
+        let from_date = Expense_Income_Posting_Date_Taken.min_date
+        let to_date = Expense_Income_Posting_Date_Taken.max_date
 
-          console.log(sap_deduction_doc + '/' + sap_deduction_status + '/' + sap_deduction_message)
+        console.log(from_date,'qqqqq from_date')
+        console.log(to_date,'qqqqq to_date')
+        console.log(values.ded_posting_date,'qqqqq ded_posting_date')
+    
+        if(JavascriptDateCheckComponent(from_date,values.ded_posting_date,to_date)){
+          //
+        } else {
+          setFetch(true)
+          toast.warning('Invalid Deduction Posting date')
+          return false
+        }
+        // ============= Posting date Validation Part =================== //
 
-          if (
-            sap_deduction_status == '1' &&
-            res.status == 200 &&
-            sap_deduction_message &&
-            sap_deduction_doc
-          ) {
+        // NlmtTripSheetClosureService.hireDeductionPayment(sap_data).then((res) => {
+        //   let sap_deduction_doc = res.data.DEDUCT_DOCUMENT_NO
+        //   let sap_deduction_status = res.data.STATUS
+        //   let sap_deduction_message = res.data.MESSAGE
+
+        //   console.log(sap_deduction_doc + '/' + sap_deduction_status + '/' + sap_deduction_message)
+
+        //   if (
+        //     sap_deduction_status == '1' &&
+        //     res.status == 200 &&
+        //     sap_deduction_message &&
+        //     sap_deduction_doc
+        //   ) {
             const formData = new FormData()
 
-            formData.append('_method', 'PUT')
-            formData.append('deduction_doc', sap_deduction_doc)
-            formData.append('tripsheet_is_settled', 3)
-            formData.append('ded_posting_date', values.ded_posting_date)
+            formData.append('shipment_id',tripInfo.vehicle_assignment[0].shipment_id)
+            formData.append('vehicle_number',tripInfo.vehicle_info.vehicle_number)
+            formData.append('approval_status',1) /* 1 - Deduction Approved */
+            formData.append('deduction_approval_remarks',values.approval_remarks ? values.approval_remarks : 'approve') 
+            formData.append('deduction_approval_by',user_id) 
+            formData.append('deduction_approval_at',closure_updation_time) 
             formData.append('ded_remarks', values.ded_remarks ? values.ded_remarks : '') 
             formData.append('ded_ref', values.ded_ref ? values.ded_ref : '') 
-            formData.append('vehicle_id', tripInfo.vehicle_id)
+            // formData.append('deduction_doc', sap_expense_deduction_document_no) 
+            formData.append('ded_posting_date', values.ded_posting_date ? values.ded_posting_date : '') 
+            // setFetch(true)
+            // return false
+            formData.append('hire_closure_status', 2) /* 2 - Deduction Approved (27) */
+            formData.append('closure_updation_time', closure_updation_time)
+            formData.append('advance_amount',advance_percentage)
             formData.append('parking_id', tripInfo.nlmt_trip_in_id)
-            formData.append('approval_status', 1)
-            formData.append(
-              'approval_remarks',
-              values.approval_remarks ? values.approval_remarks : 'Approved'
-            )
-            let tripSettlementID = tripsettlementData.id
-            formData.append('deduction_exists',1)
-            formData.append('advance_percentage',tripInfo.trip_settlement_info.advance_amount)
+            formData.append('vehicle_id', tripInfo.vehicle_id)
+            formData.append('process', 2) /* 2 - Update */ 
 
             setFetch(true)
             
-            NlmtTripSheetClosureService.updateTripsheetSettlement(tripSettlementID, formData).then((res) => {
-              console.log(res)
+            // NlmtTripSheetClosureService.updateTripsheetSettlement(tripSettlementID, formData).then((res) => {
+            //   console.log(res)
+            //   if (res.status == 200) {
+            //     setFetch(true) 
+            //     Swal.fire({
+            //       title: "Tripsheet Deduction Approval Process Done Successfully!",
+            //       icon: "success",
+            //       // html: ' SAP Deduction Doc. No. : ' + sap_deduction_doc,  
+            //       confirmButtonText: "OK",
+            //     }).then(function () { 
+            //       navigation('/NlmtTSExpenseClosureApprovalHome')
+            //     })
+
+            //   } else {
+            //     setFetch(true)
+            //     toast.warning('Tripsheet Deduction Approval Process Failed..')
+            //     // navigation('/NlmtTSExpenseClosureApprovalHome')
+            //   }
+            // })
+             NlmtTripSheetClosureService.createTripsheetSettlementForExpenseWitoutDeduction(formData).then((res) => {
+              console.log(res,'approveSettlementSubmission')
+              
+              setFetch(true)
               if (res.status == 200) {
-                setFetch(true) 
                 Swal.fire({
-                  title: "Tripsheet Settlement Expense Approval Process Done Successfully!",
+                  title: "Tripsheet Expense Deduction Approval Process Done Successfully!",
                   icon: "success",
-                  html: ' SAP Deduction Doc. No. : ' + sap_deduction_doc,  
+                  // html: 'SAP Expense Amount : ' + sap_expense_amount + '<br />' + 'SAP Expense Document No : ' + sap_expense_document_no + '<br />' + ' SAP Deduction Doc. No. : ' + sap_expense_deduction_document_no,  
                   confirmButtonText: "OK",
                 }).then(function () { 
                   navigation('/NlmtTSExpenseClosureApprovalHome')
-                })
-
+                });
+              } else if (res.status == 201) {
+                Swal.fire({
+                  title: res.data.message,
+                  icon: "warning",
+                  confirmButtonText: "OK",
+                }).then(function () {
+                  // window.location.reload(false)
+                });
               } else {
-                setFetch(true)
-                toast.warning('Tripsheet Settlement Expense Approval Process Failed..')
-                // navigation('/NlmtTSExpenseClosureApprovalHome')
+                toast.warning(
+                  'Expense Deduction - Approval Cannot Be Updated From LP.. Kindly Contact Admin!'
+                )
               }
             })
-            .catch((errortemp) => {
-              console.log(errortemp)
-              toast.error('Additional Expense Capture Process Failed.Kindly Contact Admin..')
+            .catch((err) => {
+              console.error('NLMT Deduction Approval Rejection Error:', err)
+              toast.error('Failed to Approve expense deduction in PRO. Please try again.')
               setFetch(true)
-              var object = errortemp.response.data.errors
-              var output = ''
-              for (var property in object) {
-                output += '*' + object[property] + '\n'
-              }
-              setError(output)
-              setErrorModal(true)
-            })
+            })  
           }
           /* Values Assigning To Save Details into DB Part End*/
-        })
-      }
+        // })
+      // }
 
       
     } else if (process == 'reject') {
@@ -3498,27 +3554,27 @@ const NlmtTSClosureApproval = () => {
       return false
     }
 
-      const formData = new FormData()
-      formData.append('_method', 'PUT')
+      const formData = new FormData() 
       formData.append('vehicle_id', tripInfo.vehicle_id)
-      formData.append('parking_id', tripInfo.nlmt_trip_in_id)
-      formData.append('approval_status', 2)
+      formData.append('parking_id', tripInfo.nlmt_trip_in_id) 
       formData.append(
-        'approval_remarks',
+        'deduction_approval_remarks',
         values.approval_remarks ? values.approval_remarks : 'reject'
       )
-      let tripSettlementID = tripsettlementData.id
+      formData.append('deduction_approval_by', user_id) 
+      formData.append('closure_id', tripsettlementData.id)   
+
       setFetch(true)
-      NlmtTripSheetClosureService.updateTripsheetExpenseApproval(tripSettlementID, formData)
+      NlmtTripSheetClosureService.deductionRejectionProcess(formData)
         .then((res) => {
           console.log(res)
           if (res.status == 200) {
             setFetch(true)
-            toast.success('Additional Expense Capture Process Rejected Successfully!')
+            toast.success('Deduction Approval Process Rejected Successfully!')
             navigation('/NlmtTSExpenseClosureApprovalHome')
           } else {
             setFetch(true)
-            toast.warning('Additional Expense Capture Process Failed..')
+            toast.warning('Deduction Approval Rejection Process Failed..')
             navigation('/NlmtTSExpenseClosureApprovalHome')
           }
         })
@@ -4880,7 +4936,7 @@ const NlmtTSClosureApproval = () => {
                               {/* ================== Others Halt Days Part End ======================= */}
 
                               {/* ================== Tds Having Part Start ======================= */}
-                              {tripInfo && tripInfo.advance_payment_info && tripInfo.advance_payment_info.tds_type ? (
+                                                           
                                 <>
                                   <CTableRow>
                                     <CTableDataCell scope="row">
@@ -4890,52 +4946,29 @@ const NlmtTSClosureApproval = () => {
                                     <CTableDataCell>
                                       <CFormInput
                                         size="sm"
-                                        value={getTdsTypeHaving(tripInfo.advance_payment_info.tds_type)}
+                                        value={values.TdsHaving == 1 ? 'Yes' : 'No'}
                                         readOnly
                                       />
                                     </CTableDataCell>
                                   </CTableRow>
-                                  {tripInfo.advance_payment_info && tripInfo.advance_payment_info.vendor_tds && (
-                                    <CTableRow>
-                                      <CTableDataCell scope="row">
-                                        <b>2 A</b>
-                                      </CTableDataCell>
-                                      <CTableDataCell>Tds Tax Type</CTableDataCell>
-                                      <CTableDataCell>
-                                        <CFormInput
-                                          size="sm"
-                                          value={`${tdsTaxCodeName(tripInfo.advance_payment_info.vendor_tds)}`}
-                                          // value={tdsType}
-                                          readOnly
-                                        />
-                                      </CTableDataCell>
-                                    </CTableRow>
-                                  )}
-                                </>
-                              ) : (
-                                <>
+                                  
                                   <CTableRow>
                                     <CTableDataCell scope="row">
-                                      <b>2</b>
+                                      <b>2 A</b>
                                     </CTableDataCell>
                                     <CTableDataCell>Tds Tax Type</CTableDataCell>
                                     <CTableDataCell>
                                       <CFormInput
                                         size="sm"
-                                        id="TdsHaving"
-                                        name="TdsHaving"
-                                        onFocus={onFocus}
-                                        onBlur={onBlur}
-                                        onChange={handleChange}
-                                        value={getTdsTypeHaving(values.TdsType)}
+                                        value={`${values.TdsHaving == 1 ? tdsTaxCodeName(values.TdsTax) : '-'}`}
+                                        // value={tdsType}
                                         readOnly
-                                        className={`${errors.TdsHaving && 'is-invalid'}`}
-                                        aria-label="Small select example"
-                                      ></CFormInput>
+                                      />
                                     </CTableDataCell>
                                   </CTableRow>
+                                    
                                 </>
-                              )}
+                              
                               {/* ================== Tds Having Part End ======================= */}
 
                               {/* ================== SAP Text Part Start ======================= */}
@@ -5072,6 +5105,7 @@ const NlmtTSClosureApproval = () => {
                                     id="supplier_posting_date"
                                     name="supplier_posting_date"
                                     value={tripsettlementData.supplier_posting_date} 
+                                    readOnly
                                     type="date" 
                                   />
                                 </CCol>
@@ -5165,7 +5199,7 @@ const NlmtTSClosureApproval = () => {
                               ></CFormTextarea>
                             </CCol>
                             <CCol xs={12} md={3}>
-                              <CFormLabel htmlFor="remarks">Approval Remarks</CFormLabel>
+                              <CFormLabel htmlFor="remarks">Deduction Approval Remarks</CFormLabel>
                               <CFormTextarea
                                 name="approval_remarks"
                                 id="approval_remarks"

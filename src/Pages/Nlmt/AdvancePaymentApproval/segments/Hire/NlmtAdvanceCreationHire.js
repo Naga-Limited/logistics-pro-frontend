@@ -756,29 +756,17 @@ const NlmtAdvanceCreationHire = ({
               type="text"
               readOnly
             />
-          </CCol>
-          <CCol xs={12} md={3}>
-            <CFormLabel htmlFor="actual_freight">
-              Actual Freight Per Ton 
-            </CFormLabel>
-            <CFormInput
-              size="sm"
-              value={singleVehicleInfo.tripsheet_info.trip_freight_rate}
-              id="actual_freight"
-              name="actual_freight"
-              type="text"
-              disabled 
-            />
-          </CCol>
+          </CCol>           
           
-          {singleVehicleInfo.tripsheet_info.freight_approval_status == 2 && (
+          {singleVehicleInfo.tripsheet_info.freight_approval_status == 2 ? (
             <CCol xs={12} md={3}>
               <CFormLabel htmlFor="trip_updated_freight_rate">
-                Updated Freight Per Ton 
+                Actual / Updated Freight Per Ton 
               </CFormLabel>
               <CFormInput
                 size="sm"
-                value={singleVehicleInfo.tripsheet_info.trip_updated_freight_rate}
+                  value={`${singleVehicleInfo.tripsheet_info.trip_freight_rate} / ${singleVehicleInfo.tripsheet_info.trip_updated_freight_rate}`}
+                // value={singleVehicleInfo.tripsheet_info.trip_updated_freight_rate}
                 id="trip_updated_freight_rate"
                 name="trip_updated_freight_rate"
                 type="text"
@@ -786,16 +774,31 @@ const NlmtAdvanceCreationHire = ({
               />
             </CCol>
 
-          )}
+          ) : 
+            <CCol xs={12} md={3}>
+              <CFormLabel htmlFor="actual_freight">
+                Actual Freight Per Ton 
+              </CFormLabel>
+              <CFormInput
+                size="sm"
+                value={singleVehicleInfo.tripsheet_info.trip_freight_rate}
+                id="actual_freight"
+                name="actual_freight"
+                type="text"
+                disabled 
+              />
+            </CCol>
+          }
 
 
           <CCol xs={12} md={3}>
             <CFormLabel htmlFor="actual_freight">
-              Shipment No / Billed Qty In MTS              
+              Billed Qty In MTS  / Total Freight          
             </CFormLabel>
             <CFormInput
               size="sm"
-              value={`${singleVehicleInfo?.vehicle_assignment?.[0]?.shipment_no || 0} / ${singleVehicleInfo?.vehicle_assignment?.[0]?.billed_net_qty || '-'
+              value={`${singleVehicleInfo?.vehicle_assignment?.[0]?.billed_net_qty || '-'
+                } / ${totalFreightAmount || '-'
                 }`}
               id="actual_freight"
               name="actual_freight"
@@ -804,7 +807,7 @@ const NlmtAdvanceCreationHire = ({
               maxLength={6}
             />
           </CCol>
-          <CCol xs={12} md={3}>
+          {/* <CCol xs={12} md={3}>
             <CFormLabel htmlFor="actual_freight">
               Total Freight Amount 
             </CFormLabel>
@@ -842,7 +845,7 @@ const NlmtAdvanceCreationHire = ({
               id="income_freight"
               readOnly
             />
-          </CCol>
+          </CCol> */}
           <CCol xs={12} md={3}>
             <CFormLabel htmlFor="rejRemarks">Approval / Rejection Remarks<REQ /></CFormLabel>
             <CFormTextarea
@@ -856,26 +859,102 @@ const NlmtAdvanceCreationHire = ({
               maxLength={"50"}
             >
             </CFormTextarea>
-          </CCol>
-          
-          {/* {(singleVehicleInfo.tripsheet_info.freight_approval_status == 0 || singleVehicleInfo.tripsheet_info.freight_approval_status == 2) && (
-            <CCol xs={12} md={3}>
-              <CFormLabel htmlFor="rejRemarks">Freight Rejection Remarks<REQ /></CFormLabel>
-              <CFormTextarea
-                id="rejRemarks"
-                name="rejRemarks"
-                onFocus={onFocus}
-                onBlur={onBlur}
-                onChange={handleChangenew1}
-                value={rejRemarks}
-                rows="1"
-                maxLength={"50"}
-              >
-              </CFormTextarea>
-            </CCol>
-          )}   */}
+          </CCol>          
+         
         </CRow>
         <ColoredLine color="red" />
+
+        {singleVehicleInfo.vehicle_assignment && singleVehicleInfo.vehicle_assignment[0] && 
+          singleVehicleInfo.vehicle_assignment[0].shipment_child_info.map((val, val_index) => {
+            return (
+              <>
+                <CRow key={`HireshipmentDeliveryData`} hidden>
+                  <CCol xs={12} md={6}>
+                    <CFormLabel
+                      htmlFor="inputAddress"
+                      style={{
+                        backgroundColor: '#4d3227',
+                        color: 'white',
+                      }}
+                    >
+                      Shipment ({val.shipment_no}) Delivery Information :
+                    </CFormLabel>
+                  </CCol>
+                </CRow>        
+                <CRow key={`HireshipmentChildData_${val_index}`}  className="mt-2">
+                  <CCol xs={12} md={3}>
+                    <CFormLabel htmlFor="sNum">Delivery Number</CFormLabel>
+                  <CFormInput
+                    size="sm"
+                    id="sNum"
+                    value={val.delivery_no}
+                    readOnly
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="sNum">Delivery Qty. in MTS</CFormLabel>
+
+                  <CFormInput
+                    size="sm"
+                    id="sNum"
+                    value={val.delivery_net_qty}
+                    readOnly
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="sInvoice">Invoice Number</CFormLabel>
+
+                  <CFormInput
+                    size="sm"
+                    id="sInvoice"
+                    value={val.invoice_no}
+                    readOnly
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="sNum">Invoice Qty.</CFormLabel>
+
+                  <CFormInput
+                    size="sm"
+                    id="sNum"
+                    value={`${val.invoice_net_quantity} - ${val.invoice_uom}`}
+                    readOnly
+                  />
+                </CCol>
+                
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="cNum">Customer Name</CFormLabel>
+                  <CFormInput
+                    size="sm"
+                    id="cNum"
+                    value={val.customer_info.CustomerName}
+                    readOnly
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="cNum">Customer Code</CFormLabel>
+
+                  <CFormInput
+                    size="sm"
+                    id="cNum"
+                    value={val.customer_info.CustomerCode}
+                    readOnly
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="cNum">Customer City</CFormLabel>
+
+                  <CFormInput
+                    size="sm"
+                    id="cNum"
+                    value={val.customer_info.CustomerCity}
+                    readOnly
+                  />
+                </CCol>  
+              </CRow>
+            </>
+          )
+        })} 
         
       </CRow>
       <CRow></CRow>

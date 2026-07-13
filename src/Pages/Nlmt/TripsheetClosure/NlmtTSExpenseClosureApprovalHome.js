@@ -37,7 +37,7 @@ const NlmtTSExpenseClosureApprovalHome = () => {
 
   /* ==================== Access Part Start ========================*/
   const [screenAccess, setScreenAccess] = useState(false)
-  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.Nlmt_Expenses_Closure_Approval
+  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.NLMT_Deduction_Approval
 
   useEffect(()=>{
 
@@ -276,7 +276,7 @@ const NlmtTSExpenseClosureApprovalHome = () => {
             Action: (
               <CButton className="badge" color="warning">
                 <Link className="text-white" to={`/NlmtTSExpenseClosureApprovalHome/${data?.nlmt_trip_in_id}`}>
-                  Expense Approval
+                  Deduction Approval
                 </Link>
               </CButton>
             ),

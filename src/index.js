@@ -1,5 +1,20 @@
 import 'react-app-polyfill/stable'
 import 'core-js'
+
+// Suppress ResizeObserver loop limit exceeded error overlay
+window.addEventListener('error', e => {
+  if (e.message && (e.message.includes('ResizeObserver') || e.message.includes('ResizeObserver loop'))) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  }
+}, true);
+
+window.addEventListener('unhandledrejection', e => {
+  if (e.reason && e.reason.message && (e.reason.message.includes('ResizeObserver') || e.reason.message.includes('ResizeObserver loop'))) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  }
+}, true);
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'

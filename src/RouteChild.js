@@ -536,10 +536,12 @@ import NlmtSettlementClosure from './Pages/Nlmt/SettlementClosure/NlmtSettlement
 import NlmtSettlementClosureInfo from './Pages/Nlmt/SettlementClosure/NlmtSettlementClosureInfo'
 import NlmtTSSettlementHome from './Pages/Nlmt/TripSheetSettleMent/NlmtTSSettlementHome'
 
-import NlmtTSPaymentHome from './Pages/Nlmt/TripsheetClosure/OwnDriverPayment/NlmtTSPaymentHome'
-import NlmtTSPaymentApprovalHome from './Pages/Nlmt/TripsheetClosure/OwnDriverPayment/NlmtTSPaymentApprovalHome'
+import NlmtTSPaymentHome from './Pages/Nlmt/TripsheetClosure/OwnDriverPayment/NlmtTSPaymentHome' 
+import NlmtTSPayment from './Pages/Nlmt/TripsheetClosure/OwnDriverPayment/NlmtTSPayment' 
 import NlmtTSIncomeApprovalHome from './Pages/Nlmt/TripsheetClosure/IncomeClosure/NlmtTSIncomeApprovalHome'
+import NlmtTSIncomeApproval from './Pages/Nlmt/TripsheetClosure/IncomeClosure/NlmtTSIncomeApproval'
 import NlmtTSOwnExpenseClosureApprovalHome from './Pages/Nlmt/TripsheetClosure/ExpenseClosureApproval/NlmtTSOwnExpenseClosureApprovalHome'
+import NlmtTSOwnExpenseClosureApproval from './Pages/Nlmt/TripsheetClosure/ExpenseClosureApproval/NlmtTSOwnExpenseClosureApproval'
 import NlmtTSHireExpApprovalHome from './Pages/Nlmt/TripsheetClosure/ExpenseClosureApproval/NlmtTSHireExpApprovalHome'
 
 import NlmtFreightUpdationApprovalHome from './Pages/Nlmt/FreightUpdationProcess/NlmtFreightUpdationApprovalHome'
@@ -578,6 +580,7 @@ import MaterialMaster from './Pages/Master/MaterialMaster/MaterialMaster'
 import OwnVehiclesFgSalesReportUtilityView from './Pages/VehicleUtilizationReport/segments/OwnVehiclesFgSalesReportUtilityView'  
 import NLCDFreightReport from './Pages/Master/FreightMaster/NLCDFreightReport'
 import NLFDFreightReport from './Pages/Master/FreightMaster/NLFDFreightReport'
+import NlmtTSHireExpApproval from './Pages/Nlmt/TripsheetClosure/ExpenseClosureApproval/NlmtTSHireExpApproval'
 
 const routesLists = [
 
@@ -3541,12 +3544,12 @@ const routesLists = [
     name: 'Trip Sheet Closure Approval Home',
     component: NlmtTSHireExpApprovalHome,
   },
-  // {
-  //   path: '/NlmtTSHireExpApprovalHome/:id', /* Hire Expense Approval */
-  //   exact: true,
-  //   name: 'Trip Sheet Expense Approval',
-  //   component: NlmtTSHireExpApproval,
-  // },
+  {
+    path: '/NlmtTSHireExpApprovalHome/:id', /* Hire Expense Approval */
+    exact: true,
+    name: 'Trip Sheet Expense Approval',
+    component: NlmtTSHireExpApproval,
+  },
 
   {
     path: '/NlmtTSExpenseClosureApprovalHome', /* Deduction Approval Home */
@@ -3703,51 +3706,38 @@ const routesLists = [
     name: 'Trip Sheet Closure Approval Home',
     component: NlmtTSOwnExpenseClosureApprovalHome,
   },
-  // {
-  //   path: '/NlmtTSOwnExpenseClosureApprovalHome/:id',
-  //   exact: true,
-  //   name: 'Trip Sheet Expense Approval',
-  //   component: NlmtTSOwnExpenseClosureApproval,
-  // },
+  {
+    path: '/NlmtTSOwnExpenseClosureApprovalHome/:id',
+    exact: true,
+    name: 'Trip Sheet Expense Approval',
+    component: NlmtTSOwnExpenseClosureApproval,
+  },
 
   {
     path: '/NlmtTSPaymentHome',
     exact: true,
-    name: 'Trip Sheet Closure Approval Home',
+    name: 'Trip Sheet Payment Home',
     component: NlmtTSPaymentHome,
   },
-  // {
-  //   path: '/NlmtTSPaymentHome/:id',
-  //   exact: true,
-  //   name: 'Trip Sheet Expense Approval',
-  //   component: NlmtTSPayment,
-  // },
-
   {
-    path: '/NlmtTSPaymentApprovalHome',
+    path: '/NlmtTSPaymentHome/:id',
     exact: true,
-    name: 'Trip Sheet Closure Approval Home',
-    component: NlmtTSPaymentApprovalHome,
-  },
-  // {
-  //   path: '/NlmtTSPaymentApprovalHome/:id',
-  //   exact: true,
-  //   name: 'Trip Sheet Expense Approval',
-  //   component: NlmtTSPaymentApproval,
-  // },
+    name: 'Trip Sheet Payment',
+    component: NlmtTSPayment,
+  }, 
 
   {
     path: '/NlmtTSIncomeApprovalHome',
     exact: true,
-    name: 'Trip Sheet Closure Approval Home',
+    name: 'Trip Sheet Income Closure Approval Home',
     component: NlmtTSIncomeApprovalHome,
   },
-  // {
-  //   path: '/NlmtTSIncomeApprovalHome/:id',
-  //   exact: true,
-  //   name: 'Trip Sheet Expense Approval',
-  //   component: NlmtTSIncomeApproval,
-  // },
+  {
+    path: '/NlmtTSIncomeApprovalHome/:id',
+    exact: true,
+    name: 'Trip Sheet Income Closure Approval',
+    component: NlmtTSIncomeApproval,
+  },
 
   /* ============== NLMT Process Flow End ============== */
     /* ============== NLMT Report Start ============== */

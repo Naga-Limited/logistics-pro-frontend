@@ -2,9 +2,7 @@
 import {
   CButton,
   CCard,
-  CCol,
-  CContainer,
-  CForm,
+  CCol, 
   CFormInput,
   CFormLabel,
   CTableCaption,
@@ -24,71 +22,37 @@ import {
   CTableBody,
   CTableDataCell,
   CTableHead,
-  CTableHeaderCell,
-  CFormFloating,
-  CNavbar,
+  CTableHeaderCell, 
   CTableRow,
   CFormTextarea,
-  CCardImage,
-  CBadge,
-  CInputGroup,
-  CInputGroupText,
+  CCardImage, 
   CAlert,
 } from '@coreui/react'
+
 import React, { useEffect, useState } from 'react'
-import Webcam from 'react-webcam'
-import CIcon from '@coreui/icons-react'
-import * as icon from '@coreui/icons'
+import Webcam from 'react-webcam' 
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-
-import Loader from 'src/components/Loader'
-// import Select from 'react-select';
-// import CModal from '@coreui/react/src/components/modal/CModal'
-import useForm from 'src/Hooks/useForm'
-
-import validate from 'src/Utils/Validation'
-
-import * as TripsheetClosureConstants from 'src/components/constants/TripsheetClosureConstants'
-import VehicleAssignmentService from 'src/Service/VehicleAssignment/VehicleAssignmentService'
-import DieselVendorMasterService from 'src/Service/Master/DieselVendorMasterService'
-
-import StoTableComponent from './StoTableComponent'
-import AllDriverListNameSelectComponent from 'src/components/commoncomponent/AllDriverListNameSelectComponent'
-import StoTableRMSTOComponent from './StoTableRMSTOComponent'
-import CustomTable from 'src/components/customComponent/CustomTable'
-import ExpenseCalculations from './Calculations/NlmtExpenseCalculations'
-import useFormRJSO from 'src/Hooks/useFormRJSO'
-import useFormTripsheetClosure from 'src/Hooks/useFormTripsheetClosure'
-import RJSaleOrderCreationService from 'src/Service/RJSaleOrderCreation/RJSaleOrderCreationService'
-import VehicleMasterService from 'src/Service/Master/VehicleMasterService'
-import DefinitionsListApi from 'src/Service/Definitions/DefinitionsListApi'
-import TripSheetInfoService from 'src/Service/PurchasePro/TripSheetInfoService'
-import CustomerCreationService from 'src/Service/CustomerCreation/CustomerCreationService'
-import ExpenseIncomePostingDate from './Calculations/NlmtExpenseIncomePostingDate'
-import TripSheetClosureSapService from 'src/Service/SAP/TripSheetClosureSapService'
+import Loader from 'src/components/Loader' 
+import * as TripsheetClosureConstants from 'src/components/constants/TripsheetClosureConstants'   
+import useFormTripsheetClosure from 'src/Hooks/useFormTripsheetClosure' 
+import DefinitionsListApi from 'src/Service/Definitions/DefinitionsListApi'  
 import Swal from 'sweetalert2'
 import AccessDeniedComponent from 'src/components/commoncomponent/AccessDeniedComponent'
 import JavascriptInArrayComponent from 'src/components/commoncomponent/JavascriptInArrayComponent'
 import * as NlmtScreenAccessCodes from 'src/components/constants/NlmtScreenAccessCodes'
 import FileResizer from 'react-image-file-resizer'
 import DepartmentApi from 'src/Service/SubMaster/DepartmentApi'
-import DivisionApi from 'src/Service/SubMaster/DivisionApi'
-import StoTableOthersComponent from './StoTableOthersComponent'
-import VehicleRequestMasterService from 'src/Service/VehicleRequest/VehicleRequestMasterService'
-import SmallLoader from 'src/components/SmallLoader'
-import JavascriptDateCheckComponent from 'src/components/commoncomponent/JavascriptDateCheckComponent'
-import { APIURL } from 'src/App'
+import DivisionApi from 'src/Service/SubMaster/DivisionApi' 
+import JavascriptDateCheckComponent from 'src/components/commoncomponent/JavascriptDateCheckComponent' 
 import NlmtTripSheetClosureService from 'src/Service/Nlmt/TripSheetClosure/NlmtTripSheetClosureService'
-import NlmtVehicleAssignmentService from 'src/Service/Nlmt/VehicleAssignment/NlmtVehicleAssignmentService'
-import NlmtTripInOwnVehicle from '../TripIn/NlmtTripInOwnVehicle'
-import NlmtDefinitionsListApi from 'src/Service/Nlmt/Masters/NlmtDefinitionsListApi'
-import NlmtTripSheetInfoService from 'src/Service/Nlmt/SAP/NlmtTripSheetInfoService'
+import NlmtVehicleAssignmentService from 'src/Service/Nlmt/VehicleAssignment/NlmtVehicleAssignmentService' 
+import NlmtDefinitionsListApi from 'src/Service/Nlmt/Masters/NlmtDefinitionsListApi' 
 import NlmtTripSheetClosureSapService from 'src/Service/Nlmt/SAP/NlmtTripSheetClosureSapService'
-import NlmtTripsheetClosureValidation from 'src/Utils/Nlmt/TripsheetClosure/NlmtTripsheetClosureValidation'
-import NlmtStoDeliveryDataService from 'src/Service/Nlmt/SAP/NlmtStoDeliveryDataService'
-import NlmtRJSaleOrderCreationSapService from 'src/Service/Nlmt/SAP/NlmtRJSaleOrderCreationSapService'
-import NlmtRJSaleOrderCreationService from 'src/Service/Nlmt/RJSaleOrderCreation/NlmtRJSaleOrderCreationService'
+import NlmtTripsheetClosureValidation from 'src/Utils/Nlmt/TripsheetClosure/NlmtTripsheetClosureValidation' 
+import ExpenseIncomePostingDate from 'src/Pages/TripsheetClosure/Calculations/ExpenseIncomePostingDate'
+import ExpenseCalculations from 'src/Pages/TripsheetClosure/Calculations/ExpenseCalculations'
+import NlmtAdvanceOwnSAP from 'src/Service/Nlmt/SAP/NlmtAdvanceOwnSAP'
 
 const NlmtTSHireExpApproval = () => {
   /*================== User Id & Location Fetch ======================*/
@@ -228,6 +192,7 @@ const NlmtTSHireExpApproval = () => {
     ot_vr_id: '',
     incoterm_freight_info: '',
     supplier_posting_date:'',
+    expense_posting_date:'',
     supplier_ref_no:''
   }
   const VEHICLE_TYPE_MAP = {
@@ -306,7 +271,7 @@ const NlmtTSHireExpApproval = () => {
 
     setpostingDate(vall) // local state (optional)
 
-    values.ded_posting_date = vall // ✅ IMPORTANT
+    values.expense_posting_date = vall // ✅ IMPORTANT
   }
   const tdsTaxCodeName = (code) => {
     let tds_tax_code_name = '-'
@@ -361,7 +326,7 @@ const NlmtTSHireExpApproval = () => {
   const [haltDays, setHaltDays] = useState('')
   const [costCenter, setcostCenter] = useState('')
   const [dedRemarks, setdedRemarks] = useState('')
-  const [ded_posting_date, setpostingDate] = useState('')
+  const [expense_posting_date, setpostingDate] = useState('')
   const [deductionDoc, setdeductionDoc] = useState('')
   const [tdsType, setTdsType] = useState('')
   const [gstTax, setGstTax] = useState('')
@@ -642,6 +607,8 @@ const NlmtTSHireExpApproval = () => {
 
           setTdsType(res.data.data[0]?.tds_type ?? '')
           values.TdsType = res.data.data[0]?.tds_type ?? ''
+          values.TdsHaving = res.data.data[0]?.tds_having ?? ''
+          values.TdsTax = res.data.data[0]?.vendor_tds ?? ''
 
           values.sap_text = res.data.data[0]?.sap_text ?? ''
 
@@ -2590,6 +2557,157 @@ const NlmtTSHireExpApproval = () => {
     }
   })
  
+  const expenseRows = (data) => data.map((item, index) => `
+    <tr style="
+      background:${index % 2 === 0 ? '#ffffff' : '#f8f9fc'};
+      border-bottom:1px solid #e3e6f0;
+    ">
+      <td style="padding:2px;width:10%;text-align:center;">
+        ${index + 1}
+      </td>
+
+      <td style="padding:2px;width:25%;text-align:center;">
+        ${item.VEN_GL || '-'}
+      </td>
+
+      <td style="
+        padding:2px;
+        width:25%;
+        text-align:right;
+        font-weight:600;
+      ">
+        ${Number(item.AMOUNT || 0).toLocaleString('en-IN', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}
+      </td>
+
+      <td style="padding:2px;width:40%;text-align:center;">
+        ${item.TEXT || '-'}
+      </td>
+    </tr>
+  `).join('');
+
+  const expenseTable = (data) => `
+    <div style="
+      border:2px solid #dcdcdc;
+      border-radius:8px;
+      overflow:hidden;
+      font-family:sans-serif;
+    ">
+
+      <div style="
+        background:linear-gradient(90deg,#4e73df,#5a8dee);
+        color:#fff;
+        padding:5px;
+        font-size:16px;
+        font-weight:600;
+      ">
+        Expense Information
+      </div>
+
+      <table style="
+        width:100%;
+        border-collapse:collapse;
+        font-size:15px;
+      ">
+
+        <thead>
+          <tr style="
+            background:#eaecf4;
+            color:#333;
+            border-bottom:2px solid #d1d3e2;
+          ">
+            <th style="padding:2px;width:10%;text-align:center;">
+              S.No
+            </th>
+
+            <th style="padding:2px;width:25%;text-align:center;">
+              Vendor GL Code
+            </th>
+
+            <th style="padding:2px;width:25%;text-align:right;">
+              Amount
+            </th>
+
+            <th style="padding:2px;width:40%;text-align:center;">
+              Description
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${expenseRows(data)}
+        </tbody>
+
+      </table>
+
+    </div>
+  `; 
+
+  function formatYMD(dateTime) {
+    return dateTime ? dateTime.split(' ')[0] : '';
+  }
+
+  function SAPSimulateProcess() {
+
+    console.log('CreateAdvanceHire-values', values)
+    let from_date = Expense_Income_Posting_Date.min_date
+    let to_date = Expense_Income_Posting_Date.max_date
+
+    console.log('CreateAdvanceHire-from_date', from_date)
+    console.log('CreateAdvanceHire-to_date', to_date)
+
+    let settlement_data = tripInfo.trip_settlement_info
+
+    let formData = new FormData()
+
+    formData.append('TRIP_SHEET', settlement_data.tripsheet_no)    
+    formData.append('LIFNR', settlement_data.vendor_code)
+    formData.append('FREIGHT_PAYMENT', `FREIGHT_PAYMENT:${settlement_data.expense}`)
+    formData.append('POST_DATE', settlement_data.ded_posting_date)     
+    formData.append('PLANT', 'NLMD')
+    formData.append('TAX_TYPE', settlement_data.gst_tax_type != 'Empty' ? settlement_data.gst_tax_type : '')
+    formData.append('TDS', settlement_data.tds_having == 0 ? 'NO' : 'YES')
+    formData.append('TDS_VALUE', settlement_data.tds_having == 0 ? '' : settlement_data.vendor_tds) 
+    formData.append('HSN', settlement_data.vendor_hsn ? settlement_data.vendor_hsn : '')
+     
+    NlmtAdvanceOwnSAP.AdvanceSimulationSAP(formData).then((res) => {
+      setFetch(true)
+      const sap_simulation_data = res.data
+      console.log('SAPSimulateProcess-res', sap_simulation_data)
+      if (res.status == 200 && res.data != '') { 
+
+        Swal.fire({ 
+          text: "You won't be able to revert this!", 
+          title: `SAP Simulation Details Detected!`,
+          icon: "success",
+          width: "600px",
+          showCancelButton: false,
+          confirmButtonColor: "#3085d6", 
+          html: `<table style="height: fit-content" id="table" border=1>
+                  <tbody>
+                    ${expenseTable(sap_simulation_data)}
+                  </tbody>
+                </table>`, 
+        }).then((result) => {
+
+          if (result.isConfirmed) {
+            // setFetch(false)
+          }
+        });
+
+      } else { 
+        toast.warning('SAP Simulation Details cannot be fetched..')
+      }
+    })
+    .catch((err) => {
+      console.error('NLMT SAP Simulation Error:', err)
+      toast.error('Failed to fetch SAP Simulation details. Please try again.')
+      setFetch(true)
+    })
+
+  }
 
   useEffect(() => {
     let diesel_advance = tripInfo.diesel_intent_info ? tripInfo.diesel_intent_info.total_amount : 0
@@ -2661,6 +2779,16 @@ const NlmtTSHireExpApproval = () => {
     } else if (veh_type_id == '23') {
       return 'PARTY'
     }
+  }
+
+  /* Date Format Change : yyyy-mm-dd to dd-mm-yy */
+  const formatDate = (input) => {
+    var datePart = input.match(/\d+/g),
+      year = datePart[0].substring(2), // get only two digits
+      month = datePart[1],
+      day = datePart[2]
+
+    return day + '-' + month + '-' + year
   }
 
   const driver_info_find = (info_type) => {
@@ -3184,9 +3312,6 @@ const NlmtTSHireExpApproval = () => {
     let sto1 = []
     let sto2 = []
 
-     
-    
-    
     // setFetch(true)
     console.log('process', process)
     // return false
@@ -3199,18 +3324,33 @@ const NlmtTSHireExpApproval = () => {
       // "TDS_VALUE":"T7",
       // "REMARKS":"TEST1",
       LIFNR: tripInfo?.vendor_info?.vendor_code,
-      POST_DATE: values.ded_posting_date,
+      POST_DATE: tripInfo?.trip_settlement_info?.ded_posting_date,
       // "BANK_DATE":"2026-06-01",
       // "REF_NO":"5555",
       // "REF_DATE":"2026-06-01",
       // "HSN":"996511", 
       // "PLANT":"NLMD",
       DEDUCT_AMT: tripInfo?.trip_settlement_info?.diversion_return_charges,
-      DEDUCT_REMARKS: values.ded_remarks,
-      REF_NO: values.ded_ref,
+      DEDUCT_REMARKS: tripInfo?.trip_settlement_info?.ded_remarks,
+      REF_NO: tripInfo?.trip_settlement_info?.ded_ref,
       PLANT: "NLMD",
       COST_CENTER: getCostCenterName(tripInfo?.trip_settlement_info?.cost_center),
     }
+
+    let deduction_have = tripInfo?.trip_settlement_info?.diversion_return_charges > 0 ? true : false
+    console.log('deduction_have', deduction_have)
+
+    const now = new Date();
+
+    const closure_updation_time =
+      now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0') + ' ' +
+      String(now.getHours()).padStart(2, '0') + ':' +
+      String(now.getMinutes()).padStart(2, '0') + ':' +
+      String(now.getSeconds()).padStart(2, '0');
+
+    console.log(closure_updation_time, 'closure_updation_time');
 
     if (process == 'Approve') {
 
@@ -3218,35 +3358,37 @@ const NlmtTSHireExpApproval = () => {
       let settlement_data = tripInfo.trip_settlement_info
 
       if(advance_percentage == 100){ /* Deduction With 100% Expense Entry */
+
+        if(deduction_have){ /* Deduction Process Validation Part */
               
-        if (values.ded_ref == '' || values.ded_ref.trim() == '') {
-          setFetch(true)
-          toast.warning(`Reference No. Should be required for Deduction Process.`)
-          return false
-        }
+          if (settlement_data.ded_ref == '' || settlement_data.ded_ref.trim() == '') {
+            setFetch(true)
+            toast.warning(`Reference No. Should be required for Deduction Process.`)
+            return false
+          }
 
-        if (values.ded_remarks == '' || values.ded_remarks.trim() == '') {
-          setFetch(true)
-          toast.warning(`Remarks Should be required for Deduction Process.`)
-          return false
-        }    
+          if (settlement_data.ded_remarks == '' || settlement_data.ded_remarks.trim() == '') {
+            setFetch(true)
+            toast.warning(`Remarks Should be required for Deduction Process.`)
+            return false
+          }    
 
-        let expense = Number(settlement_data.expense)
-        let deduction = Number(settlement_data.diversion_return_charges)
+          let expense = Number(settlement_data.expense)
+          let deduction = Number(settlement_data.diversion_return_charges)
 
-        if( deduction > expense ){
-          setFetch(true) 
-          toast.warning(`Deduction Amount (${deduction}) should be less than Total Expense Amount (${expense})..`)          
-          return false
-        }
+          if( deduction > expense ){
+            setFetch(true) 
+            toast.warning(`Deduction Amount (${deduction}) should be less than Total Expense Amount (${expense})..`)          
+            return false
+          }
 
-        // ============= Posting date Validation Part =================== //
-        
+          // ============= Posting date Validation Part =================== //
+          
           let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
           let from_date = Expense_Income_Posting_Date_Taken.min_date
           let to_date = Expense_Income_Posting_Date_Taken.max_date
       
-          if(JavascriptDateCheckComponent(from_date,values.ded_posting_date,to_date)){
+          if(JavascriptDateCheckComponent(from_date,settlement_data.ded_posting_date,to_date)){
             //
           } else {
             setFetch(true)
@@ -3254,6 +3396,27 @@ const NlmtTSHireExpApproval = () => {
             return false
           }
           // ============= Posting date Validation Part =================== //
+        } else {
+           
+          if(values.expense_posting_date == ''){
+            setFetch(true)
+            toast.warning(`Expense Posting Date Should be required for Expense Approval Process.`)
+            return false
+          }
+          
+          let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
+          let from_date = Expense_Income_Posting_Date_Taken.min_date
+          let to_date = Expense_Income_Posting_Date_Taken.max_date
+      
+          if(JavascriptDateCheckComponent(from_date,values.expense_posting_date,to_date)){
+            //
+          } else {
+            setFetch(true)
+            toast.warning('Invalid Expense Posting date')
+            return false
+          }
+          // ============= Posting date Validation Part =================== //
+        }
         
         let SAPData = new FormData()
                   
@@ -3264,20 +3427,33 @@ const NlmtTSHireExpApproval = () => {
         SAPData.append('TDS_VALUE', settlement_data.tds_having == 0 ? '' : settlement_data.tds_type)
         SAPData.append('REMARKS', settlement_data.sap_text ? settlement_data.sap_text : '')
         SAPData.append('LIFNR', settlement_data.vendor_code)         
-        SAPData.append('TOTAL_FRE', settlement_data.expense)
-        SAPData.append('POST_DATE', values.ded_posting_date)
-        SAPData.append('REF_NO', values.ded_ref)          
+        SAPData.append('TOTAL_FRE', settlement_data.expense)        
+        SAPData.append('REF_NO', settlement_data.ded_ref)          
         SAPData.append('HSN', settlement_data.vendor_hsn ? settlement_data.vendor_hsn : '')
-        SAPData.append('PLANT', 'NLMD')
-        SAPData.append('DEDUCT_AMT', settlement_data.diversion_return_charges ? settlement_data.diversion_return_charges : '')
-        SAPData.append('DEDUCT_REMARKS', values.ded_remarks)
-        SAPData.append('COST_CENTER', getCostCenterName(settlement_data.cost_center))
+        SAPData.append('PLANT', 'NLMD')       
         SAPData.append('REF_NO', settlement_data.supplier_ref_no ? settlement_data.supplier_ref_no : tripInfo.tripsheet_info.nlmt_tripsheet_no)
         SAPData.append('REF_DATE', settlement_data.supplier_posting_date) 
+
+        if(deduction_have) {
+
+          SAPData.append('DEDUCT_AMT', settlement_data.diversion_return_charges ? settlement_data.diversion_return_charges : '')
+          SAPData.append('DEDUCT_REMARKS', settlement_data.ded_remarks)
+          SAPData.append('COST_CENTER', getCostCenterName(settlement_data.cost_center))
+          SAPData.append('POST_DATE', settlement_data.ded_posting_date)
+
+        } else {
+
+          SAPData.append('DEDUCT_AMT', '')
+          SAPData.append('DEDUCT_REMARKS', '')
+          SAPData.append('COST_CENTER', '')
+          SAPData.append('POST_DATE', values.expense_posting_date)
+        }
         
         console.log(SAPData,'SAPData1')
-        console.log(values,'SAPData2')
-        console.log(ded_posting_date,'SAPData3')
+        console.log(settlement_data,'SAPData2')
+        console.log(settlement_data.ded_posting_date,'SAPData3')
+
+        // toast.success('Validation Completed..Advance Percentage is 100%..Hence Deduction Process will be done..')
 
         // setFetch(true)
         // return false
@@ -3297,50 +3473,67 @@ const NlmtTSHireExpApproval = () => {
             sap_ts_no + '/' + sap_expense_amount + '/' + sap_expense_document_no + '/' + sap_expense_status + '/' + sap_expense_message + '/' + sap_expense_deduction_document_no + '/' + sap_expense_deduction_status + '/' + sap_expense_deduction_message
           )
 
+          let deduction_condition = true
+
+          if(deduction_have){
+            sap_expense_deduction_document_no &&
+            sap_expense_deduction_message &&
+            sap_expense_deduction_status == '1' ? deduction_condition = true : deduction_condition = false
+          }
+
           if (
             sap_expense_status == '1' &&
             res.status == 200 &&
             sap_expense_document_no &&
             sap_expense_message &&
             sap_ts_no == tripInfo.tripsheet_info.nlmt_tripsheet_no && 
-            sap_expense_deduction_document_no &&
-            sap_expense_deduction_message &&
-            sap_expense_deduction_status == '1' 
+            deduction_condition
           ){
 
             const formData = new FormData()
 
             formData.append('expense_sap_document_no', sap_expense_document_no)
             formData.append('sap_expense_amount', sap_expense_amount)
-            formData.append('expense_posting_date', values.ded_posting_date)
-            formData.append('tripsheet_is_settled', 3)
+
+            if(deduction_have){
+              formData.append('expense_posting_date', settlement_data.ded_posting_date)
+            } else {
+              formData.append('expense_posting_date', values.expense_posting_date)
+            }
+
+            formData.append('tripsheet_is_settled', 3) /* Expense Process Completed */
             formData.append('shipment_id',tripInfo.vehicle_assignment[0].shipment_id)
             formData.append('vehicle_number',tripInfo.vehicle_info.vehicle_number)
-            formData.append('approval_status',1)
-            formData.append('approval_remarks',values.approval_remarks ? values.approval_remarks : 'approve') 
-            formData.append('ded_remarks', values.ded_remarks ? values.ded_remarks : '') 
-            formData.append('ded_ref', values.ded_ref ? values.ded_ref : '') 
-            formData.append('deduction_doc', sap_expense_deduction_document_no) 
-            formData.append('ded_posting_date', values.ded_posting_date ? values.ded_posting_date : '') 
+            formData.append('approval_status',3) /* 3 - Expense Approved */
+            formData.append('hire_closure_status',5) /* 5 - Expense Approved (28) */
+            formData.append('expense_approval_remarks',values.approval_remarks ? values.approval_remarks : 'approve') 
+            formData.append('expense_approval_by',user_id) 
+            formData.append('updated_by',user_id) 
+            formData.append('expense_approval_at',closure_updation_time) 
+            formData.append('closure_updation_time',closure_updation_time)  
+            if(deduction_have){
+              formData.append('deduction_doc', sap_expense_deduction_document_no) 
+            }
+             
             // setFetch(true)
             // return false
 
-            formData.append('advance_amount',advance_percentage)
+            // formData.append('advance_amount',advance_percentage)
             formData.append('parking_id', tripInfo.nlmt_trip_in_id)
             formData.append('vehicle_id', tripInfo.vehicle_id)
-            formData.append('process', 2) /* 2 - Update */
+            formData.append('process', 3) /* 3 - Update */
             NlmtTripSheetClosureService.createTripsheetSettlementForExpenseWitoutDeduction(formData).then((res) => {
               console.log(res,'approveSettlementSubmission')
               
               setFetch(true)
-              if (res.status == 200) {
+              if (res.status == 200) { 
                 Swal.fire({
                   title: "Tripsheet Settlement Expense Approval Process Done Successfully!",
                   icon: "success",
-                  html: 'SAP Expense Amount : ' + sap_expense_amount + '<br />' + 'SAP Expense Document No : ' + sap_expense_document_no + '<br />' + ' SAP Deduction Doc. No. : ' + sap_expense_deduction_document_no,  
+                  html: deduction_have ? 'SAP Expense Amount : ' + sap_expense_amount + '<br />' + 'SAP Expense Document No : ' + sap_expense_document_no + '<br />' + ' SAP Deduction Doc. No. : ' + sap_expense_deduction_document_no : 'SAP Expense Amount : ' + sap_expense_amount + '<br />' + 'SAP Expense Document No : ' + sap_expense_document_no,  
                   confirmButtonText: "OK",
                 }).then(function () { 
-                  navigation('/NlmtTSExpenseClosureApprovalHome')
+                  navigation('/NlmtTSHireExpApprovalHome')
                 });
               } else if (res.status == 201) {
                 Swal.fire({
@@ -3408,132 +3601,236 @@ const NlmtTSHireExpApproval = () => {
         
       } else { /* Deduction Entry Only */
 
-        // tripInfo.advance_payment_info.actual_freight
-        let expense_balance_amount = balanceFreight(tripInfo.advance_payment_info.sap_freight_payment_amount,tripInfo.advance_payment_info.sap_bank_payment_amount)
-
-        let deduction = Number(settlement_data.diversion_return_charges)
-
-        if( deduction > expense_balance_amount ){
-          setFetch(true)
-          toast.warning(`Deduction Amount (${deduction}) should be less than Expense Balance Amount (${expense_balance_amount})..`)
-          return false
-        }
-
-        NlmtTripSheetClosureService.hireDeductionPayment(sap_data).then((res) => {
-          let sap_deduction_doc = res.data.DEDUCT_DOCUMENT_NO
-          let sap_deduction_status = res.data.STATUS
-          let sap_deduction_message = res.data.MESSAGE
-
-          console.log(sap_deduction_doc + '/' + sap_deduction_status + '/' + sap_deduction_message)
-
-          if (
-            sap_deduction_status == '1' &&
-            res.status == 200 &&
-            sap_deduction_message &&
-            sap_deduction_doc
-          ) {
-            const formData = new FormData()
-
-            formData.append('_method', 'PUT')
-            formData.append('deduction_doc', sap_deduction_doc)
-            formData.append('tripsheet_is_settled', 3)
-            formData.append('ded_posting_date', values.ded_posting_date)
-            formData.append('ded_remarks', values.ded_remarks ? values.ded_remarks : '') 
-            formData.append('ded_ref', values.ded_ref ? values.ded_ref : '') 
-            formData.append('vehicle_id', tripInfo.vehicle_id)
-            formData.append('parking_id', tripInfo.nlmt_trip_in_id)
-            formData.append('approval_status', 1)
-            formData.append(
-              'approval_remarks',
-              values.approval_remarks ? values.approval_remarks : 'Approved'
-            )
-            let tripSettlementID = tripsettlementData.id
-            formData.append('deduction_exists',1)
-            formData.append('advance_percentage',tripInfo.trip_settlement_info.advance_amount)
-
+        if(deduction_have){ /* Deduction Process Validation Part */
+              
+          if (settlement_data.ded_ref == '' || settlement_data.ded_ref.trim() == '') {
             setFetch(true)
-            
-            NlmtTripSheetClosureService.updateTripsheetSettlement(tripSettlementID, formData).then((res) => {
-              console.log(res)
-              if (res.status == 200) {
-                setFetch(true) 
-                Swal.fire({
-                  title: "Tripsheet Settlement Expense Approval Process Done Successfully!",
-                  icon: "success",
-                  html: ' SAP Deduction Doc. No. : ' + sap_deduction_doc,  
-                  confirmButtonText: "OK",
-                }).then(function () { 
-                  navigation('/NlmtTSExpenseClosureApprovalHome')
-                })
-
-              } else {
-                setFetch(true)
-                toast.warning('Tripsheet Settlement Expense Approval Process Failed..')
-                // navigation('/NlmtTSExpenseClosureApprovalHome')
-              }
-            })
-            .catch((errortemp) => {
-              console.log(errortemp)
-              toast.error('Additional Expense Capture Process Failed.Kindly Contact Admin..')
-              setFetch(true)
-              var object = errortemp.response.data.errors
-              var output = ''
-              for (var property in object) {
-                output += '*' + object[property] + '\n'
-              }
-              setError(output)
-              setErrorModal(true)
-            })
+            toast.warning(`Reference No. Should be required for Deduction Process.`)
+            return false
           }
-          /* Values Assigning To Save Details into DB Part End*/
-        })
+
+          if (settlement_data.ded_remarks == '' || settlement_data.ded_remarks.trim() == '') {
+            setFetch(true)
+            toast.warning(`Remarks Should be required for Deduction Process.`)
+            return false
+          }    
+
+          let expense_balance_amount = balanceFreight(tripInfo.advance_payment_info.sap_freight_payment_amount,tripInfo.advance_payment_info.sap_bank_payment_amount)
+
+          let deduction = Number(settlement_data.diversion_return_charges)
+
+          if( deduction > expense_balance_amount ){
+            setFetch(true)
+            toast.warning(`Deduction Amount (${deduction}) should be less than Expense Balance Amount (${expense_balance_amount})..`)
+            return false
+          }
+
+          // ============= Posting date Validation Part =================== //
+          
+          let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
+          let from_date = Expense_Income_Posting_Date_Taken.min_date
+          let to_date = Expense_Income_Posting_Date_Taken.max_date
+      
+          if(JavascriptDateCheckComponent(from_date,settlement_data.ded_posting_date,to_date)){
+            //
+          } else {
+            setFetch(true)
+            toast.warning('Invalid Deduction Posting date')
+            return false
+          }
+          // ============= Posting date Validation Part =================== //
+        } else {
+           
+          if(values.expense_posting_date == ''){
+            setFetch(true)
+            toast.warning(`Expense Posting Date Should be required for Expense Approval Process.`)
+            return false
+          }
+          
+          let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate();
+          let from_date = Expense_Income_Posting_Date_Taken.min_date
+          let to_date = Expense_Income_Posting_Date_Taken.max_date
+      
+          if(JavascriptDateCheckComponent(from_date,values.expense_posting_date,to_date)){
+            //
+          } else {
+            setFetch(true)
+            toast.warning('Invalid Expense Posting date')
+            return false
+          }
+          // ============= Posting date Validation Part =================== //
+        } 
+
+        if(deduction_have){
+
+          // setFetch(true)
+          // return false
+
+          NlmtTripSheetClosureService.hireDeductionPayment(sap_data).then((res) => {
+            let sap_deduction_doc = res.data.DEDUCT_DOCUMENT_NO
+            let sap_deduction_status = res.data.STATUS
+            let sap_deduction_message = res.data.MESSAGE
+
+            console.log(sap_deduction_doc + '/' + sap_deduction_status + '/' + sap_deduction_message)
+
+            if (
+              sap_deduction_status == '1' &&
+              res.status == 200 &&
+              sap_deduction_message &&
+              sap_deduction_doc
+            ) {
+              const formData = new FormData()
+
+              formData.append('_method', 'PUT')
+              formData.append('deduction_doc', sap_deduction_doc)  
+              let tripSettlementID = tripsettlementData.id
+              formData.append('deduction_exists',1)
+              formData.append('advance_percentage',tripInfo.trip_settlement_info.advance_amount)
+              formData.append('parking_id', tripInfo.nlmt_trip_in_id)
+              formData.append('vehicle_id', tripInfo.vehicle_id)
+              formData.append('tripsheet_is_settled', 3) /* Expense Process Completed */
+              formData.append('shipment_id',tripInfo.vehicle_assignment[0].shipment_id)
+              formData.append('vehicle_number',tripInfo.vehicle_info.vehicle_number)
+              formData.append('approval_status',3) /* 3 - Expense Approved */
+              formData.append('hire_closure_status',5) /* 5 - Expense Approved (28) */
+              formData.append('expense_approval_remarks',values.approval_remarks ? values.approval_remarks : 'approve') 
+              formData.append('expense_approval_by',user_id) 
+              formData.append('updated_by',user_id) 
+              formData.append('expense_approval_at',closure_updation_time) 
+              formData.append('closure_updation_time',closure_updation_time)   
+              formData.append('expense_sap_document_no', tripInfo.advance_payment_info.sap_freight_payment_document_no) 
+              formData.append('sap_expense_amount', tripInfo.advance_payment_info.sap_freight_payment_amount)  
+              formData.append('expense_posting_date', tripInfo.trip_settlement_info.ded_posting_date)     
+
+              // setFetch(true)
+              
+              NlmtTripSheetClosureService.updateTripsheetSettlement(tripSettlementID, formData).then((res) => {
+                console.log(res)
+                if (res.status == 200) {
+                  setFetch(true) 
+                  Swal.fire({
+                    title: "Tripsheet Settlement Expense Approval Process Done Successfully!",
+                    icon: "success",
+                    html: ' SAP Deduction Doc. No. : ' + sap_deduction_doc,  
+                    confirmButtonText: "OK",
+                  }).then(function () { 
+                    navigation('/NlmtTSHireExpApprovalHome')
+                  })
+
+                } else {
+                  setFetch(true)
+                  toast.warning('Tripsheet Settlement Expense Approval Process Failed..')
+                  // navigation('/NlmtTSHireExpApprovalHome')
+                }
+              })
+              .catch((errortemp) => {
+                console.log(errortemp)
+                toast.error('Additional Expense Capture Process Failed.Kindly Contact Admin..')
+                setFetch(true)
+                var object = errortemp.response.data.errors
+                var output = ''
+                for (var property in object) {
+                  output += '*' + object[property] + '\n'
+                }
+                setError(output)
+                setErrorModal(true)
+              })
+            }
+            /* Values Assigning To Save Details into DB Part End*/
+          })
+
+        } else {
+
+          const formData = new FormData()
+
+          formData.append('_method', 'PUT') 
+          formData.append('advance_amount',10) /* Advance Percentage is 10% */
+          formData.append('deduction_exists',0) /* Deduction Not Exists */
+          formData.append('parking_id', tripInfo.nlmt_trip_in_id)
+          formData.append('vehicle_id', tripInfo.vehicle_id)
+          formData.append('tripsheet_is_settled', 3) /* Expense Process Completed */
+          formData.append('shipment_id',tripInfo.vehicle_assignment[0].shipment_id)
+          formData.append('vehicle_number',tripInfo.vehicle_info.vehicle_number)
+          formData.append('approval_status',3) /* 3 - Expense Approved */
+          formData.append('hire_closure_status',5) /* 5 - Expense Approved (28) */
+          formData.append('expense_approval_remarks',values.approval_remarks ? values.approval_remarks : 'approve') 
+          formData.append('expense_approval_by',user_id) 
+          formData.append('updated_by',user_id) 
+          formData.append('expense_approval_at',closure_updation_time) 
+          formData.append('closure_updation_time',closure_updation_time)   
+          formData.append('expense_sap_document_no', tripInfo.advance_payment_info.sap_freight_payment_document_no) 
+          formData.append('sap_expense_amount', tripInfo.advance_payment_info.sap_freight_payment_amount)  
+          formData.append('expense_posting_date', values.expense_posting_date)          
+
+          let tripSettlementID = tripsettlementData.id
+          // setFetch(false)
+          NlmtTripSheetClosureService.updateTripsheetSettlement(tripSettlementID, formData).then((res) => {
+            console.log(res)
+            setFetch(true)
+            if (res.status == 200) {          
+              toast.success('Tripsheet Settlement Expense Approval Process Completed Successfully!')
+              navigation('/NlmtTSHireExpApprovalHome')
+            } else { 
+              toast.warning('Tripsheet Settlement Expense Approval Process Failed..')
+              navigation('/NlmtTSHireExpApprovalHome')
+            }
+          })
+          .catch((errortemp) => {
+            console.log(errortemp)
+            toast.error('Tripsheet Settlement Expense Approval Process Failed.Kindly Contact Admin..')
+            setFetch(true)
+            var object = errortemp.response.data.errors
+            var output = ''
+            for (var property in object) {
+              output += '*' + object[property] + '\n'
+            }
+            setError(output)
+            setErrorModal(true)
+          })
+
+        } 
+        
       }
 
       
     } else if (process == 'reject') {
 
       if(values.approval_remarks == '' || values.approval_remarks.trim() == ''){
-      setFetch(true)
-      toast.warning(`Approval Remarks Should be required for Rejection Process.`)
-      return false
-    }
+        setFetch(true)
+        toast.warning(`Approval Remarks Should be required for Rejection Process.`)
+        return false
+      } 
 
-      const formData = new FormData()
-      formData.append('_method', 'PUT')
+      const formData = new FormData() 
       formData.append('vehicle_id', tripInfo.vehicle_id)
       formData.append('parking_id', tripInfo.nlmt_trip_in_id)
       formData.append('approval_status', 2)
       formData.append(
-        'approval_remarks',
+        'expense_approval_remarks',
         values.approval_remarks ? values.approval_remarks : 'reject'
       )
-      let tripSettlementID = tripsettlementData.id
+      formData.append('expense_approval_by', user_id) 
+      formData.append('closure_id', tripsettlementData.id)   
+
       setFetch(true)
-      NlmtTripSheetClosureService.updateTripsheetExpenseApproval(tripSettlementID, formData)
+      NlmtTripSheetClosureService.expApprovalRejectionProcess(formData)
         .then((res) => {
           console.log(res)
           if (res.status == 200) {
             setFetch(true)
-            toast.success('Additional Expense Capture Process Rejected Successfully!')
-            navigation('/NlmtTSExpenseClosureApprovalHome')
+            toast.success('Expense Approval Process Rejected Successfully!')
+            navigation('/NlmtTSHireExpApprovalHome')
           } else {
             setFetch(true)
-            toast.warning('Additional Expense Capture Process Failed..')
-            navigation('/NlmtTSExpenseClosureApprovalHome')
+            toast.warning('Expense Approval Rejection Process Failed..')
+            navigation('/NlmtTSHireExpApprovalHome')
           }
         })
-        .catch((errortemp) => {
-          console.log(errortemp)
-          toast.error('Additional Expense Capture Process Failed.Kindly Contact Admin..')
+        .catch((err) => {
+          console.error('NLMT Expense Approval Rejection Error:', err)
+          toast.error('Failed to reject expense approval in PRO. Please try again.')
           setFetch(true)
-          var object = errortemp.response.data.errors
-          var output = ''
-          for (var property in object) {
-            output += '*' + object[property] + '\n'
-          }
-          setError(output)
-          setErrorModal(true)
-        })
+        })  
     }
   }
 
@@ -4355,6 +4652,7 @@ const NlmtTSHireExpApproval = () => {
                                 </>
                               )}
                             </CTableRow>
+                            
                           </CTableHead>
 
                           <CTableBody>
@@ -4452,6 +4750,41 @@ const NlmtTSHireExpApproval = () => {
                             </CTableRow>
                           </CTableBody>
                         </CTable>
+                        <ColoredLine color="red" />
+                        {tripInfo.advance_payment_info && (
+                          <CRow className="mt-2">
+                            <CCol xs={12} md={2}>
+                              <CFormLabel htmlFor="remarks">SAP Total Freight Amount</CFormLabel>
+                              <CFormInput size="sm" value={tripInfo.advance_payment_info.sap_freight_payment_amount} readOnly />
+                            </CCol>
+                            <CCol xs={12} md={2}>
+                              <CFormLabel htmlFor="remarks">SAP Bank Advance Amount</CFormLabel>
+                              <CFormInput size="sm" value={tripInfo.advance_payment_info.sap_bank_payment_amount} readOnly />
+                            </CCol>
+                            <CCol xs={12} md={2}>
+                              <CFormLabel htmlFor="remarks">SAP Freight Payment Doc.</CFormLabel>
+                              <CFormInput size="sm" value={tripInfo.advance_payment_info.sap_freight_payment_document_no} readOnly />
+                            </CCol>
+                            <CCol xs={12} md={2}>
+                              <CFormLabel htmlFor="remarks">SAP Advance Payment Doc.</CFormLabel>
+                              <CFormInput size="sm" value={tripInfo.advance_payment_info.sap_bank_payment_document_no} readOnly />
+                            </CCol>
+                            <CCol xs={12} md={2}>
+                              <CFormLabel htmlFor="remarks">Freight / Bank Posting date</CFormLabel>
+                              <CFormInput size="sm" value={formatDate(tripInfo.advance_payment_info.sap_invoice_posting_date) + '  //  ' + formatDate(tripInfo.advance_payment_info.bank_date)} readOnly />
+                            </CCol>
+                            <CCol xs={12} md={2}>
+                              <CFormLabel htmlFor="remarks">Advance Attachment</CFormLabel>
+                              <CButton className="w-100 m-0" color="info" size="sm" id="inputAddress">
+                                <span className="float-start">
+                                  <a style={{color:'black'}} target='_blank' rel="noreferrer" href={tripInfo.advance_payment_info?.advance_form}>
+                                    <i className="fa fa-eye" aria-hidden="true">&nbsp;View</i>
+                                  </a>
+                                </span> 
+                              </CButton> 
+                            </CCol>
+                          </CRow>
+                        )}
                       </CTabPane>
                       {/* ======= Hire Vehicle Freight Tab End ================================= */}
 
@@ -4880,7 +5213,7 @@ const NlmtTSHireExpApproval = () => {
                               {/* ================== Others Halt Days Part End ======================= */}
 
                               {/* ================== Tds Having Part Start ======================= */}
-                              {tripInfo && tripInfo.advance_payment_info && tripInfo.advance_payment_info.tds_type ? (
+                             
                                 <>
                                   <CTableRow>
                                     <CTableDataCell scope="row">
@@ -4890,52 +5223,29 @@ const NlmtTSHireExpApproval = () => {
                                     <CTableDataCell>
                                       <CFormInput
                                         size="sm"
-                                        value={getTdsTypeHaving(tripInfo.advance_payment_info.tds_type)}
+                                        value={values.TdsHaving == 1 ? 'Yes' : 'No'}
                                         readOnly
                                       />
                                     </CTableDataCell>
                                   </CTableRow>
-                                  {tripInfo.advance_payment_info && tripInfo.advance_payment_info.vendor_tds && (
-                                    <CTableRow>
-                                      <CTableDataCell scope="row">
-                                        <b>2 A</b>
-                                      </CTableDataCell>
-                                      <CTableDataCell>Tds Tax Type</CTableDataCell>
-                                      <CTableDataCell>
-                                        <CFormInput
-                                          size="sm"
-                                          value={`${tdsTaxCodeName(tripInfo.advance_payment_info.vendor_tds)}`}
-                                          // value={tdsType}
-                                          readOnly
-                                        />
-                                      </CTableDataCell>
-                                    </CTableRow>
-                                  )}
-                                </>
-                              ) : (
-                                <>
+                                  
                                   <CTableRow>
                                     <CTableDataCell scope="row">
-                                      <b>2</b>
+                                      <b>2 A</b>
                                     </CTableDataCell>
                                     <CTableDataCell>Tds Tax Type</CTableDataCell>
                                     <CTableDataCell>
                                       <CFormInput
                                         size="sm"
-                                        id="TdsHaving"
-                                        name="TdsHaving"
-                                        onFocus={onFocus}
-                                        onBlur={onBlur}
-                                        onChange={handleChange}
-                                        value={getTdsTypeHaving(values.TdsType)}
+                                        value={`${values.TdsHaving == 1 ? tdsTaxCodeName(values.TdsTax) : '-'}`}
+                                        // value={tdsType}
                                         readOnly
-                                        className={`${errors.TdsHaving && 'is-invalid'}`}
-                                        aria-label="Small select example"
-                                      ></CFormInput>
+                                      />
                                     </CTableDataCell>
                                   </CTableRow>
+                                   
                                 </>
-                              )}
+                              
                               {/* ================== Tds Having Part End ======================= */}
 
                               {/* ================== SAP Text Part Start ======================= */}
@@ -5073,6 +5383,7 @@ const NlmtTSHireExpApproval = () => {
                                     name="supplier_posting_date"
                                     value={tripsettlementData.supplier_posting_date} 
                                     type="date" 
+                                    readOnly
                                   />
                                 </CCol>
                               </>
@@ -5102,57 +5413,39 @@ const NlmtTSHireExpApproval = () => {
                                   ></CFormInput>
                                 </CCol>
                                 <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="remarks">Deduction Remarks<REQ /></CFormLabel>
+                                  <CFormLabel htmlFor="remarks">Deduction Remarks </CFormLabel>
                                   <CFormInput
                                     size="sm"
                                     name="ded_remarks"
                                     value={values.ded_remarks}
-                                    onChange={handleChange}
+                                    // onChange={handleChange}
+                                    readOnly
                                   />
                                 </CCol>
                                 <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="remarks">Deduction Ref. No<REQ /></CFormLabel>
+                                  <CFormLabel htmlFor="remarks">Deduction Ref. No </CFormLabel>
                                   <CFormInput
                                     size="sm"
                                     name="ded_ref"
                                     value={values.ded_ref}
-                                    onChange={handleChange}
+                                    // onChange={handleChange}
+                                    readOnly
                                   />
                                 </CCol>
                                 <CCol xs={12} md={3}>
-                                  <CFormLabel htmlFor="remarks">Deduction Posting Date <REQ /></CFormLabel>
-                                  {/* <CFormInput
+                                  <CFormLabel htmlFor="remarks">Deduction Posting Date  </CFormLabel>
+                                  <CFormInput
                                     size="sm"
                                     id="dedPostingDate"
                                     name="dedPostingDate" 
                                     value={tripsettlementData.ded_posting_date}
                                     readOnly 
                                     aria-label="Small select example"
-                                  ></CFormInput> */}
-
-                                  
-
-                                      <CFormInput
-                                        size="sm"
-                                        type="date"
-                                        id="ded_posting_date"
-                                        name="ded_posting_date"
-                                        onChange={handleChangepostingDate}
-                                        min={Expense_Income_Posting_Date.min_date}
-                                        max={Expense_Income_Posting_Date.max_date}
-                                        onKeyDown={(e) => {
-                                          e.preventDefault()
-                                        }}
-                                        value={ded_posting_date}
-                                      />
-                                </CCol>
-                                {/* <CTableDataCell style={{ width: '180px' }}>
-                                    
-                                    </CTableDataCell> */}
+                                  />  
+                                </CCol> 
                               </>
 
-                            )}
-
+                            )}                            
 
                             <CCol xs={12} md={3}>
                               <CFormLabel htmlFor="remarks">Expense Remarks</CFormLabel>
@@ -5160,12 +5453,56 @@ const NlmtTSHireExpApproval = () => {
                                 name="remarks"
                                 id="remarks"
                                 rows="1" 
-                                value={values.remarks}
+                                value={tripsettlementData.remarks}
                                 readOnly
                               ></CFormTextarea>
                             </CCol>
+                            {tripsettlementData.deduction_approval_by && (
+                              <>
+                                <CCol xs={12} md={3}>
+                                  <CFormLabel htmlFor="deduction_approval_remarks">Deduction Approval Remarks</CFormLabel>
+                                  <CFormTextarea
+                                    name="deduction_approval_remarks"
+                                    id="deduction_approval_remarks"
+                                    rows="1" 
+                                    value={tripsettlementData.deduction_approval_remarks}
+                                    readOnly
+                                  ></CFormTextarea>
+                                </CCol>
+                                <CCol xs={12} md={3}>
+                                  <CFormLabel htmlFor="deduction_approval_at">Deduction Approval Time</CFormLabel>
+                                  <CFormTextarea
+                                    name="deduction_approval_at"
+                                    id="deduction_approval_at"
+                                    rows="1" 
+                                    value={tripsettlementData.deduction_approval_at}
+                                    readOnly
+                                  ></CFormTextarea>
+                                </CCol>
+                              </>
+                            )}
+                           
+                            {tripsettlementData.diversion_return_charges == 0 && 
+                              <CCol xs={12} md={3}>
+                                <CFormLabel htmlFor="remarks">Expense Posting Date <REQ /> </CFormLabel>
+                                <CFormInput
+                                  size="sm"
+                                  type="date"
+                                  id="expense_posting_date"
+                                  name="expense_posting_date"
+                                  onChange={handleChangepostingDate}
+                                  min={Expense_Income_Posting_Date.min_date}
+                                  max={Expense_Income_Posting_Date.max_date}
+                                  onKeyDown={(e) => {
+                                    e.preventDefault()
+                                  }} 
+                                  value={values.expense_posting_date}
+                                />
+                              </CCol>
+                            }
+
                             <CCol xs={12} md={3}>
-                              <CFormLabel htmlFor="remarks">Approval Remarks</CFormLabel>
+                              <CFormLabel htmlFor="approval_remarks">Expense Approval Remarks</CFormLabel>
                               <CFormTextarea
                                 name="approval_remarks"
                                 id="approval_remarks"
@@ -5176,23 +5513,31 @@ const NlmtTSHireExpApproval = () => {
                                 value={values.approval_remarks}
                               ></CFormTextarea>
                             </CCol>
+                            
                           </CRow>
-                          <CRow>
+                          <CRow>                             
                             <CCol
-                              className="offset-md-9"
+                              className="offset-md-6"
                               xs={12}
                               sm={12}
-                              md={3}
-                              // style={{ display: 'flex', justifyContent: 'space-between' }}
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'row-reverse',
-                                cursor: 'pointer',
-                              }}
-                            >
+                              md={6}
+                              style={{ display: 'flex', marginTop:'5px', justifyContent: 'end' }}
+                            > 
                               <CButton
                                 size="sm"
-                                color="warning"
+                                color="primary"
+                                // style={{marginLeft:'5px'}}
+                                className="mx-3 text-white" 
+                                onClick={() => {
+                                  setFetch(false)
+                                  SAPSimulateProcess()
+                                }} 
+                              >
+                                SAP Simulate
+                              </CButton>
+                              <CButton
+                                size="sm"
+                                color="success"
                                 disabled={enableSubmit}
                                 className="mx-3 text-white"
                                 // className="align-self-end ml-auto"
@@ -5202,7 +5547,7 @@ const NlmtTSHireExpApproval = () => {
                                 }}
                                 type="submit"
                               >
-                                Approval
+                                Approve
                               </CButton>
                               <CButton
                                 size="sm"

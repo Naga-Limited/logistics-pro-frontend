@@ -1240,7 +1240,7 @@ useEffect(()=>{
                   </CRow>
 
                   {/* Admin - Diesel Vendor Change Process */}
-                  {user_info.is_admin == 1 && 
+                  {/* {user_info.is_admin == 1 &&  */}
                     <>  
                       <ColoredLine color="red" />
                       <CRow className="mt-md-3">
@@ -1278,7 +1278,7 @@ useEffect(()=>{
                       </CRow>
                       <ColoredLine color="red" />
                     </>
-                  }
+                  {/* } */}
                 
                 {values.vehicle_type_id === vehicleType.OWN ||
                  values.vehicle_type_id === vehicleType.CONTRACT ? (

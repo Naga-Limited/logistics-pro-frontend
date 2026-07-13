@@ -61,14 +61,9 @@ const NlmtTSIncomeClosureHome = () => {
 
   /* Vehicle Current Position */
   const VEHICLE_CURRENT_POSITION = {
-    TRIPSHEET_EXPENSE_CAPTURE: 26,
-    TRIPSHEET_INCOME_CAPTURE_REJECTED: 261,
-    TRIPSHEET_INCOME_CAPTURE: 27,
-    TRIPSHEET_SETTLEMENT: 28,
-    DIESEL_INDENT_CREATION_COMPLETED: 37,
-    DIESEL_INDENT_CONFIRMATION_COMPLETED: 39,
-    DIESEL_INDENT_APPROVAL_COMPLETED: 41,
-    TRIPSHEET_SETTLEMENT_REJECTED: 29,
+    TRIPSHEET_EXPENSE_APPROVAL_COMPLETED: 25,
+    TRIPSHEET_INCOME_CAPTURE_REJECTED: 27,
+    TRIPSHEET_PAYMENT_CAPTURE: 30, 
   }
 
   /* Vehicle Current Parking Status */
@@ -89,7 +84,7 @@ const NlmtTSIncomeClosureHome = () => {
     NlmtTripSheetClosureService.getVehicleReadyToTripIncomeClose().then((res) => {
       closureData = res.data.data
       console.log(closureData,'closureData')
-      setFetch(true)
+      setFetch(true) 
 
       let rowDataList = []
       const filterData1 = closureData.filter(
@@ -97,7 +92,7 @@ const NlmtTSIncomeClosureHome = () => {
           user_locations.includes(data.vehicle_location_id) && 
           data.vehicle_info.vehicle_type_id == 21 &&
           data.trip_settlement_info && 
-          data.trip_settlement_info.tripsheet_is_settled == 3
+          (data.trip_settlement_info.nlmt_income_status == null || data.trip_settlement_info.nlmt_income_status == 2)
       )
 
       console.log(filterData1,'filterData1')
@@ -109,11 +104,15 @@ const NlmtTSIncomeClosureHome = () => {
           Vehicle_Type: VEHICLE_TYPE_MAP[data?.vehicle_info?.vehicle_type_id] ?? '-',
           Vehicle_No: data.vehicle_info?.vehicle_number ?? '-',
           Driver_Name:data.driver_name ??
-  data.tripsheet_info?.trip_driver_info?.driver_name ?? '-',
+          data.tripsheet_info?.trip_driver_info?.driver_name ?? '-',
           Waiting_At: (
             <span className="badge rounded-pill bg-info">
-              {data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_INCOME_CAPTURE
+              {data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_EXPENSE_APPROVAL_COMPLETED
                 ? 'EXPENSE ✔️'
+                : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_INCOME_CAPTURE_REJECTED
+                ? 'INCOME ❌'
+                : data.vehicle_current_position == VEHICLE_CURRENT_POSITION.TRIPSHEET_PAYMENT_CAPTURE
+                ? 'PAYMENT ✔️'
                 : '---'}
             </span>
           ),

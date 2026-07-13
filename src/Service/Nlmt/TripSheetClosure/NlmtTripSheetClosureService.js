@@ -3,15 +3,20 @@ import api, { api_copy } from 'src/Service/Config'
 
 const TRIP_SHEET_CLOSURE_BASE_URL = AppConfig.api.baseUrl + '/nlmt-trip-sheet-closure/'
 const TRIP_SHEET_CLOSURE_APPROVAL_BASE_URL = AppConfig.api.baseUrl + '/nlmt-trip-sheet-closure-approval/'
+const TRIP_SHEET_CLOSURE_APPROVAL2_BASE_URL = AppConfig.api.baseUrl + '/nlmt-trip-sheet-closure-approval2/'
+const OWN_TRIP_SHEET_CLOSURE_APPROVAL_BASE_URL = AppConfig.api.baseUrl + '/nlmt-own-trip-sheet-closure-approval/'
 const TRIP_SHEET_CLOSURE_POST_URL = AppConfig.api.baseUrl + '/nlmt-trip-sheet-closure'
 const TRIP_SHEET_CLOSURE_APPROVAL_POST_URL = AppConfig.api.baseUrl + '/nlmt-trip-closure-approval'
 const TRIP_SHEET_INCOME_CLOSURE_BASE_URL =
   AppConfig.api.baseUrl + '/nlmt-trip-sheet-income-closure/'
+  const TRIP_SHEET_INCOME_CLOSURE_APPROVAL_BASE_URL =
+  AppConfig.api.baseUrl + '/nlmt-trip-sheet-income-closure-approval/'
 const TRIP_SHEET_SETTLEMENT_BASE_URL = AppConfig.api.baseUrl + '/nlmt-trip-sheet-settlement/'
 const TRIP_SHEET_CLOSURE_INFO_GET_URL = AppConfig.api.baseUrl + '/get-nlmt-trip-sheet-closure-info/'
 const TRIP_SHEET_STO_INFO_GET_URL = AppConfig.api.baseUrl + '/get-nlmt-trip-sto-info/'
 const TRIP_SHEET_INCOME_CLOSURE_REJECT_URL = AppConfig.api.baseUrl + '/put-nlmt-trip-income-reject'
 const TRIP_SHEET_INCOME_CLOSURE_ACCEPT_URL = AppConfig.api.baseUrl + '/put-nlmt-trip-income-accept'
+const TRIP_SHEET_INCOME_CLOSURE_APPROVAL_ACCEPT_URL = AppConfig.api.baseUrl + '/put-nlmt-trip-income-approval-accept'
 const TRIP_SHEET_SETTLEMENT_CLOSURE_ACCEPT_URL =
   AppConfig.api.baseUrl + '/put-nlmt-trip-settlement-accept'
 const TRIP_SHEET_SETTLEMENT_CLOSURE_REJECT_URL =
@@ -53,6 +58,7 @@ const NLMT_TRIP_SHEET_PAYMENT_APPROVAL_REQUEST_BASE_URL =
   AppConfig.api.baseUrl + '/Nlmt/PaymentApproval/paymentApprovalRequest'
 const NLMT_TRIPSHEET_SETTLEMENT_PAYMENT_INVOICE_POST_API_URL =
   AppConfig.api.baseUrl + '/sap/ts-nlmt-payment-invoice'
+const NLMT_TRIPSHEET_SETTLEMENT_DRIVER_PAYMENT_INVOICE_POST_API_URL = AppConfig.api.baseUrl + '/sap/ts-nlmt-driver-payment-invoice'
 const NLMT_TRIP_SHEET_SETTLEMENT_APPROVAL_INFO_GET_URL =
   AppConfig.api.baseUrl + '/Nlmt/GetSettlementClosureApprovalInfo/'
 const NLMT_TRIP_PAYMENT_SUBMISSION_INFO_GET_URL =
@@ -83,6 +89,10 @@ const NLMT_MPS_PAYMENT_SUBMISSION_INFO_GET_URL =  AppConfig.api.baseUrl + '/Nlmt
 
 const NLMT_TS_CLOSURE_REPORT_VIEW_URL = AppConfig.api.baseUrl + '/Nlmt/NlmtClosureReportView'
 const NLMT_TS_CLOSURE_REPORT_SENT_URL = AppConfig.api.baseUrl + '/Nlmt/NlmtClosureReportRequest'
+const NLMT_DEDUCTION_REJECTION_PROCESS_SENT_URL = AppConfig.api.baseUrl + '/Nlmt/NlmtDeductionRejectionProcess'
+const NLMT_EXPENSE_APPROVAL_REJECTION_PROCESS_SENT_URL = AppConfig.api.baseUrl + '/Nlmt/NlmtExpenseApprovalRejectionProcess'
+const NLMT_OWN_EXPENSE_APPROVAL_REJECTION_PROCESS_SENT_URL = AppConfig.api.baseUrl + '/Nlmt/NlmtOwnExpenseApprovalRejectionProcess'
+const NLMT_OWN_INCOME_APPROVAL_REJECTION_PROCESS_SENT_URL = AppConfig.api.baseUrl + '/Nlmt/NlmtOwnIncomeApprovalRejectionProcess'
 
 class NlmtTripSheetClosureService {
 
@@ -91,8 +101,16 @@ class NlmtTripSheetClosureService {
     return api.get(TRIP_SHEET_CLOSURE_BASE_URL)
   }
 
-  getVehicleReadyToExpenseClosureApproval() {
+  getVehicleReadyToExpenseClosureApproval() { /* Deduction Approval Home */
     return api.get(TRIP_SHEET_CLOSURE_APPROVAL_BASE_URL)
+  }
+
+  getVehicleReadyToExpenseClosureApproval2() { /* Hire Expense Approval Home */
+    return api.get(TRIP_SHEET_CLOSURE_APPROVAL2_BASE_URL)
+  }
+
+  getVehicleReadyToOwnExpenseClosureApproval() {  /* Own Expense Approval Home */
+    return api.get(OWN_TRIP_SHEET_CLOSURE_APPROVAL_BASE_URL)
   }
 
   getVehicleReadyToTripCloseFilterSearch(data) {
@@ -102,6 +120,10 @@ class NlmtTripSheetClosureService {
   /* Laravel Controller Custom Index Function Call for Income Capture */
   getVehicleReadyToTripIncomeClose() {
     return api.get(TRIP_SHEET_INCOME_CLOSURE_BASE_URL)
+  }
+
+  getVehicleReadyToTripIncomeCloseApproval() {
+    return api.get(TRIP_SHEET_INCOME_CLOSURE_APPROVAL_BASE_URL)
   }
 
   /* Laravel Controller Custom Index Function Call for Income Capture */
@@ -147,6 +169,10 @@ class NlmtTripSheetClosureService {
   /* Laravel Controller Custom Index Function Call for Accept Trip Income Closure */
   updateIncomeClosureAcception(id, data) {
     return api.post(TRIP_SHEET_INCOME_CLOSURE_ACCEPT_URL + '/' + id, data)
+  } 
+
+  updateIncomeClosureApprovalAcception(id, data) {
+    return api.post(TRIP_SHEET_INCOME_CLOSURE_APPROVAL_ACCEPT_URL + '/' + id, data)
   }
 
   /* Laravel Controller Custom Index Function Call for Accept Trip Settlement Closure */
@@ -256,6 +282,9 @@ class NlmtTripSheetClosureService {
   NlmtPaymentInvoiceCreation(data) {
     return api.post(NLMT_TRIPSHEET_SETTLEMENT_PAYMENT_INVOICE_POST_API_URL, data)
   }
+  NlmtDriverPaymentInvoiceCreation(data) {
+    return api.post(NLMT_TRIPSHEET_SETTLEMENT_DRIVER_PAYMENT_INVOICE_POST_API_URL, data)
+  }
   sendPaymentApproval(data) {
     return api.post(NLMT_TRIP_SHEET_PAYMENT_APPROVAL_REQUEST_BASE_URL, data)
   }
@@ -323,6 +352,22 @@ class NlmtTripSheetClosureService {
   /* Get All NLMT Closure Info From DB for Report */
   sentNlmtClosureDataForReport(data) {
     return api.post(NLMT_TS_CLOSURE_REPORT_SENT_URL, data)
+  }
+  
+  deductionRejectionProcess(data) {
+    return api.post(NLMT_DEDUCTION_REJECTION_PROCESS_SENT_URL, data)
+  }
+
+  expApprovalRejectionProcess(data) {
+    return api.post(NLMT_EXPENSE_APPROVAL_REJECTION_PROCESS_SENT_URL, data)
+  }
+
+  ownExpApprovalRejectionProcess(data) {
+    return api.post(NLMT_OWN_EXPENSE_APPROVAL_REJECTION_PROCESS_SENT_URL, data)
+  }
+
+  ownIncApprovalRejectionProcess(data) {
+    return api.post(NLMT_OWN_INCOME_APPROVAL_REJECTION_PROCESS_SENT_URL, data)
   }
 
 }

@@ -826,28 +826,17 @@ const NlmtAdvanceCreationHire = ({
               readOnly
             />
           </CCol>
-          <CCol xs={12} md={3}>
-            <CFormLabel htmlFor="actual_freight">
-              Actual Freight Per Ton 
-            </CFormLabel>
-            <CFormInput
-              size="sm"
-              value={singleVehicleInfo.tripsheet_info.trip_freight_rate}
-              id="actual_freight"
-              name="actual_freight"
-              type="text"
-              disabled 
-            />
-          </CCol>
           
-          {singleVehicleInfo.tripsheet_info.freight_approval_status == 2 && (
+          
+          {singleVehicleInfo.tripsheet_info.freight_approval_status == 2 ? (
             <CCol xs={12} md={3}>
               <CFormLabel htmlFor="trip_updated_freight_rate">
-                Updated Freight Per Ton 
+                Actual / Updated Freight Per Ton 
               </CFormLabel>
               <CFormInput
                 size="sm"
-                value={singleVehicleInfo.tripsheet_info.trip_updated_freight_rate}
+                 value={`${singleVehicleInfo.tripsheet_info.trip_freight_rate} / ${singleVehicleInfo.tripsheet_info.trip_updated_freight_rate}`}
+                // value={singleVehicleInfo.tripsheet_info.trip_updated_freight_rate}
                 id="trip_updated_freight_rate"
                 name="trip_updated_freight_rate"
                 type="text"
@@ -855,16 +844,31 @@ const NlmtAdvanceCreationHire = ({
               />
             </CCol>
 
-          )}
+          ) : 
+            <CCol xs={12} md={3}>
+              <CFormLabel htmlFor="actual_freight">
+                Actual Freight Per Ton 
+              </CFormLabel>
+              <CFormInput
+                size="sm"
+                value={singleVehicleInfo.tripsheet_info.trip_freight_rate}
+                id="actual_freight"
+                name="actual_freight"
+                type="text"
+                disabled 
+              />
+            </CCol>
+          }
 
 
           <CCol xs={12} md={3}>
             <CFormLabel htmlFor="actual_freight">
-              Shipment No / Billed Qty In MTS              
+              Billed Qty In MTS  / Total Freight          
             </CFormLabel>
             <CFormInput
               size="sm"
-              value={`${singleVehicleInfo?.vehicle_assignment?.[0]?.shipment_no || 0} / ${singleVehicleInfo?.vehicle_assignment?.[0]?.billed_net_qty || '-'
+              value={`${singleVehicleInfo?.vehicle_assignment?.[0]?.billed_net_qty || '-'
+                } / ${totalFreightAmount || '-'
                 }`}
               id="actual_freight"
               name="actual_freight"
@@ -873,7 +877,7 @@ const NlmtAdvanceCreationHire = ({
               maxLength={6}
             />
           </CCol>
-          <CCol xs={12} md={3}>
+          {/* <CCol xs={12} md={3}>
             <CFormLabel htmlFor="actual_freight">
               Total Freight Amount 
             </CFormLabel>
@@ -886,9 +890,9 @@ const NlmtAdvanceCreationHire = ({
               disabled
               maxLength={6}
             />
-          </CCol>
+          </CCol> */}
 
-          <CCol md={3}>
+          {/* <CCol md={3}>
             <CFormLabel>
               Advance Eligible {advancePercentage} %
             </CFormLabel>
@@ -911,7 +915,7 @@ const NlmtAdvanceCreationHire = ({
               id="income_freight"
               readOnly
             />
-          </CCol>
+          </CCol> */}
           
           {(singleVehicleInfo.tripsheet_info.freight_approval_status == 0 || singleVehicleInfo.tripsheet_info.freight_approval_status == 2) && (
             <CCol xs={12} md={3}>
@@ -932,179 +936,97 @@ const NlmtAdvanceCreationHire = ({
         </CRow>
         <ColoredLine color="red" />
 
-        {/* {singleVehicleInfo.shipment_info.length > 0 &&
-          (
-            <>
-              <CRow className="mt-2" hidden>
-                <CCol xs={12} md={3}>
-                  <CFormLabel
-                    htmlFor="inputAddress"
-                    style={{
-                      backgroundColor: '#4d3227',
-                      margin: '15px 0',
-                      color: 'white',
-                    }}
-                  >
-                    Shipment Deliveries Wise Freight Information
-                  </CFormLabel>
+        {singleVehicleInfo.vehicle_assignment && singleVehicleInfo.vehicle_assignment[0] && 
+          singleVehicleInfo.vehicle_assignment[0].shipment_child_info.map((val, val_index) => {
+            return (
+              <>
+                <CRow key={`HireshipmentDeliveryData`} hidden>
+                  <CCol xs={12} md={6}>
+                    <CFormLabel
+                      htmlFor="inputAddress"
+                      style={{
+                        backgroundColor: '#4d3227',
+                        color: 'white',
+                      }}
+                    >
+                      Shipment ({val.shipment_no}) Delivery Information :
+                    </CFormLabel>
+                  </CCol>
+                </CRow>        
+                <CRow key={`HireshipmentChildData_${val_index}`}  className="mt-2">
+                  <CCol xs={12} md={3}>
+                    <CFormLabel htmlFor="sNum">Delivery Number</CFormLabel>
+                  <CFormInput
+                    size="sm"
+                    id="sNum"
+                    value={val.delivery_no}
+                    readOnly
+                  />
                 </CCol>
-              </CRow>
-              <CRow>
-                <CTable style={{ height: '40vh', width: 'auto' }} className="overflow-scroll">
-                  <CTableHead style={{ backgroundColor: '#4d3227', color: 'white' }}>
-                    <CTableRow style={{ width: '100%' }}>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="sNum">Delivery Qty. in MTS</CFormLabel>
 
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                      >
-                        S.No
-                      </CTableHeaderCell>
+                  <CFormInput
+                    size="sm"
+                    id="sNum"
+                    value={val.delivery_net_qty}
+                    readOnly
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="sInvoice">Invoice Number</CFormLabel>
 
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                      >
-                        Delivery No.
-                      </CTableHeaderCell>
+                  <CFormInput
+                    size="sm"
+                    id="sInvoice"
+                    value={val.invoice_no}
+                    readOnly
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="sNum">Invoice Qty.</CFormLabel>
 
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ color: 'white', width: '9%', textAlign: 'center' }}
-                      >
-                        Inco Term
-                      </CTableHeaderCell>
+                  <CFormInput
+                    size="sm"
+                    id="sNum"
+                    value={`${val.invoice_net_quantity} - ${val.invoice_uom}`}
+                    readOnly
+                  />
+                </CCol>
+                
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="cNum">Customer Name</CFormLabel>
+                  <CFormInput
+                    size="sm"
+                    id="cNum"
+                    value={val.customer_info.CustomerName}
+                    readOnly
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="cNum">Customer Code</CFormLabel>
 
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                      >
-                        QTY in MTS
-                      </CTableHeaderCell>
+                  <CFormInput
+                    size="sm"
+                    id="cNum"
+                    value={val.customer_info.CustomerCode}
+                    readOnly
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="cNum">Customer City</CFormLabel>
 
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                      >
-                        Rate Per TON
-                      </CTableHeaderCell>
-
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ color: 'white', width: '5%', textAlign: 'center' }}
-                      >
-                        Amount
-                      </CTableHeaderCell>
-
-                    </CTableRow>
-                  </CTableHead>
-                  <CTableBody>
-                  {singleVehicleInfo.shipment_info[0].shipment_child_info.map((data, index) => {
-                      console.log(data,'rowData-data')
-
-                      return (
-                        <>
-                          <CTableRow style={{ width: '100%' }}>
-
-                            <CTableHeaderCell
-                              scope="col"
-                              style={{ width: '5%', textAlign: 'center' }}
-                            >
-                              {index+1}
-                            </CTableHeaderCell>
-
-                            <CTableHeaderCell
-                              scope="col"
-                              style={{ width: '5%', textAlign: 'center' }}
-                            >
-                              {data.delivery_no}
-                            </CTableHeaderCell>
-
-                            <CTableHeaderCell
-                              scope="col"
-                              style={{ width: '9%', textAlign: 'center' }}
-                            >
-                              {getIncoTermNameByCode(data.inco_term_id)}
-                            </CTableHeaderCell>
-
-                            <CTableHeaderCell
-                              scope="col"
-                              style={{ width: '5%', textAlign: 'center' }}
-                            >
-
-                              {getDeliveryQuantity(data.invoice_net_quantity,data.invoice_uom)}
-                            </CTableHeaderCell>
-
-                            <CTableHeaderCell
-                              scope="col"
-                              style={{ width: '5%', textAlign: 'center' }}
-                            >
-                              {JavascriptInArrayComponent(data.inco_term_id,[381,382]) ? 0 : singleVehicleInfo.trip_sheet_info.freight_rate_per_tone}
-                            </CTableHeaderCell>
-
-                            <CTableHeaderCell
-                              scope="col"
-                              style={{ width: '5%', textAlign: 'center' }}
-                            >
-                              {freightamountfinder(data.inco_term_id,singleVehicleInfo.trip_sheet_info.freight_rate_per_tone,getDeliveryQuantity(data.invoice_net_quantity,data.invoice_uom))}
-                            </CTableHeaderCell>
-
-                          </CTableRow>
-                        </>
-                      )
-                    })
-                  }
-                    <CTableRow style={{ width: '100%', background:'cyan' }}>
-
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ width: '5%', textAlign: 'center' }}
-                      >
-                        -
-                      </CTableHeaderCell>
-
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ width: '5%', textAlign: 'center' }}
-                      >
-                        -
-                      </CTableHeaderCell>
-
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ width: '9%', textAlign: 'center',color:'indigo' }}
-                      >
-                        BILLED TONNAGE TOTAL
-                      </CTableHeaderCell>
-
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ width: '5%', textAlign: 'center' }}
-                      >
-                        {totalvaluefinder(1,singleVehicleInfo.shipment_info[0])}
-                      </CTableHeaderCell>
-
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ width: '5%', textAlign: 'center', color:'green' }}
-                      >
-                        Total
-                      </CTableHeaderCell>
-
-                      <CTableHeaderCell
-                        scope="col"
-                        style={{ width: '5%', textAlign: 'center' }}
-                      >
-                        {totalvaluefinder(2,singleVehicleInfo.shipment_info[0])}
-                      </CTableHeaderCell>
-
-                    </CTableRow>
-                  </CTableBody>
-                </CTable>
+                  <CFormInput
+                    size="sm"
+                    id="cNum"
+                    value={val.customer_info.CustomerCity}
+                    readOnly
+                  />
+                </CCol>  
               </CRow>
             </>
           )
-        } */}
+        })} 
         
       </CRow>
       <CRow></CRow>

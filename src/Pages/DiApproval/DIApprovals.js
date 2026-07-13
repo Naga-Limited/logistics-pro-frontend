@@ -1200,7 +1200,7 @@ const [sapNlldFuelDiscountRate, setSapNlldFuelDiscountRate] = useState(0)
                 )}
 
                 {/* Admin - Diesel Vendor Change Process */}
-                {user_info.is_admin == 1 && 
+                {/* {user_info.is_admin == 1 &&  */}
                   <>
                     <ColoredLine color="red" />
                     <CRow className="mt-md-3">
@@ -1238,7 +1238,7 @@ const [sapNlldFuelDiscountRate, setSapNlldFuelDiscountRate] = useState(0)
                     </CRow>
                     <ColoredLine color="red" />
                   </>
-                }
+                {/* } */}
 
               <CRow className="mt-md-3">
                 <CCol className="" xs={12} sm={12} md={3}>

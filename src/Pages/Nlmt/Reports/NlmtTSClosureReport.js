@@ -3,49 +3,49 @@ import {
   CButton,
   CCard,
   CRow,
-  CCol, 
-  CContainer, 
+  CCol,
+  CContainer,
   CFormLabel,
-} from '@coreui/react' 
-import CustomTable from 'src/components/customComponent/CustomTable' 
+} from '@coreui/react'
+import CustomTable from 'src/components/customComponent/CustomTable'
 import { toast } from 'react-toastify'
 import Loader from 'src/components/Loader'
-import { DateRangePicker } from 'rsuite'  
-import NLMTReportSearchSelectComponent from './NLMTReportSearchSelectComponent' 
+import { DateRangePicker } from 'rsuite'
+import NLMTReportSearchSelectComponent from './NLMTReportSearchSelectComponent'
 import FileSaver from 'file-saver'
 import * as XLSX from 'xlsx';
 import { useRef } from 'react'
-import { useReactToPrint } from 'react-to-print'  
+import { useReactToPrint } from 'react-to-print'
 import { GetDateTimeFormat } from '../CommonMethods/CommonMethods'
 import * as NlmtScreenAccessCodes from 'src/components/constants/NlmtScreenAccessCodes'
 import JavascriptInArrayComponent from 'src/components/commoncomponent/JavascriptInArrayComponent'
 import AccessDeniedComponent from 'src/components/commoncomponent/AccessDeniedComponent'
 import NlmtTripSheetClosureService from 'src/Service/Nlmt/TripSheetClosure/NlmtTripSheetClosureService'
 
-const NlmtTSClosureReport = () => { 
+const NlmtTSClosureReport = () => {
 
   const user_info_json = localStorage.getItem('user_info')
   const user_info = JSON.parse(user_info_json)
   /* Get User Id From Local Storage */
   const user_id = user_info.user_id
   const is_admin = user_info.user_id == 1 && user_info.is_admin == 1
-  console.log(is_admin,'is_admin')
-  
+  console.log(is_admin, 'is_admin')
+
   /* ==================== Access Part Start ========================*/
   const [screenAccess, setScreenAccess] = useState(false)
   let page_no = NlmtScreenAccessCodes.NlmtReportScreens.NLMT_Closure_Report
 
-  useEffect(()=>{
+  useEffect(() => {
 
-    if(user_info.is_admin == 1 || JavascriptInArrayComponent(page_no,user_info.page_permissions)){
+    if (user_info.is_admin == 1 || JavascriptInArrayComponent(page_no, user_info.page_permissions)) {
       console.log('screen-access-allowed')
       setScreenAccess(true)
-    } else{
+    } else {
       console.log('screen-access-not-allowed')
       setScreenAccess(false)
     }
 
-  },[])
+  }, [])
   /* ==================== Access Part End ========================*/
 
   const onChangeFilter = (event, event_type) => {
@@ -80,32 +80,32 @@ const NlmtTSClosureReport = () => {
   }
 
   const exportToCSV = () => {
-    console.log(rowData,'exportCsvData')
+    console.log(rowData, 'exportCsvData')
     if (!rowData || rowData.length === 0) {
       toast.warning('No data to export!')
       return
     }
     let dateTimeString = GetDateTimeFormat(1)
-    let fileName='NLMT_Closure_Report_'+dateTimeString
+    let fileName = 'NLMT_Closure_Report_' + dateTimeString
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     const fileExtension = '.xlsx';
     const ws = XLSX.utils.json_to_sheet(rowData);
     const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const data = new Blob([excelBuffer], {type: fileType});
+    const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, fileName + fileExtension);
   }
 
   const [rowData, setRowData] = useState([])
-  const [searchFilterData, setSearchFilterData] = useState([]) 
+  const [searchFilterData, setSearchFilterData] = useState([])
   const [fetch, setFetch] = useState(false)
 
   const [pending, setPending] = useState(true)
 
   /* Report Variables */
   const [reportVehicle, setReportVehicle] = useState(0)
-  const [reportTSNo, setReportTSNo] = useState(0)  
-  const [reportVendorCode, setReportVendorCode] = useState(0) 
+  const [reportTSNo, setReportTSNo] = useState(0)
+  const [reportVendorCode, setReportVendorCode] = useState(0)
   const [reportVehicleType, setReportVehicleType] = useState(0)
 
 
@@ -113,55 +113,97 @@ const NlmtTSClosureReport = () => {
   let tableReportData = []
 
   const vehicleType = (id, data) => {
-    console.log(data,'vehicleType-data')
+    console.log(data, 'vehicleType-data')
     if (id == 21) {
       return 'Own'
     } else if (id == 22) {
       return 'Hire'
-    } else { 
-        return 'Party'
-    }
-  }
-
-  /* Function For Closure Status Find */
-  const closureStatus = (id) => {
-    if (id == 1) {
-      return 'Expense Completed'
-    } else if (id == 2) {
-      return 'Income Rejected'
-    } else if (id == 3) {
-      return 'Income Completed'
-    } else if (id == 5) {
-      return 'Settlement Partially Completed'
     } else {
-      return 'Settlement Completed'
+      return 'Party'
     }
   }
 
   /* Function For Closure Status Find */
+  const ownClosureStatus = (id) => {
+
+    if (id == 1) {
+      return 'Expense Requeted'
+    } else if (id == 2) {
+      return 'Expense Rejected'
+    } else if (id == 3) {
+      return 'Expense Approved'
+    } else if (id == 6) {
+      return 'Payment Approved'
+    } else if (id == 7) {
+      return 'Income Requeted'
+    } else if (id == 8) {
+      return 'Income Rejected'
+    } else if (id == 9) {
+      return 'Income Approved'
+    } else {
+      return '----'
+    }
+  }
+
+  /* Function For Approval Status Find */
+  const hireClosureStatus = (id) => {
+    if (id == 1) {
+      return 'Expense Requeted'
+    } else if (id == 2) {
+      return 'Deduction Approved'
+    } else if (id == 3) {
+      return 'Deduction Rejected'
+    } else if (id == 4) {
+      return 'Expense Rejected'
+    } else if (id == 5) {
+      return 'Expense Approved'
+    } else {
+      return '----'
+    }
+  }
+
+  /* Function For Approval Status Find */
+  const approvalStatus = (id) => {
+    if (id == 1) {
+      return 'Deduction Approved'
+    } else if (id == 2) {
+      return 'Deduction Rejected'
+    } else if (id == 0) {
+      return 'Approval Pending'
+    } else if (id == 3) {
+      return 'Expense Approved'
+    } else if (id == 4) {
+      return 'Expense Rejected'
+    } else {
+      return '----'
+    }
+  }
+
+  /* Function For Payment Status Find */
   const paymentStatus = (id) => {
     if (id == 1) {
       return 'Payment Submitted'
     } else if (id == 2) {
       return 'Payment Validated'
     } else if (id == 3) {
-      return 'Payment Approved'
+      return 'Payment Posted'
     } else {
       return '---'
     }
   }
 
-  const shipmentStatus = (id) => {
+  /* Function For Income Status Find */
+  const incomeStatus = (id) => {
     if (id == 1) {
-      return 'Created'
+      return 'Income Requested'
     } else if (id == 2) {
-      return 'Updated By User'
+      return 'Income Rejected'
     } else if (id == 3) {
-      return 'Updated By SAP'
+      return 'Expense Claimed'
     } else if (id == 4) {
-      return 'Deleted'
+      return 'Income Claimed'
     } else {
-      return 'Completed'
+      return '---'
     }
   }
 
@@ -177,7 +219,7 @@ const NlmtTSClosureReport = () => {
       setDefaultDate(defaultDate)
     } else {
     }
-  }, [defaultDate])  
+  }, [defaultDate])
 
   const loadTripShipmentReport = (fresh_type = '') => {
     /*================== User Location Fetch ======================*/
@@ -196,73 +238,126 @@ const NlmtTSClosureReport = () => {
 
       NlmtTripSheetClosureService.getNlmtClosureDataForReport().then((res) => {
         tableReportData = res.data.data
-        console.log(tableReportData,'getNlmtClosureDataForReport')
+        console.log(tableReportData, 'getNlmtClosureDataForReport')
 
         setFetch(true)
         let rowDataList = []
         let filterData = tableReportData.filter(
-          (data) => user_locations.indexOf(data.gatein_info.vehicle_location_id) != -1 
+          (data) => user_locations.indexOf(data.gatein_info.vehicle_location_id) != -1
         )
         // console.log(filterData)
         setSearchFilterData(filterData)
         filterData.map((data, index) => {
           rowDataList.push({
-            sno: index + 1, 
-            Tripsheet_Date: data.trip_sheet_info.created_date,  
+            sno: index + 1,
+            /* Trip Info */
+            Tripsheet_Date: data.trip_sheet_info.created_date,
             Tripsheet_No: data.tripsheet_no,
             Vehicle_No: data.vehicle_number,
             Vehicle_Type: vehicleType(data.vehicle_info.vehicle_type_id),
             Vehicle_Capacity: data.vehicle_info.vehicle_capacity_details.definition_list_code,
             Driver_Name: data.driver_id ? data.driver_info?.driver_name : data.gatein_info.driver_name,
             Driver_Mobile_Number: data.driver_id ? data.driver_info?.driver_phone_1 : data.gatein_info.driver_phone_1,
-            Shipment_Count: data.shipment_info.length,
+            Halt_Days: data.halt_days,
+
+            /* Shipment Info */
+            Shipment_Count: data.shipment_info?.length,
             Shipment_No: data.shipment_no,
+
+            /* Vendor Info */
             Vendor_Name: data.driver_id ? data.driver_info?.driver_name : data.vendor_info?.owner_name,
             Vendor_Code: data.driver_id ? data.driver_info?.driver_code : data.vendor_info?.vendor_code,
-            expense: data.expense, 
-            /* Expense form photo button */
-            expense_form: data.expense_form ? (
-              <a style={{color:'black'}} target='_blank' rel="noreferrer" href={data.expense_form}>
-                <i className="fa fa-eye" aria-hidden="true"></i>
-              </a>
-            ) : <>--</>,
-            expense_Sap_Doc: data.expense_sap_document_no,
-            SAP_Expense_Amount: data.sap_expense_amount,
-            GST_Tax_Type: data.gst_tax_type == 'Empty' ? 'No Tax': (data.gst_tax_type && data.gst_tax_type != '' ? data.gst_tax_type : '-'),
-            TDS_Having: data.tds_having == 1 ? 'YES' : 'No',
-            TDS_Tax_Type: data.tds_having == 1 ? data.vendor_tds : '-',
-            HSN_Code: data.vendor_hsn,
-            halt_days: data.halt_days,
-            income: data.income,
-            Profit_and_Loss: data.profit_and_loss,
-            own_driver_expenses: data.driver_expenses,
-            unloading_Charges: data.unloading_charges,
-            Sub_Delivery_Charges: data.sub_delivery_charges,
-            Weighment_Charges: data.weighment_charges,
+
+            /* Expenses Info */
+            Own_driver_expenses: data.driver_expenses,
+            Unloading_Charges: data.unloading_charges,
             Freight_Charges: data.freight_charges,
-            Deduction_Amount: data.diversion_return_charges,
             Halting_Charges: data.halting_charges,
             Toll_Amount: data.toll_amount,
             Bata: data.bata,
             Other_Charges: data.misc_charges,
-            Deduction_SAP_Doc: data.deduction_doc,
-            SAP_Income_Doc: data.income_sap_document_no,
-            // SAP_Driver_Payment_Doc: data.remarks,
-            Closure_Status: closureStatus(data.tripsheet_is_settled),
-            Approval_Status: data.approval_status == 1 ? 'Accepted' : ( data.approval_status == 2 ? 'Rejected' : '-'),
+            expense_form: data.expense_form ? (
+              <a style={{ color: 'black' }} target='_blank' rel="noreferrer" href={data.expense_form}>
+                <i className="fa fa-eye" aria-hidden="true"></i>
+              </a>
+            ) : <>--</>,
+            expense: data.expense,
+            expense_Sap_Doc: data.expense_sap_document_no,
+            SAP_Expense_Amount: data.sap_expense_amount,
+            SAP_Expense_Text: data.sap_text,
+            Hire_Expense_Percentage: data.advance_amount ? data.advance_amount : '-',
+            SAP_Expense_Posting_Date: data.sap_expense_date,
+            SAP_Expense_Remarks: data.remarks,
             Expense_Closure_Date: data.created_date,
-            Payment_Status: paymentStatus(data.payment_status),             
+            Closure_Status: data.driver_id ? ownClosureStatus(data.own_closure_status) : hireClosureStatus(data.hire_closure_status),
+            Closure_Updation_Time: data.closure_updation_time,
+            Expense_Ref_No: data.driver_id ? '-' : data.supplier_ref_no,
+            Expense_Ref_Date: data.driver_id ? '-' : data.supplier_posting_date,
+
+            /* Deduction Info */
+            Deduction_Amount: data.diversion_return_charges,
+            Deduction_Remarks: data.driver_id ? '-' : data.deduction_approval_remarks,
+            Deduction_Approval_By: data.driver_id ? '-' : data.deduction_approval_by,
+            Deduction_Approval_Time: data.driver_id ? '-' : data.deduction_approval_at,
+            Deduction_SAP_Doc: data.deduction_doc,
+            Deduction_Reference: data.ded_ref,
+            Deduction_Remarks: data.ded_remarks,
+            Deduction_Costcenter: data.cost_center,
+            Deduction_Posting_Date: data.ded_posting_date,
+
+            /* Expense Approval Info */
+            Expense_Approval_Remarks: data.expense_approval_remarks,
+            Expense_Approval_By: data.expense_approval_by,
+            Expense_Approval_Time: data.expense_approval_at,
+            Expense_Approval_Status: approvalStatus(data.approval_status),
+
+            /* Tax Info */
+            GST_Tax_Type: data.gst_tax_type == 'Empty' ? 'No Tax' : (data.gst_tax_type && data.gst_tax_type != '' ? data.gst_tax_type : '-'),
+            TDS_Having: data.tds_having == 1 ? 'YES' : 'No',
+            TDS_Tax_Type: data.tds_having == 1 ? data.vendor_tds : '-',
+            HSN_Code: data.vendor_hsn,
+
+            /* Income info */
+            income: data.income,
+            Income_Request_By: data.income_request_by,
+            Income_Request_At: data.income_request_at,
+            SAP_Income_Text: data.income_sap_text,
+            SAP_Income_Posting_Date: data.income_posting_date,
+            SAP_Income_Remarks: data.income_remarks,
+            Profit_and_Loss: data.profit_and_loss,
+            NLMT_Income_Status: data.driver_id ? incomeStatus(data.nlmt_income_status) : '-',
+
+            /* Income Approval Info */
+            Income_Approval_Remarks: data.driver_id ? data.deduction_approval_remarks : '-',
+            Income_Approval_By: data.driver_id ? data.deduction_approval_by : '-',
+            Income_Approval_Time: data.driver_id ? data.deduction_approval_at : '-',
+            NLMT_Expense_Vendor_Code: data.driver_id ? data.nlmt_div_expense_vendor_code : '-',
+            NLMT_Income_Vendor_Code: data.driver_id ? data.nlmt_div_income_vendor_code : '-',
+            NLMT_Division_Expense_Ref_No: data.driver_id ? data.supplier_ref_no : '-',
+            NLMT_Division_Expense_Ref_Date: data.driver_id ? data.supplier_posting_date : '-',
+            SAP_Income_Doc: data.income_sap_document_no,
+            NLMT_Div_SAP_Expense_Doc_No: data.nlmt_div_sap_expense_doc_no,
+
+            /* Payment Info */
+            Payment_Status: paymentStatus(data.payment_status),
+            Driver_Payment_Remarks: data.driver_payment_remarks,
+            Driver_Payment_By: data.driver_payment_by,
+            Driver_Payment_At: data.driver_payment_at,
+            Driver_Payment_Posting_Date: data.driver_payment_posting_date,
+            Driver_Payment_Sap_Text: data.driver_payment_sap_text,
+            Driver_Payment_Sap_Document_No: data.driver_payment_sap_document_no,
+
           })
         })
         setFetch(true)
         setRowData(rowDataList)
         setPending(false)
       })
-      .catch((err) => {
-        console.error('NLMT Closure Report Error:', err)
-        toast.error('Failed to load advance report. Please try again.')
-        setFetch(true)
-      })
+        .catch((err) => {
+          console.error('NLMT Closure Report Error:', err)
+          toast.error('Failed to load advance report. Please try again.')
+          setFetch(true)
+        })
     } else {
       if (defaultDate == null) {
         setFetch(true)
@@ -283,8 +378,8 @@ const NlmtTSClosureReport = () => {
       report_form_data.append('date_between', defaultDate)
       report_form_data.append('vehicle_no', reportVehicle)
       report_form_data.append('vendor_code', reportVendorCode)
-      report_form_data.append('tripsheet_no', reportTSNo) 
-      report_form_data.append('vehicle_type', reportVehicleType) 
+      report_form_data.append('tripsheet_no', reportTSNo)
+      report_form_data.append('vehicle_type', reportVehicleType)
 
       console.log(defaultDate, 'defaultDate')
       console.log(reportVehicle, 'reportVehicle')
@@ -300,80 +395,120 @@ const NlmtTSClosureReport = () => {
         setFetch(true)
         let rowDataList = []
         let filterData = tableReportData.filter(
-          (data) => user_locations.indexOf(data.gatein_info.vehicle_location_id) != -1 
+          (data) => user_locations.indexOf(data.gatein_info.vehicle_location_id) != -1
         )
         // console.log(filterData)
         setSearchFilterData(filterData)
         filterData.map((data, index) => {
           rowDataList.push({
-            sno: index + 1, 
-            Tripsheet_Date: data.trip_sheet_info.created_date,  
+            sno: index + 1,
+            /* Trip Info */
+            Tripsheet_Date: data.trip_sheet_info.created_date,
             Tripsheet_No: data.tripsheet_no,
             Vehicle_No: data.vehicle_number,
             Vehicle_Type: vehicleType(data.vehicle_info.vehicle_type_id),
             Vehicle_Capacity: data.vehicle_info.vehicle_capacity_details.definition_list_code,
             Driver_Name: data.driver_id ? data.driver_info?.driver_name : data.gatein_info.driver_name,
             Driver_Mobile_Number: data.driver_id ? data.driver_info?.driver_phone_1 : data.gatein_info.driver_phone_1,
+            Halt_Days: data.halt_days,
+
+            /* Shipment Info */
             Shipment_Count: data.shipment_info?.length,
             Shipment_No: data.shipment_no,
+
+            /* Vendor Info */
             Vendor_Name: data.driver_id ? data.driver_info?.driver_name : data.vendor_info?.owner_name,
             Vendor_Code: data.driver_id ? data.driver_info?.driver_code : data.vendor_info?.vendor_code,
-            expense: data.expense, 
-            /* Expense form photo button */
-            expense_form: data.expense_form ? (
-              <a style={{color:'black'}} target='_blank' rel="noreferrer" href={data.expense_form}>
-                <i className="fa fa-eye" aria-hidden="true"></i>
-              </a>
-            ) : <>--</>,
-            expense_Sap_Doc: data.expense_sap_document_no,
-            SAP_Expense_Amount: data.sap_expense_amount,
-            SAP_Expense_Text: data.sap_text,
-            SAP_Income_Text: data.income_sap_text,
-            SAP_Expense_Posting_Date: data.sap_expense_date,
-            SAP_Income_Posting_Date: data.income_posting_date,
-            SAP_Expense_Remarks: data.remarks,
-            SAP_Income_Remarks: data.income_remarks,
-            SAP_Settlement_Remarks: data.settlement_remarks,
-            SAP_Approval_Remarks: data.approval_remarks,
-            GST_Tax_Type: data.gst_tax_type == 'Empty' ? 'No Tax': (data.gst_tax_type && data.gst_tax_type != '' ? data.gst_tax_type : '-'),
-            Hire_Expense_Percentage : data.advance_amount ? data.advance_amount : '-',
-            TDS_Having: data.tds_having == 1 ? 'YES' : 'No',
-            TDS_Tax_Type: data.tds_having == 1 ? data.vendor_tds : '-',
-            HSN_Code: data.vendor_hsn,
-            halt_days: data.halt_days,
-            income: data.income,
-            Profit_and_Loss: data.profit_and_loss,
-            own_driver_expenses: data.driver_expenses,
-            unloading_Charges: data.unloading_charges,
-            Sub_Delivery_Charges: data.sub_delivery_charges,
-            Weighment_Charges: data.weighment_charges,
+
+            /* Expenses Info */
+            Own_driver_expenses: data.driver_expenses,
+            Unloading_Charges: data.unloading_charges,
             Freight_Charges: data.freight_charges,
-            Deduction_Amount: data.diversion_return_charges,
             Halting_Charges: data.halting_charges,
             Toll_Amount: data.toll_amount,
             Bata: data.bata,
             Other_Charges: data.misc_charges,
+            expense_form: data.expense_form ? (
+              <a style={{ color: 'black' }} target='_blank' rel="noreferrer" href={data.expense_form}>
+                <i className="fa fa-eye" aria-hidden="true"></i>
+              </a>
+            ) : <>--</>,
+            expense: data.expense,
+            expense_Sap_Doc: data.expense_sap_document_no,
+            SAP_Expense_Amount: data.sap_expense_amount,
+            SAP_Expense_Text: data.sap_text,
+            Hire_Expense_Percentage: data.advance_amount ? data.advance_amount : '-',
+            SAP_Expense_Posting_Date: data.sap_expense_date,
+            SAP_Expense_Remarks: data.remarks,
+            Expense_Closure_Date: data.created_date,
+            Closure_Status: data.driver_id ? ownClosureStatus(data.own_closure_status) : hireClosureStatus(data.hire_closure_status),
+            Closure_Updation_Time: data.closure_updation_time,
+            Expense_Ref_No: data.driver_id ? '-' : data.supplier_ref_no,
+            Expense_Ref_Date: data.driver_id ? '-' : data.supplier_posting_date,
+
+            /* Deduction Info */
+            Deduction_Amount: data.diversion_return_charges,
+            Deduction_Remarks: data.driver_id ? '-' : data.deduction_approval_remarks,
+            Deduction_Approval_By: data.driver_id ? '-' : data.deduction_approval_by,
+            Deduction_Approval_Time: data.driver_id ? '-' : data.deduction_approval_at,
             Deduction_SAP_Doc: data.deduction_doc,
             Deduction_Reference: data.ded_ref,
             Deduction_Remarks: data.ded_remarks,
             Deduction_Costcenter: data.cost_center,
             Deduction_Posting_Date: data.ded_posting_date,
+
+            /* Expense Approval Info */
+            Expense_Approval_Remarks: data.expense_approval_remarks,
+            Expense_Approval_By: data.expense_approval_by,
+            Expense_Approval_Time: data.expense_approval_at,
+            Expense_Approval_Status: approvalStatus(data.approval_status),
+
+            /* Tax Info */
+            GST_Tax_Type: data.gst_tax_type == 'Empty' ? 'No Tax' : (data.gst_tax_type && data.gst_tax_type != '' ? data.gst_tax_type : '-'),
+            TDS_Having: data.tds_having == 1 ? 'YES' : 'No',
+            TDS_Tax_Type: data.tds_having == 1 ? data.vendor_tds : '-',
+            HSN_Code: data.vendor_hsn,
+
+            /* Income info */
+            income: data.income,
+            Income_Request_By: data.income_request_by,
+            Income_Request_At: data.income_request_at,
+            SAP_Income_Text: data.income_sap_text,
+            SAP_Income_Posting_Date: data.income_posting_date,
+            SAP_Income_Remarks: data.income_remarks,
+            Profit_and_Loss: data.profit_and_loss,
+            NLMT_Income_Status: data.driver_id ? incomeStatus(data.nlmt_income_status) : '-',
+
+            /* Income Approval Info */
+            Income_Approval_Remarks: data.driver_id ? data.deduction_approval_remarks : '-',
+            Income_Approval_By: data.driver_id ? data.deduction_approval_by : '-',
+            Income_Approval_Time: data.driver_id ? data.deduction_approval_at : '-',
+            NLMT_Expense_Vendor_Code: data.driver_id ? data.nlmt_div_expense_vendor_code : '-',
+            NLMT_Income_Vendor_Code: data.driver_id ? data.nlmt_div_income_vendor_code : '-',
+            NLMT_Division_Expense_Ref_No: data.driver_id ? data.supplier_ref_no : '-',
+            NLMT_Division_Expense_Ref_Date: data.driver_id ? data.supplier_posting_date : '-',
             SAP_Income_Doc: data.income_sap_document_no,
-            // SAP_Driver_Payment_Doc: data.remarks,
-            Closure_Status: closureStatus(data.tripsheet_is_settled),
-            Approval_Status: data.approval_status == 1 ? 'Accepted' : ( data.approval_status == 2 ? 'Rejected' : '-'),
-            Expense_Closure_Date: data.created_date,
-            Payment_Status: paymentStatus(data.payment_status),             
+            NLMT_Div_SAP_Expense_Doc_No: data.nlmt_div_sap_expense_doc_no,
+
+            /* Payment Info */
+            Payment_Status: paymentStatus(data.payment_status),
+            Driver_Payment_Remarks: data.driver_payment_remarks,
+            Driver_Payment_By: data.driver_payment_by,
+            Driver_Payment_At: data.driver_payment_at,
+            Driver_Payment_Posting_Date: data.driver_payment_posting_date,
+            Driver_Payment_Sap_Text: data.driver_payment_sap_text,
+            Driver_Payment_Sap_Document_No: data.driver_payment_sap_document_no,
+
           })
         })
         setRowData(rowDataList)
         setPending(false)
       })
-      .catch((err) => {
-        console.error('NLMT Closure Report Error:', err)
-        toast.error('Failed to load advance report. Please try again.')
-        setFetch(true)
-      })
+        .catch((err) => {
+          console.error('NLMT Closure Report Error:', err)
+          toast.error('Failed to load advance report. Please try again.')
+          setFetch(true)
+        })
     }
   }
 
@@ -389,7 +524,7 @@ const NlmtTSClosureReport = () => {
       center: true,
     },
     {
-      name: 'TripSheet',
+      name: 'TripSheet No',
       selector: (row) => row.Tripsheet_No,
       sortable: true,
       center: true,
@@ -400,7 +535,6 @@ const NlmtTSClosureReport = () => {
       sortable: true,
       center: true,
     },
-   
     {
       name: 'Veh. No',
       selector: (row) => row.Vehicle_No,
@@ -414,7 +548,7 @@ const NlmtTSClosureReport = () => {
       center: true,
     },
     {
-      name: 'Vendor',
+      name: 'Vendor Name',
       selector: (row) => row.Vendor_Name,
       sortable: true,
       center: true,
@@ -432,35 +566,41 @@ const NlmtTSClosureReport = () => {
       center: true,
     },
     {
-      name: 'Copy',
+      name: 'Attach.',
       selector: (row) => row.expense_form,
       sortable: true,
       center: true,
-    },  
+    },
     {
-      name: 'Ex. Status',
+      name: 'Exp. Status',
       selector: (row) => row.Closure_Status,
       sortable: true,
       center: true,
     },
     {
-      name: 'Ap. Status',
+      name: 'Appr. Status',
       selector: (row) => row.Approval_Status,
       sortable: true,
       center: true,
     },
     {
-      name: 'Pm. Status',
+      name: 'Closure Status',
       selector: (row) => row.Payment_Status,
       sortable: true,
       center: true,
-    }, 
+    },
+    {
+      name: 'Payment Status',
+      selector: (row) => row.Payment_Status,
+      sortable: true,
+      center: true,
+    },
     {
       name: 'Exp. Date',
       selector: (row) => row.Expense_Closure_Date,
       sortable: true,
       center: true,
-    }, 
+    },
   ]
 
   function getCurrentDate(separator = '') {
@@ -469,25 +609,24 @@ const NlmtTSClosureReport = () => {
     let month = newDate.getMonth() + 1
     let year = newDate.getFullYear()
 
-    return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${
-      date < 10 ? `0${date}` : `${date}`
-    }`
+    return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date < 10 ? `0${date}` : `${date}`
+      }`
   }
 
   const componentRef = useRef();
-    const handleprint = useReactToPrint({
-      content : () => componentRef.current,
-    });
-    function printReceipt() {
-      window.print();
-    }
+  const handleprint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+  function printReceipt() {
+    window.print();
+  }
 
   return (
     <>
       {!fetch && <Loader />}
       {fetch && (
         <>
-         {screenAccess ? (
+          {screenAccess ? (
             <>
               <CCard className="mt-4">
                 <CContainer className="m-2">
@@ -535,7 +674,7 @@ const NlmtTSClosureReport = () => {
                       />
                     </CCol>
 
-                     <CCol xs={12} md={3}>
+                    <CCol xs={12} md={3}>
                       <CFormLabel htmlFor="VNum">Tripsheet Number</CFormLabel>
                       <NLMTReportSearchSelectComponent
                         size="sm"
@@ -565,7 +704,7 @@ const NlmtTSClosureReport = () => {
                       />
                     </CCol>
 
-                    
+
                   </CRow>
                   <CRow className="mt-3">
                     <CCol className="" xs={12} sm={9} md={3}></CCol>
@@ -593,9 +732,9 @@ const NlmtTSClosureReport = () => {
                         color="warning"
                         className="mx-3 px-3 text-white"
                         onClick={(e) => {
-                            // loadVehicleReadyToTripForExportCSV()
-                            exportToCSV()
-                          }}
+                          // loadVehicleReadyToTripForExportCSV()
+                          exportToCSV()
+                        }}
                       >
                         Export
                       </CButton>

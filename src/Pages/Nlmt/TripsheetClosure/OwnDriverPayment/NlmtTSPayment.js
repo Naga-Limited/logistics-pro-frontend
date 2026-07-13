@@ -2,7 +2,7 @@
 import {
   CButton,
   CCard,
-  CCol, 
+  CCol,
   CFormInput,
   CFormLabel,
   CTableCaption,
@@ -22,27 +22,27 @@ import {
   CTableBody,
   CTableDataCell,
   CTableHead,
-  CTableHeaderCell, 
+  CTableHeaderCell,
   CTableRow,
   CFormTextarea,
-  CCardImage, 
-  CAlert, 
+  CCardImage,
+  CAlert,
 } from '@coreui/react'
 import { React, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-import Loader from 'src/components/Loader' 
+import Loader from 'src/components/Loader'
 
 import * as TripsheetClosureConstants from 'src/components/constants/TripsheetClosureConstants'
 import VehicleAssignmentService from 'src/Service/VehicleAssignment/VehicleAssignmentService'
 import DieselVendorMasterService from 'src/Service/Master/DieselVendorMasterService'
 
-import StoTableComponent from './StoTableComponent'
+import StoTableComponent from '../StoTableComponent'
 import AllDriverListNameSelectComponent from 'src/components/commoncomponent/AllDriverListNameSelectComponent'
-import StoTableRMSTOComponent from './StoTableRMSTOComponent'
+import StoTableRMSTOComponent from '../StoTableRMSTOComponent'
 import CustomTable from 'src/components/customComponent/CustomTable'
-import ExpenseCalculations from './Calculations/NlmtExpenseCalculations'
+import ExpenseCalculations from '../Calculations/NlmtExpenseCalculations'
 import TripsheetClosureValidation from 'src/Utils/TripsheetClosure/TripsheetClosureValidation'
 import useFormRJSO from 'src/Hooks/useFormRJSO'
 import useFormTripsheetClosure from 'src/Hooks/useFormTripsheetClosure'
@@ -57,7 +57,7 @@ import { checkPropTypes, number } from 'prop-types'
 import PropTypes from 'prop-types'
 import CustomerCreationService from 'src/Service/CustomerCreation/CustomerCreationService'
 import TripSheetClosureSapService from 'src/Service/SAP/TripSheetClosureSapService'
-import ExpenseIncomePostingDate from './Calculations/NlmtExpenseIncomePostingDate'
+import ExpenseIncomePostingDate from '../Calculations/NlmtExpenseIncomePostingDate'
 
 import AccessDeniedComponent from 'src/components/commoncomponent/AccessDeniedComponent'
 import JavascriptInArrayComponent from 'src/components/commoncomponent/JavascriptInArrayComponent'
@@ -76,20 +76,21 @@ import SmallLoader from 'src/components/SmallLoader'
 import JavascriptDateCheckComponent from 'src/components/commoncomponent/JavascriptDateCheckComponent'
 import PanDataService from 'src/Service/SAP/PanDataService'
 import NlmtTripSheetClosureService from 'src/Service/Nlmt/TripSheetClosure/NlmtTripSheetClosureService'
-import NlmtRMSTOJourneyInfo from './JourneyInfo/NlmtRMSTOJourneyInfo'
-import NlmtRakeJourneyInfo from './JourneyInfo/NlmtRakeJourneyInfo'
-import NlmtOthersJourneyInfo from './JourneyInfo/NlmtOthersJourneyInfo'
-import NlmtFGSALESJourneyInfo from './JourneyInfo/NlmtFGSALESJourneyInfo'
-import NlmtFCIJourneyInfo from './JourneyInfo/NlmtFCIJourneyInfo'
+import NlmtRMSTOJourneyInfo from '../JourneyInfo/NlmtRMSTOJourneyInfo'
+import NlmtRakeJourneyInfo from '../JourneyInfo/NlmtRakeJourneyInfo'
+import NlmtOthersJourneyInfo from '../JourneyInfo/NlmtOthersJourneyInfo'
+// import NlmtFGSALESJourneyInfo from './JourneyInfo/NlmtFGSALESJourneyInfo'
+import NlmtFCIJourneyInfo from '../JourneyInfo/NlmtFCIJourneyInfo'
 import NlmtRJSaleOrderCreationService from 'src/Service/Nlmt/RJSaleOrderCreation/NlmtRJSaleOrderCreationService'
 import NlmtVehicleAssignmentService from 'src/Service/Nlmt/VehicleAssignment/NlmtVehicleAssignmentService'
 import NlmtDefinitionsListApi from 'src/Service/Nlmt/Masters/NlmtDefinitionsListApi'
 import NlmtTripSheetClosureSapService from 'src/Service/Nlmt/SAP/NlmtTripSheetClosureSapService'
+import NlmtFGSALESJourneyInfo from '../JourneyInfo/NlmtFGSALESJourneyInfo'
 
 export const nlmt_expense_vendor_code = process.env.REACT_APP_NLMT_EXPENSE_VENDOR
-export const nlmt_income_vendor_code = process.env.REACT_APP_NLMT_INCOME_VENDOR
+export const nlfs_income_vendor_code = process.env.REACT_APP_NLMT_INCOME_VENDOR
 
-const NlmtTripSheetInfoClosure = () => {
+const NlmtTSPayment = () => {
   /*================== User Id & Location Fetch ======================*/
   const user_info_json = localStorage.getItem('user_info')
   const user_info = JSON.parse(user_info_json)
@@ -113,7 +114,7 @@ const NlmtTripSheetInfoClosure = () => {
   /* ==================== Access Part Start ========================*/
   const [screenAccess, setScreenAccess] = useState(false)
   const [restrictScreenById, setRestrictScreenById] = useState(true)
-  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.Nlmt_Income_Closure
+  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.NLMT_Own_Driver_Payment_Approval
 
   useEffect(() => {
 
@@ -197,67 +198,12 @@ const NlmtTripSheetInfoClosure = () => {
     expense_posting_date: '',
     income_posting_date: '',
     income_sap_text: '',
-    supplier_ref_no: '',
-    supplier_posting_date: '',
-    vendor_hsn: '',
     HSNtax: '',
   }
 
   const [vpan, setVpan] = useState('')
   const [vpanMobile, setVpanMobile] = useState(0)
   const [vpanMobileHaving, setVpanMobileHaving] = useState(false)
-
-  const tripPurposeFinder = (code) => {
-    let p_code = '-'
-    if (code == '1') {
-      p_code = 'FG-SALES'
-    } else if (code == '2') {
-      p_code = 'FG-STO'
-    } else if (code == '3') {
-      p_code = 'RM-STO'
-    } else if (code == '4') {
-      p_code = 'OTHERS'
-    } else if (code == '5') {
-      p_code = 'FCI'
-    }
-    return p_code
-  }
-
-  const convertJsonSTringify = (data) => {
-    // reCreate new Object and set File Data into it
-    var newObject = {
-      lastModified: data.lastModified,
-      lastModifiedDate: data.lastModifiedDate,
-      name: data.name,
-      size: data.size,
-      type: data.type,
-    }
-
-    // return newObject
-
-    // // then use JSON.stringify on new object
-    // JSON.stringify(newObject)
-
-    // var dataArray = JSON.parse(JSON.stringify(data))
-    // // implement toJSON() behavior
-    // dataArray.toJSON = function () {
-    //   return {
-    //     lastModified: dataArray.lastModified,
-    //     lastModifiedDate: dataArray.lastModifiedDate,
-    //     name: dataArray.name,
-    //     size: dataArray.size,
-    //     type: dataArray.type,
-    //   }
-    // }
-
-    // then use JSON.stringify on File object
-    // JSON.stringify(fileObject)
-
-    // return JSON.stringify(dataArray)
-    // return dataArray
-
-    return JSON.stringify(newObject)
-  }
 
   const [locationData, setLocationData] = useState([])
   useEffect(() => {
@@ -292,6 +238,8 @@ const NlmtTripSheetInfoClosure = () => {
     return item ? item.definition_list_name.trim() : ''
   }
 
+
+
   const dateCheck = (dateFrom, dateTo, dateCheck) => {
     console.log(dateFrom, 'dateFrom')
     console.log(dateTo, 'dateTo')
@@ -310,104 +258,6 @@ const NlmtTripSheetInfoClosure = () => {
     } else {
       return false
     }
-  }
-
-  const calculationForFreight = (deliveries, qty, code, plant, uom, date, t_qty = 0) => {
-    let freight = 0
-    let location = ''
-
-    // if(plant == '9290'){
-    //   location = 8
-    // } else if(plant == '1009' || plant == '1010'){
-    //   location = 1
-    // } else if(plant == '1020' || plant == '1022'){
-    //   location = 6
-    // }
-
-    let locationFilterData = locationData.filter((data) => data.location_code == plant)
-
-    console.log(locationFilterData, 'locationFilterData')
-    if (locationFilterData.length > 0) {
-      location = locationFilterData[0].id
-    }
-
-    console.log(code, 'code')
-    console.log(plant, 'plant')
-    console.log(uom, 'uom')
-    console.log(tripShipmentCustomerData, 'tripShipmentCustomerData')
-
-    var delivery_freight_array = []
-
-    deliveries.forEach((datan1, indexn1) => {
-      // if(datan1.delivery_plant == '9290'){
-      if (JavascriptInArrayComponent(datan1.delivery_plant, nlcdPlantsArrayData)) {
-        tripShipmentCustomerData.map((data1, index1) => {
-          if (data1.customer_code == datan1.customer_info.CustomerCode) {
-            let freight_filter_info = []
-            if (data1.freight_info && data1.freight_info.length > 0) {
-              console.log(data1.freight_info, 'data1.freight_info')
-              freight_filter_info = data1.freight_info.filter(
-                (data) => data.location_id == location
-              )
-            }
-            console.log(freight_filter_info, 'freight_filter_info')
-            freight_filter_info.map((data2, index2) => {
-              if (
-                data2.type == uom &&
-                dateCheck(data2.formated_start_date, data2.formated_end_date, date)
-              ) {
-                //&& data2.freight_status == '1'
-                delivery_freight_array.push(data2.freight_rate)
-              }
-            })
-          }
-        })
-      }
-    })
-
-    /* Get Highest Delivery Freight From deliveryFreightData*/
-    console.log(delivery_freight_array, 'delivery_freight_array')
-
-    var largest = 0
-
-    for (let i = 0; i < delivery_freight_array.length; i++) {
-      if (delivery_freight_array[i] > largest) {
-        largest = delivery_freight_array[i]
-      }
-    }
-
-    console.log(largest, 'largest freight')
-
-    tripShipmentCustomerData.map((data1, index1) => {
-      if (data1.customer_code == code) {
-        let freight_filter_info1 = []
-        if (data1.freight_info && data1.freight_info.length > 0) {
-          console.log(data1.freight_info, 'data1.freight_info1')
-          freight_filter_info1 = data1.freight_info.filter((data) => data.location_id == location)
-        }
-        console.log(freight_filter_info1, 'freight_filter_info1')
-
-        freight_filter_info1.map((data2, index2) => {
-          if (
-            data2.type == uom &&
-            dateCheck(data2.formated_start_date, data2.formated_end_date, date)
-          ) {
-            // && data2.freight_status == '1') {
-            if (location == '8') {
-              freight = Number(parseFloat(largest).toFixed(2)) * Number(parseFloat(qty).toFixed(4))
-            } else {
-              freight =
-                Number(parseFloat(data2.freight_rate).toFixed(2)) *
-                Number(parseFloat(qty).toFixed(4))
-            }
-          }
-        })
-      }
-    })
-
-    console.log(freight, 'freight')
-
-    return freight
   }
 
   const {
@@ -461,42 +311,16 @@ const NlmtTripSheetInfoClosure = () => {
     let expense = Number(tripsettlementData.expense)
     let income = Number(values.income)
 
-    let pl = parseFloat(income-expense).toFixed(2)
+    let pl = parseFloat(income - expense).toFixed(2)
 
     return pl
 
-  } 
-
-  const uomName = (id) => {
-    if (id == 1) {
-      return 'TON'
-    } else if (id == 2) {
-      return 'KG'
-    } else {
-      return ''
-    }
-  }
-
-  const paymentName = (mode) => {
-    if (mode == 1) {
-      return 'Cash Payment'
-    } else if (mode == 2) {
-      return 'Debit Card'
-    } else if (mode == 3) {
-      return 'Credit Card'
-    } else if (mode == 4) {
-      return 'GPay'
-    } else if (mode == 5) {
-      return 'Phone Pay'
-    } else if (mode == 6) {
-      return 'Paytm'
-    }
   }
 
   useEffect(() => {
     const val_obj = Object.entries(values)
 
-    val_obj.forEach(([key_st, value]) => {})
+    val_obj.forEach(([key_st, value]) => { })
     console.log(values, 'values')
     console.log(formValues, 'formValues')
   }, [values, formValues])
@@ -580,20 +404,9 @@ const NlmtTripSheetInfoClosure = () => {
         // Settlement
         const settlementData = settlementRes?.data?.data?.[0] || {}
         setTripsettlementData(settlementData)
-        console.log(settlementRes,'settlementRes')
-        console.log(shipmentRes,'shipmentRes')
+        console.log(settlementRes, 'settlementRes')
+        console.log(shipmentRes, 'shipmentRes')
         const shipmentRaw = shipmentRes?.data?.data
-
-        if(settlementData){
-          values.income = settlementData.income
-          values.income_sap_text = settlementData.income_sap_text
-          values.income_remarks = settlementData.income_remarks
-          values.income_posting_date = settlementData.income_posting_date
-          values.vendor_hsn = settlementData.vendor_hsn ? settlementData.vendor_hsn : ''
-          values.supplier_posting_date = settlementData.supplier_posting_date
-          values.supplier_ref_no = settlementData.supplier_ref_no
-        }
-        
 
         // NLMT returns object, convert to array for FG UI
         const shipmentData = shipmentRaw
@@ -731,7 +544,59 @@ const NlmtTripSheetInfoClosure = () => {
     } else {
       setTabRMSTOHireSuccess(false)
     }
-  }, [stoTableDataRMSTO]) 
+  }, [stoTableDataRMSTO])
+
+  /* ===================== Vehicle Assignment Details (FG-SALES) Table Data Part Start ===================== */
+
+
+
+  const panMobileCheck = (data) => {
+    console.log(data, 'panMobileCheck')
+    let mobValue = data.TELF1 ? data.TELF1 : ''
+    let mobCondition = 0
+    if (mobValue.trim() != '') {
+      // if(data.TELF1 && /^[\d]{10}$/.test(data.TELF1)){
+      mobCondition = 1
+    }
+    return mobCondition
+  }
+
+  useEffect(() => {
+    if (vpan) {
+      PanDataService.getPanData(vpan).then((res) => {
+        if (res.status == 200 && res.data != '') {
+          console.log(res.data[0], 'panNumbernew')
+          if (panMobileCheck(res.data[0]) === 1) {
+            console.log('SAP-VENDOR-MOBILE-NUMBER-VERIFIED')
+            setVpanMobile(res.data[0].TELF1)
+            setVpanMobileHaving(true)
+          } else {
+            console.log('SAP-VENDOR-MOBILE-NUMBER-MISSING/INVALID')
+            toast.warning(
+              'SAP - Vendor Mobile Number was Missing or Invalid. Kindly update Address in SAP..'
+            )
+            setVpanMobileHaving(false)
+            setVpanMobile(0)
+          }
+        } else {
+          setVpanMobileHaving(false)
+        }
+      })
+    }
+  }, [vpan])
+
+  /* ===================== Vehicle Assignment Details Table Data Part End ===================== */
+
+  /* ================= Vehicle Assignment Details Table Income Capture Part Start ============= */
+
+  const onlyNumberKey = (evt) => {
+    console.log(evt, 'evt')
+    // Only ASCII character in that range allowed
+    var ASCIICode = evt.which ? evt.which : evt.keyCode
+    if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) return false
+    return true
+  }
+
   /* ===================== TripsheetIncomeClosureSubmit Start ===================== */
 
   const TripsheetIncomeClosureSubmit = () => {
@@ -745,7 +610,7 @@ const NlmtTripSheetInfoClosure = () => {
       toast.warning('Income Posting Amount should be greater than zero..!')
       return false
     }
-    
+
     if (values.income_posting_date == '') {
       toast.warning('You should select income posting date before submitting..!')
       return false
@@ -756,34 +621,176 @@ const NlmtTripSheetInfoClosure = () => {
     let to_date = Expense_Income_Posting_Date_Taken.max_date
 
     if (JavascriptDateCheckComponent(from_date, values.income_posting_date, to_date)) {
-      // addIncomeClosureRequest()
+      setIncomeSubmit(true)
     } else {
       setFetch(true)
-      // setIncomeSubmit(false)
+      setIncomeSubmit(false)
       toast.warning('Invalid Income Posting date')
       return false
     }
 
-    if(values.supplier_ref_no == null || values.supplier_ref_no == '' || values.supplier_ref_no.trim() == '') {
+  }
+
+  const validationApproval = () => {
+
+    if (values.income_posting_date == '') {
       setFetch(true)
-      toast.warning(`SAP Expense Reference No. Should be required..`)
+      toast.warning('You should select payment posting date before submitting..!')
       return false
     }
 
-    if(values.supplier_posting_date == '' || values.supplier_posting_date == null || values.supplier_posting_date == undefined) {
-      toast.warning('Enter SAP Expense Reference Date')
+    let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate()
+    let from_date = Expense_Income_Posting_Date_Taken.min_date
+    let to_date = Expense_Income_Posting_Date_Taken.max_date
+
+    if (JavascriptDateCheckComponent(from_date, values.income_posting_date, to_date)) {
+      // setIncomeSubmit(true)
+    } else {
       setFetch(true)
+      // setIncomeSubmit(false)
+      toast.warning('Invalid Payment Posting date')
       return false
     }
 
-    if(values.vendor_hsn == '') {
-      toast.warning('HSN Code Should be required..')
-      setFetch(true)
-      return false
-    } 
+    /* =================== Request Sent To SAP For Invoice No. Generation Start ======================= */
 
-    addIncomeClosureRequest()
- 
+    var LineItem = {}
+    var LineItemSeq = []
+
+    for (var i = 0; i < 1; i++) {
+      LineItem.LINE_ITEM = String(i + 1)
+      LineItem.TRIPSHEET_NO = tripsettlementData.tripsheet_no
+
+      LineItemSeq[i] = LineItem
+      LineItem = {}
+    }
+
+    const sap_data = [
+      {
+        PAY_REF: tripsettlementData.tripsheet_no,
+        LIFNR: tripInfo?.driver_info?.driver_code,
+        POST_DATE: values.income_posting_date,
+        BANK_PAYMENT: tripsettlementData.sap_expense_amount,
+        BANK_REMARKS: values.income_sap_text,
+        PLANT: 'NLMD',
+        LINE: LineItemSeq,
+      },
+    ]
+
+    const now = new Date();
+
+    const closure_updation_time =
+      now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0') + ' ' +
+      String(now.getHours()).padStart(2, '0') + ':' +
+      String(now.getMinutes()).padStart(2, '0') + ':' +
+      String(now.getSeconds()).padStart(2, '0');
+
+    console.log(closure_updation_time, 'closure_updation_time');
+
+    // sap_data.append('depo_location', depoLocation)
+
+    console.log(sap_data, 'validationApproval-sap_data')
+    // setFetch(true)
+    // return false
+
+    NlmtTripSheetClosureService.NlmtDriverPaymentInvoiceCreation(sap_data).then((res) => {
+      let sap_invoice_no = res.data.BANK_PAYMENT_DOC_NO
+      let sap_invoice_status = res.data.BANK_PAYMENT_STATUS
+      let sap_invoice_message = res.data.BANK_PAYMENT_MESSAGE
+      let sap_invoice_reference = res.data.PAY_REF
+
+      console.log(
+        sap_invoice_no +
+        '/' +
+        sap_invoice_status +
+        '/' +
+        sap_invoice_message +
+        '/' +
+        sap_invoice_reference
+      )
+
+      if (
+        sap_invoice_status == '1' &&
+        res.status == 200 &&
+        sap_invoice_no &&
+        sap_invoice_message &&
+        sap_invoice_reference == tripsettlementData.tripsheet_no
+      ) {
+
+        const formData = new FormData()
+        formData.append('_method', 'PUT')
+        formData.append('parking_id', tripInfo.nlmt_trip_in_id)
+        formData.append('vehicle_id', tripInfo.vehicle_id)
+        formData.append('driver_payment_remarks', values.income_remarks)
+        formData.append('driver_payment_by', user_id)
+        formData.append('driver_payment_at', closure_updation_time)
+        formData.append('driver_payment_sap_text', values.income_sap_text)
+        // formData.append('driver_payment_copy', sap_expense_post_document)
+        formData.append('payment_status', 3)
+        formData.append('driver_payment', 1)
+        formData.append('driver_payment_sap_document_no', sap_invoice_no)
+        formData.append('driver_payment_posting_date', values.income_posting_date)
+        formData.append('closure_updation_time', closure_updation_time)
+        formData.append('updated_by', user_id)
+        formData.append('own_closure_status', 6) /* 6 - Payment Approved (32) */
+        formData.append('tripsheet_is_settled', 6) /* Payment Completed */
+
+        let tripSettlementID = tripsettlementData.id
+        // setFetch(true)
+        // return false
+
+        NlmtTripSheetClosureService.updateTripsheetSettlement(tripSettlementID, formData).then((res) => {
+          console.log(res)
+          if (res.status == 200) {
+            setFetch(true)
+            Swal.fire({
+              title: "Tripsheet Driver Payment Posting Process Done Successfully!",
+              icon: "success",
+              html: 'SAP Payment Document No : ' + sap_invoice_no,
+              confirmButtonText: "OK",
+            }).then(function () {
+              navigation('/NlmtTSPaymentHome')
+            })
+
+          } else {
+            setFetch(true)
+            toast.warning('Tripsheet Driver Payment Posting Process Failed..')
+            // navigation('/NlmtTSExpenseClosureHome')
+          }
+        })
+          .catch((err) => {
+            console.error('NLMT Driver Payment Posting Submission Error:', err)
+            toast.error('Failed to submit NLMT Driver Payment Posting in PRO. Please try again.')
+            setFetch(true)
+          })
+
+      } else if (
+        sap_invoice_status == '2' &&
+        res.status == 200 &&
+        sap_invoice_no == '' &&
+        sap_invoice_message &&
+        sap_invoice_reference == tripsettlementData.tripsheet_no
+      ) {
+        setFetch(true)
+        Swal.fire({
+          title: sap_invoice_message,
+          icon: 'warning',
+          confirmButtonText: 'OK',
+        }).then(function () {
+          // window.location.reload(false)
+        })
+      } else {
+        setFetch(true)
+        toast.warning('Driver Payment Posting Submission Failed in SAP.. Kindly Contact Admin!')
+      }
+    })
+      .catch((err) => {
+        console.error('NLMT Driver Payment Posting Submission Error:', err)
+        toast.error('Failed to submit NLMT Driver Payment Posting Submission in SAP. Please try again.')
+        setFetch(true)
+      })
   }
 
   /* ===================== TripsheetIncomeClosureSubmit End ===================== */
@@ -969,70 +976,6 @@ const NlmtTripSheetInfoClosure = () => {
 
   /* ================= FGSALES ========================================= */
 
-  const onChangeFgsalesExpenseItem = (event, property_name, parent_index) => {
-    let getData5 = event.target.value.replace(/\D/g, '')
-
-    const fgsales_expenses_parent_info = JSON.parse(JSON.stringify(shipmentInfo))
-
-    fgsales_expenses_parent_info[parent_index][property_name] = getData5
-    setShipmentInfo(fgsales_expenses_parent_info)
-    console.log(fgsales_expenses_parent_info)
-  }
-
-  const vadDataUpdateForExpenses = (value) => {
-    return !value ? '' : value
-  }
-
-  /* ================= RJSO ========================================= */
-
-  const onChangeRjsoExpenseItem = (event, property_name, parent_index) => {
-    let getData6 = event.target.value.replace(/\D/g, '')
-
-    const rjso_expenses_parent_info = JSON.parse(JSON.stringify(rjsoInfo))
-
-    rjso_expenses_parent_info[parent_index][property_name] = getData6
-    setRjsoInfo(rjso_expenses_parent_info)
-    console.log(rjsoInfo)
-  }
-
-  const rjsoDataUpdateForExpenses = (value) => {
-    return !value ? '' : value
-  }
-
-  /* ================= FGSTO ========================================= */
-
-  const onChangeFgstoExpenseItem = (event, property_name, parent_index) => {
-    let getData7 = event.target.value.replace(/\D/g, '')
-
-    const fgsto_expenses_parent_info = JSON.parse(JSON.stringify(stoTableData))
-
-    fgsto_expenses_parent_info[parent_index][property_name] = getData7
-    setStoTableData(fgsto_expenses_parent_info)
-  }
-
-  const fgstoDataUpdateForExpenses = (value) => {
-    return !value ? '' : value
-  }
-
-  /* ================= RMSTO ========================================= */
-
-  const onChangeRmstoExpenseItem = (event, property_name, parent_index) => {
-    let getData8 = event.target.value.replace(/\D/g, '')
-
-    const rmsto_expenses_parent_info = JSON.parse(JSON.stringify(stoTableDataRMSTO))
-
-    rmsto_expenses_parent_info[parent_index][property_name] = getData8
-    setStoTableDataRMSTO(rmsto_expenses_parent_info)
-  }
-
-  const rmstoDataUpdateForExpenses = (value) => {
-    return !value ? '' : value
-  }
-
-  {
-    /* Hire Vehicles Part */
-  }
-
   /* ===================== All Expenses Capture Part End  ======================= */
   /* ===================== FG-STO Needed Constants Part Start  ======================= */
 
@@ -1118,32 +1061,6 @@ const NlmtTripSheetInfoClosure = () => {
   const [shipmentNumber, setShipmentNumber] = useState('')
   const REQ = () => <span className="text-danger"> * </span>
 
-  const fgstoaddonTabEnableCheck = (e) => {
-    let availability_fgsto = e.target.value
-    setfgsto_TripAddonAvailability(availability_fgsto)
-    console.log(availability_fgsto)
-    console.log(tabFGSTOSuccess, 'tabFGSTOSuccess')
-    if (availability_fgsto == 1) {
-      setFgstoAvailable(true)
-      setTabFGSTOSuccess(false)
-    } else {
-      setStoTableData([])
-      setFgstoAvailable(false)
-    }
-  }
-
-  const rmstoaddonTabEnableCheck = (e) => {
-    let availability_rmsto = e.target.value
-    setrmsto_TripAddonAvailability(availability_rmsto)
-    if (availability_rmsto == 1) {
-      setRmstoAvailable(true)
-      setTabRMSTOSuccess(false)
-    } else {
-      setStoTableDataRMSTO([])
-      setRmstoAvailable(false)
-    }
-  }
-
   /* ===== Unregistered Vendor Constants, Functions, Calculations Part Start  =========== */
 
   const [urvValues, setUrvValues] = useState(TripsheetClosureConstants.InitialURVValues)
@@ -1165,219 +1082,6 @@ const NlmtTripSheetInfoClosure = () => {
     console.log(v_code, 'vendorDataAssignment-v_code')
     console.log(data, 'vendorDataAssignment-data')
     return v_code
-  }
-
-  const onChangeURVItem = (event) => {
-    let urv_value_change = event.target.value
-    if (event.target.name == 'urvDieselAmount') {
-      urv_value_change = event.target.value.replace(/\D/g, '')
-    } else if (event.target.name == 'urvName') {
-      urv_value_change = event.target.value.replace(/[^a-zA-Z ]/gi, '')
-    } else if (event.target.name == 'urvDieselRate' || event.target.name == 'urvDieselLiter') {
-      urv_value_change = event.target.value
-        .replace(/[^0-9^\.]+/g, '')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.')
-        .replace(/^0+/, '')
-    }
-
-    let updatedURVInputs = { ...urvValues, [event.target.name]: urv_value_change }
-    setUrvValues(updatedURVInputs)
-
-    console.log(updatedURVInputs.urvDieselLiter)
-    console.log(updatedURVInputs.urvDieselRate)
-    console.log(urvTotalAmountFinder)
-
-    if (tripsettlementData.enroute_diesel_liter) {
-      setTdlDieselInfo(
-        rvTotalValues.rvTotalDieselLiter + Number(tripsettlementData.enroute_diesel_liter)
-      )
-    } else {
-      setTdlDieselInfo(rvTotalValuesBP.rvTotalDieselLiter)
-    }
-
-    if (tripsettlementData.enroute_diesel_amount) {
-      setTdaDieselInfo(
-        rvTotalValues.rvTotalDieselAmount + Number(tripsettlementData.enroute_diesel_amount)
-      )
-    } else {
-      setTdaDieselInfo(rvTotalValuesBP.rvTotalDieselAmount)
-    }
-
-    setArplDieselInfo(Number(tdaDieselInfo) / Number(tdlDieselInfo))
-
-    // if (
-    //   urvTotalAmountFinder != 0 &&
-    //   updatedURVInputs.urvDieselLiter &&
-    //   updatedURVInputs.urvDieselRate
-    // ) {
-    //   console.log('123')
-    //   totalDieselInfoCalculationAfterEnrouteDiesel(
-    //     updatedURVInputs.urvDieselLiter,
-    //     updatedURVInputs.urvDieselRate,
-    //     urvTotalAmountFinder
-    //   )
-    // } else {
-    //   console.log('456')
-    //   setRvValues(rvTotalValuesBP)
-    // }
-
-    if (updatedURVInputs.urvDieselLiter && updatedURVInputs.urvDieselRate) {
-      seturvTotalAmountFinder(
-        Math.round(updatedURVInputs.urvDieselLiter * updatedURVInputs.urvDieselRate)
-      )
-    } else {
-      seturvTotalAmountFinder(0)
-    }
-  }
-
-  const getFileName = (path) => {
-    let ind_no = path.lastIndexOf('/')
-    let parent = path.substring(ind_no + 1)
-
-    return parent
-  }
-
-  const totalDieselInfoCalculation = (collection_data) => {
-    console.log(dieselCollectionInfo)
-    let Total_Diesel_Liter = 0
-    let Total_Rate_Per_Liter = 0
-    let Total_Diesel_Amount = 0
-
-    let needed_data = []
-    needed_data.push(dieselCollectionInfo)
-    console.log(needed_data)
-    needed_data.map((datan, index1) => {
-      datan.map((data, index) => {
-        console.log(data.no_of_ltrs, 'no_of_ltrs', index)
-        console.log(data.rate_of_ltrs, 'rate_of_ltrs', index)
-        console.log(data.total_amount, 'total_amount', index)
-        Total_Diesel_Liter = Total_Diesel_Liter + Number(data.no_of_ltrs)
-        Total_Rate_Per_Liter = Total_Rate_Per_Liter + Number(data.rate_of_ltrs)
-        Total_Diesel_Amount = Total_Diesel_Amount + Number(data.total_amount)
-      })
-    })
-
-    setTdlDieselInfo(Total_Diesel_Liter)
-    setArplDieselInfo(Total_Rate_Per_Liter / dieselCollectionInfo.length)
-    setTdaDieselInfo(Total_Diesel_Amount)
-    console.log(Total_Diesel_Liter)
-    console.log(Total_Rate_Per_Liter)
-    console.log(Total_Diesel_Amount)
-
-    const total_diesel_values = {
-      rvTotalDieselLiter: Total_Diesel_Liter,
-      rvAverageRatePerLiter: Total_Rate_Per_Liter / dieselCollectionInfo.length,
-      rvTotalDieselAmount: Total_Diesel_Amount,
-    }
-
-    setRvTotalValues(total_diesel_values)
-    setRvTotalValuesBP(total_diesel_values)
-    setRvValues(total_diesel_values)
-  }
-
-  const totalDieselInfoCalculationAfterEnrouteDiesel = (liter, rate, amount) => {
-    console.log(rvTotalValues)
-    let Total_Diesel_Liter1 = rvTotalValues.rvTotalDieselLiter + Number(liter)
-    let Total_Rate_Per_Liter1 = (rvTotalValues.rvAverageRatePerLiter + Number(rate)) / 2
-    let Total_Diesel_Amount1 = rvTotalValues.rvTotalDieselAmount + Number(amount)
-
-    // let needed_data = []
-    // needed_data.push(dieselCollectionInfo)
-    // console.log(needed_data)
-    // needed_data.map((datan, index1) => {
-    //   datan.map((data, index) => {
-    //     console.log(data.no_of_ltrs, 'no_of_ltrs', index)
-    //     console.log(data.rate_of_ltrs, 'rate_of_ltrs', index)
-    //     console.log(data.total_amount, 'total_amount', index)
-    //     Total_Diesel_Liter1 = Total_Diesel_Liter1 + Number(data.no_of_ltrs)
-    //     Total_Rate_Per_Liter1 = Total_Rate_Per_Liter1 + Number(data.rate_of_ltrs)
-    //     Total_Diesel_Amount1 = Total_Diesel_Amount1 + Number(data.total_amount)
-    //   })
-    // })
-
-    console.log(Total_Diesel_Liter1)
-    console.log(Total_Rate_Per_Liter1)
-    console.log(Total_Diesel_Amount1)
-
-    const total_diesel_values1 = {
-      rvTotalDieselLiter: Total_Diesel_Liter1,
-      rvAverageRatePerLiter: Total_Rate_Per_Liter1 / 2,
-      rvTotalDieselAmount: Total_Diesel_Amount1,
-    }
-
-    // setRvTotalValues(total_diesel_values)
-    setRvValues(total_diesel_values1)
-  }
-
-  /* ===== Unregistered Vendor Constants, Functions, Calculations Part End  =========== */
-
-  /* ===================== FG-STO Needed Functions Part Start  ======================= */
-  const onStoSubmitCancelBtn = () => {
-    setStoDeliveryEdit(false)
-    setStoFileUploadVisible(true)
-    setStoValues(TripsheetClosureConstants.stoInitialState)
-  }
-
-  const stoResetEdit = () => {
-    setIsStoEditMode(false)
-    setStoDeliveryEdit(false)
-    setStoEditIndex(-1)
-    setStoFileUploadVisible(true)
-    setStoValues(TripsheetClosureConstants.stoInitialState)
-  }
-
-  const stoPodUploadResetEdit = () => {
-    console.log(stoValues.sto_pod_copy)
-    stoValues.sto_pod_copy = ''
-    setStoFileUploadVisible(true)
-  }
-
-  const onStoEditcallback = (index) => {
-    setStoDeliveryEdit(true)
-    setIsStoEditMode(true)
-    console.log(index)
-    console.log(deliveryNoDelete)
-    setStoEditIndex(index)
-    setStoFileUploadVisible(false)
-    setStoValues(stoTableData[index])
-  }
-
-  const removeStoFields = (index) => {
-    setDeliveryDelete(false)
-    setStoDeliveryEdit(false)
-    const updatedData = [...stoTableData]
-    updatedData.splice(index, 1)
-    setStoTableData(updatedData)
-    setDeliveryNoDelete('')
-    setDeliveryNoDeleteIndex('')
-  }
-
-  const onStoDeleteCallback = (index) => {
-    console.log(index)
-    setDeliveryNoDelete(stoTableData[index].sto_delivery_number)
-    setDeliveryNoDeleteIndex(index)
-    setDeliveryDelete(true)
-  }
-
-  const onStoSubmitBtn = () => {
-    let updatedTable = []
-    if (addEnable(stoValues)) {
-      if (!isStoEditMode) {
-        updatedTable = [...stoTableData, stoValues]
-      } else {
-        const prevTable = [...stoTableData]
-        prevTable[stoEditIndex] = stoValues
-        updatedTable = prevTable
-      }
-      setStoTableData(updatedTable)
-      setStoFileUploadVisible(true)
-      stoResetEdit()
-      console.log(stoTableData, 'after stoTableData update/edit')
-    } else {
-      toast.warning('Please Fill All The Required Fields..')
-    }
   }
 
   const addEnable = (data) => {
@@ -1404,159 +1108,6 @@ const NlmtTripSheetInfoClosure = () => {
     }
   }
 
-  const handleStoValueChange = (event) => {
-    let value_change = event.target.value
-    if (
-      event.target.name == 'sto_delivery_number' ||
-      event.target.name == 'sto_po_number' ||
-      event.target.name == 'sto_delivery_division' ||
-      event.target.name == 'sto_freight_amount'
-    ) {
-      value_change = event.target.value.replace(/\D/g, '')
-    } else if (event.target.name == 'sto_from_location' || event.target.name == 'sto_to_location') {
-      value_change = event.target.value.replace(/[^a-zA-Z ]/gi, '')
-    } else if (event.target.name == 'sto_delivery_quantity') {
-      value_change = event.target.value
-        .replace(/[^0-9^\.]+/g, '')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.')
-        .replace(/^0+/, '')
-    }
-    let updatedinputs = { ...stoValues, [event.target.name]: value_change }
-    setStoValues(updatedinputs)
-    addEnable(updatedinputs)
-  }
-
-  const enable_Submit_check = () => {
-    if (errors.driver_balance_received) {
-      return true
-    }
-    return false
-  }
-  const handleStoExpenseCaptureChange = (event) => {
-    let updatedinputs = { ...stoValues, [event.target.name]: event.target.checked }
-    setStoValues(updatedinputs)
-    console.log(stoValues)
-    console.log(stoTableData)
-  }
-
-  const assignSTOData = (sap) => {
-    console.log(sap)
-    toast.success('STO Delivery Details Detected!')
-    let updatedinputs = {}
-    // let stoSapData = {
-    //   ['sto_po_number']: sap.SIGNI,
-    //   ['sto_delivery_division']: sap.DIVISION,
-    //   ['sto_from_location']: sap.RESWK,
-    //   ['sto_to_location']: sap.WERKS,
-    //   ['sto_delivery_quantity']: sap.LFIMG,
-    //   ['sto_freight_amount']: sap.KBETR,
-    // }
-
-    let sto_po_number = sap.EBELN
-    let sto_delivery_division = sap.DIVISION
-    let sto_from_location = sap.RESWK
-    let sto_to_location = sap.WERKS
-    let sto_delivery_quantity = sap.LFIMG
-    let sto_freight_amount = sap.KBETR
-
-    updatedinputs = {
-      ...stoValues,
-      sto_po_number,
-      sto_delivery_division,
-      sto_from_location,
-      sto_to_location,
-      sto_delivery_quantity,
-      sto_freight_amount,
-    }
-    // updatedinputs = { ...stoValues, sto_delivery_division }
-    // updatedinputs = { ...stoValues, sto_from_location }
-    // updatedinputs = { ...stoValues, sto_to_location }
-    // updatedinputs = { ...stoValues, sto_delivery_quantity }
-    // updatedinputs = { ...stoValues, sto_freight_amount }
-
-    console.log(updatedinputs)
-    // stoValues.push(stoSapData)
-    setStoValues(updatedinputs)
-    addEnable(updatedinputs)
-  }
-
-  const handleStoFileUploadChange = (event) => {
-    console.log(event.target)
-    let uploaded_file_path = URL.createObjectURL(event.target.files[0])
-    // let uploaded_file_path = event.target.files[0]
-    setFilePath(uploaded_file_path)
-    setStoFileUploadVisible(false)
-    let updatedinputs = { ...stoValues, [event.target.name]: uploaded_file_path }
-    setStoValues(updatedinputs)
-  }
-
-  /* ===================== FG-STO Needed Functions Part End  ======================= */
-
-  /* ===================== RM-STO Needed Functions Part Start  ======================= */
-  const onStoSubmitCancelBtnRMSTO = () => {
-    setStoFileUploadVisibleRMSTO(true)
-    setStoValuesRMSTO(TripsheetClosureConstants.stoInitialStateRMSTO)
-  }
-
-  const stoResetEditRMSTO = () => {
-    setIsStoEditModeRMSTO(false)
-    setStoEditIndexRMSTO(-1)
-    setStoFileUploadVisibleRMSTO(true)
-    setStoValuesRMSTO(TripsheetClosureConstants.stoInitialStateRMSTO)
-  }
-
-  const stoPodUploadResetEditRMSTO = () => {
-    console.log(stoValuesRMSTO.sto_pod_copy_rmsto)
-    stoValuesRMSTO.sto_pod_copy_rmsto = ''
-    setStoFileUploadVisibleRMSTO(true)
-  }
-
-  const onStoEditcallbackRMSTO = (index) => {
-    setIsStoEditModeRMSTO(true)
-    console.log(index)
-    console.log(deliveryNoDeleteRMSTO)
-    setStoEditIndexRMSTO(index)
-    setStoFileUploadVisibleRMSTO(false)
-    setStoValuesRMSTO(stoTableDataRMSTO[index])
-  }
-
-  const removeStoFieldsRMSTO = (index) => {
-    setDeliveryDeleteRMSTO(false)
-    const updatedData = [...stoTableDataRMSTO]
-    updatedData.splice(index, 1)
-    setStoTableDataRMSTO(updatedData)
-    setDeliveryNoDeleteRMSTO('')
-    setDeliveryNoDeleteIndexRMSTO('')
-  }
-
-  const onStoDeleteCallbackRMSTO = (index) => {
-    console.log(index)
-    setDeliveryNoDeleteRMSTO(stoTableDataRMSTO[index].sto_delivery_number_rmsto)
-    setDeliveryNoDeleteIndexRMSTO(index)
-    setDeliveryDeleteRMSTO(true)
-  }
-
-  const onStoSubmitBtnRMSTO = () => {
-    let updatedTable = []
-    console.log(stoValuesRMSTO)
-    if (addEnableRMSTO(stoValuesRMSTO)) {
-      if (!isStoEditModeRMSTO) {
-        updatedTable = [...stoTableDataRMSTO, stoValuesRMSTO]
-      } else {
-        const prevTable = [...stoTableDataRMSTO]
-        prevTable[stoEditIndexRMSTO] = stoValuesRMSTO
-        updatedTable = prevTable
-      }
-      setStoTableDataRMSTO(updatedTable)
-      setStoFileUploadVisibleRMSTO(true)
-      stoResetEditRMSTO()
-      console.log(stoTableDataRMSTO, 'after stoTableDataRMSTO update/edit')
-    } else {
-      toast.warning('Please Fill All The Required Fields..')
-    }
-  }
 
   const addEnableRMSTO = (data) => {
     console.log(data)
@@ -1897,8 +1448,8 @@ const NlmtTripSheetInfoClosure = () => {
       }
       let condition2 =
         stoTableData.length === 0 &&
-        fgsto_tripAddonAvailability == 2 &&
-        tripInfo.tripsheet_info.purpose !== '2'
+          fgsto_tripAddonAvailability == 2 &&
+          tripInfo.tripsheet_info.purpose !== '2'
           ? true
           : false
 
@@ -1935,8 +1486,8 @@ const NlmtTripSheetInfoClosure = () => {
       }
       let condition4 =
         stoTableDataRMSTO.length === 0 &&
-        rmsto_tripAddonAvailability === 2 &&
-        tripInfo.tripsheet_info.purpose !== '3'
+          rmsto_tripAddonAvailability === 2 &&
+          tripInfo.tripsheet_info.purpose !== '3'
           ? true
           : false
 
@@ -1968,8 +1519,8 @@ const NlmtTripSheetInfoClosure = () => {
       console.log(stoTableData, 'stoTableData4')
       let fgsto_not_available_condition_for_di =
         stoTableData.length === 0 &&
-        fgsto_tripAddonAvailability === 2 &&
-        tripInfo.tripsheet_info.purpose !== '2'
+          fgsto_tripAddonAvailability === 2 &&
+          tripInfo.tripsheet_info.purpose !== '2'
           ? true
           : false
 
@@ -1978,20 +1529,20 @@ const NlmtTripSheetInfoClosure = () => {
       console.log(tripInfo.tripsheet_info.purpose)
       let fgsto_available_with_proper_condition_for_di =
         stoTableData.length > 0 &&
-        fgsto_tripAddonAvailability === 2 &&
-        tripInfo.tripsheet_info.purpose === '2'
+          fgsto_tripAddonAvailability === 2 &&
+          tripInfo.tripsheet_info.purpose === '2'
           ? true
           : false
       let rmsto_not_available_condition_for_di =
         stoTableDataRMSTO.length === 0 &&
-        rmsto_tripAddonAvailability === 2 &&
-        tripInfo.tripsheet_info.purpose !== '3'
+          rmsto_tripAddonAvailability === 2 &&
+          tripInfo.tripsheet_info.purpose !== '3'
           ? true
           : false
       let rmsto_available_with_proper_condition_for_di =
         stoTableDataRMSTO.length > 0 &&
-        rmsto_tripAddonAvailability === 2 &&
-        tripInfo.tripsheet_info.purpose === '3'
+          rmsto_tripAddonAvailability === 2 &&
+          tripInfo.tripsheet_info.purpose === '3'
           ? true
           : false
       let fgsales_not_available_condition_for_di = shipmentInfo.length === 0 ? true : false
@@ -2193,12 +1744,37 @@ const NlmtTripSheetInfoClosure = () => {
     })
   }, [shipmentInfo, rjsoInfo, stoTableData, stoTableDataRMSTO, tripInfo])
 
+  const getGSTTaxTypeName = (value) => {
+    let data = ''
+    if (value == 'Empty') {
+      data = 'No Tax'
+    } else if (value == 'R5') {
+      data = 'Input Tax RCM (SGST,CGST @ 2.5% & 2.5%)'
+    } else if (value == 'F6') {
+      data = 'Input Tax (SGST,CGST @ 6% & 6%)'
+    }
+
+    values.GSTtax = value
+    return data
+  }
+
+  const getTdsTypeHaving = (value) => {
+    let data = ''
+    if (value == '1') {
+      data = 'YES'
+    } else if (value == '2') {
+      data = 'NO'
+    }
+    values.TdsHaving = value
+    return data
+  }
+
   /* KM Differce Calculation */
   useEffect(() => {
     if (tripsettlementData.budgeted_km) {
       setDifferenceKMFinder(
         tripKMFinder(tripInfo.odometer_km, tripInfo.odometer_closing_km) -
-          Number(tripsettlementData.budgeted_km)
+        Number(tripsettlementData.budgeted_km)
       )
     } else {
       setDifferenceKMFinder('-')
@@ -2217,288 +1793,6 @@ const NlmtTripSheetInfoClosure = () => {
       setDifferenceMileageFinder('-')
     }
   })
-
-  /* ====== Diesel Consumption Ltr (Aprox.) & Runnnig KM Calculation Part Start ===== */
-
-  const stoJourneyTypeFinder = (data) => {
-    let j_type = 'DEF'
-    if (data.sto_delivery_type == '1') {
-      j_type = 'FG-STO'
-    } else if (data.sto_delivery_type == '4') {
-      j_type = 'FCI'
-    } else {
-      if (data.rm_type == '2') {
-        j_type = 'RAKE'
-      } else {
-        j_type = 'RM-STO'
-      }
-    }
-    return j_type
-  }
-
-  const stoDivisionFinder = (data) => {
-    let div = ''
-    if (data.sto_delivery_division == 'CONSUMER') {
-      div = 'NLMT'
-    } else if (data.sto_delivery_division == 'MMD') {
-      div = 'MMD'
-    } else {
-      div = 'NLMT'
-    }
-    return div
-  }
-
-  /* ================= FGSALES ========================================= */
-  const changeVadTableItemForDCC = (event, child_property_name, parent_index, arpl = '') => {
-    let getData4 = event.target.value
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      getData4 = event.target.value
-        .replace(/[^0-9^\.]+/g, '')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.')
-        .replace(/^0+/, '')
-    } else if (child_property_name == 'closing_km' || child_property_name == 'opening_km') {
-      getData4 = event.target.value.replace(/\D/g, '')
-    }
-
-    const fgsales_parent_info = JSON.parse(JSON.stringify(shipmentInfo))
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      fgsales_parent_info[parent_index][`${child_property_name}_input`] = getData4
-      fgsales_parent_info[parent_index][`diesel_amount_input`] = Math.round(getData4 * arpl)
-    } else if (child_property_name == 'opening_km') {
-      fgsales_parent_info[parent_index][`${child_property_name}_input`] = getData4
-      fgsales_parent_info[parent_index][`running_km_input`] = fgsales_parent_info[parent_index][
-        `closing_km_input`
-      ]
-        ? Number(fgsales_parent_info[parent_index][`closing_km_input`]) - Number(getData4)
-        : ''
-    } else if (child_property_name == 'closing_km') {
-      fgsales_parent_info[parent_index][`${child_property_name}_input`] = getData4
-      fgsales_parent_info[parent_index][`running_km_input`] = fgsales_parent_info[parent_index][
-        `opening_km_input`
-      ]
-        ? Number(getData4) - Number(fgsales_parent_info[parent_index][`opening_km_input`])
-        : ''
-    } else {
-      fgsales_parent_info[parent_index][`${child_property_name}_input`] = getData4
-    }
-
-    // console.log(shipment_parent_info)
-
-    setShipmentInfo(fgsales_parent_info)
-  }
-
-  console.log(tabFGSTOSuccess, 'tabFGSTOSuccess')
-  console.log(shipmentInfo)
-
-  const vadDataUpdateForDCC = (original, input) => {
-    return input === undefined ? original : input
-  }
-
-  /* ================= RJSO ========================================= */
-  const changeRjsoTableItemForDCC = (event, child_property_name, parent_index, arpl = '') => {
-    let getData1 = event.target.value
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      getData1 = event.target.value
-        .replace(/[^0-9^\.]+/g, '')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.')
-        .replace(/^0+/, '')
-    } else if (child_property_name == 'closing_km' || child_property_name == 'opening_km') {
-      getData1 = event.target.value.replace(/\D/g, '')
-    }
-
-    const rjso_parent_info = JSON.parse(JSON.stringify(rjsoInfo))
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      rjso_parent_info[parent_index][`${child_property_name}_input`] = getData1
-      rjso_parent_info[parent_index][`diesel_amount_input`] = Math.round(getData1 * arpl)
-    } else if (child_property_name == 'opening_km') {
-      rjso_parent_info[parent_index][`${child_property_name}_input`] = getData1
-      rjso_parent_info[parent_index][`running_km_input`] = rjso_parent_info[parent_index][
-        `closing_km_input`
-      ]
-        ? Number(rjso_parent_info[parent_index][`closing_km_input`]) - Number(getData1)
-        : ''
-    } else if (child_property_name == 'closing_km') {
-      rjso_parent_info[parent_index][`${child_property_name}_input`] = getData1
-      rjso_parent_info[parent_index][`running_km_input`] = rjso_parent_info[parent_index][
-        `opening_km_input`
-      ]
-        ? Number(getData1) - Number(rjso_parent_info[parent_index][`opening_km_input`])
-        : ''
-    } else {
-      rjso_parent_info[parent_index][`${child_property_name}_input`] = getData1
-    }
-
-    // console.log(shipment_parent_info)
-    setRjsoInfo(rjso_parent_info)
-  }
-
-  console.log(rjsoInfo)
-
-  const rjsoDataUpdateForDCC = (original, input) => {
-    return input === undefined ? original : input
-  }
-
-  /* ================= FGSTO ========================================= */
-  const changeFgstoTableItemForDCC = (event, child_property_name, parent_index, arpl = '') => {
-    let getData2 = event.target.value
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      getData2 = event.target.value
-        .replace(/[^0-9^\.]+/g, '')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.')
-        .replace(/^0+/, '')
-    } else if (child_property_name == 'closing_km' || child_property_name == 'opening_km') {
-      getData2 = event.target.value.replace(/\D/g, '')
-    }
-
-    const fgsto_parent_info = JSON.parse(JSON.stringify(stoTableData))
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      fgsto_parent_info[parent_index][`${child_property_name}_input`] = getData2
-      fgsto_parent_info[parent_index][`diesel_amount_input`] = Math.round(getData2 * arpl)
-    } else if (child_property_name == 'opening_km') {
-      fgsto_parent_info[parent_index][`${child_property_name}_input`] = getData2
-      fgsto_parent_info[parent_index][`running_km_input`] = fgsto_parent_info[parent_index][
-        `closing_km_input`
-      ]
-        ? Number(fgsto_parent_info[parent_index][`closing_km_input`]) - Number(getData2)
-        : ''
-    } else if (child_property_name == 'closing_km') {
-      fgsto_parent_info[parent_index][`${child_property_name}_input`] = getData2
-      fgsto_parent_info[parent_index][`running_km_input`] = fgsto_parent_info[parent_index][
-        `opening_km_input`
-      ]
-        ? Number(getData2) - Number(fgsto_parent_info[parent_index][`opening_km_input`])
-        : ''
-    } else {
-      fgsto_parent_info[parent_index][`${child_property_name}_input`] = getData2
-    }
-
-    setStoTableData(fgsto_parent_info)
-  }
-
-  console.log(stoTableData)
-
-  const fgstoDataUpdateForDCC = (original, input) => {
-    return input === undefined ? original : input
-  }
-
-  /*============= Advance Clearance Calculation Part Start ===================*/
-
-  const driver_expense_calculation = () => {
-    let driver_expense = 0
-    if (tripsettlementData.enroute_payment == '2') {
-      driver_expense =
-        Number(tripsettlementData.expense) -
-        (Number(tripsettlementData.fasttag_toll_amount) +
-          Number(tripsettlementData.registered_diesel_amount) +
-          Number(tripsettlementData.enroute_diesel_amount))
-    } else {
-      driver_expense =
-        Number(tripsettlementData.expense) -
-        (Number(tripsettlementData.fasttag_toll_amount) +
-          Number(tripsettlementData.registered_diesel_amount))
-    }
-    // return parseFloat(Number(driver_expense)).toFixed(2)
-    return driver_expense
-  }
-
-  const rj_receipt_amount_calculation = () => {
-    console.log(rjsoInfo)
-    let rj_amount = 0
-    rjsoInfo.map((da, ins) => {
-      if (da.balance_payment_received_input == '1' || da.balance_payment_received == '1') {
-        if (da.advance_payment_mode == '1') {
-          rj_amount += Number(da.advance_amount)
-        }
-
-        if (da.balance_payment_mode_input) {
-          if (da.balance_payment_mode_input == '1') {
-            rj_amount += Number(da.balance_amount)
-          }
-        } else if (da.balance_payment_mode == '1') {
-          rj_amount += Number(da.balance_amount)
-        }
-      } else {
-        if (da.advance_payment_mode == '1') {
-          rj_amount += Number(da.advance_amount)
-        }
-      }
-    })
-    console.log(rj_amount, 'rj_amount')
-    // return parseFloat(Number(rj_amount)).toFixed(2)
-    return rj_amount
-  }
-
-  /*============= Advance Clearance Calculation Part End ===================*/
-   
-  useEffect(() => {
-    if (tripInfo.diesel_intent_collection_info) {
-      totalDieselInfoCalculation()
-    } else {
-      setRvValues(TripsheetClosureConstants.InitialRVValues)
-    }
-  }, [dieselCollectionInfo])
-
-  const updatedFetchedData = (getData) => {
-    getData.map((parent, parent_id) => {
-      return parent.shipment_child_info.map((child, child_id) => {
-        child = { ...child, ...TripsheetClosureConstants.vadGetInputs }
-      })
-    })
-  }
-
-  useEffect(() => {
-    let diesel_advance = tripInfo.diesel_intent_info ? tripInfo.diesel_intent_info.total_amount : 0
-
-    let bank_advance = tripInfo.advance_payment_info
-      ? tripInfo.advance_payment_info.advance_payment
-      : 0
-    let advance_total_amount_data = Number(diesel_advance) + Number(bank_advance)
-    console.log(diesel_advance, 'diesel_advance_freight')
-    console.log(bank_advance, 'bank_advance_freight')
-    console.log(advance_total_amount_data, 'advance_total_amount_data')
-    setAdvance_total_amount(advance_total_amount_data)
-
-    let actual_freight = tripInfo.advance_payment_info
-      ? tripInfo.advance_payment_info.actual_freight
-      : 0
-
-    let low_tonnage_freight = tripInfo.advance_payment_info
-      ? tripInfo.advance_payment_info.low_tonnage_charges
-      : 0
-
-    // let total_actual_freight = Number(actual_freight) + Number(low_tonnage_freight)
-    let total_actual_freight = Number(actual_freight)
-    let total_freight = 0
-    if (stoTableData && stoTableData.length > 0) {
-      total_freight = stoTableData[0].sto_freight_amount
-    } else if (stoTableDataRMSTO && stoTableDataRMSTO.length > 0) {
-      total_freight = stoTableDataRMSTO[0].sto_freight_amount_rmsto
-    } else if (shipmentInfo && shipmentInfo.length > 0) {
-      total_freight = shipmentInfo[0].shipment_freight_amount
-    }
-
-    console.log(total_freight)
-
-    setFreight_total_amount(Number(total_freight))
-
-    /* Freight = API Freight */
-    // setFreight_balance_amount(Number(total_freight) - advance_total_amount_data)
-
-    /* Freight = Actual Freight */
-    setFreight_balance_amount(Number(total_actual_freight) - advance_total_amount_data)
-  }, [tripInfo, shipmentInfo, stoTableData, stoTableDataRMSTO])
 
   useEffect(() => {
     if (tripInfo.diesel_intent_info && tripInfo.diesel_intent_info.vendor_code) {
@@ -2532,151 +1826,142 @@ const NlmtTripSheetInfoClosure = () => {
   ]
   const [deliveryNumber, setSelectedDeliveryNumber] = useState([])
 
-  // const sendDriverExpenseToSAP = () => {
-  //   console.log(tripsettlementData, 'tripsettlementData')
-  //   console.log(tripInfo, 'tripInfo')
+  const sendDriverExpenseToSAP = () => {
+    console.log(tripsettlementData, 'tripsettlementData')
+    console.log(tripInfo, 'tripInfo')
 
-  //   console.log(rjsoInfo, 'trip_rj_info')
-  //   console.log(shipmentInfo, 'trip_shipment_info')
-  //   console.log(tripStoData, 'trip_sto_info')
+    console.log(rjsoInfo, 'trip_rj_info')
+    console.log(shipmentInfo, 'trip_shipment_info')
+    console.log(tripStoData, 'trip_sto_info')
 
-  //   // return false;
+    // return false;
 
-  //   let sapData = new FormData()
-    
+    let sapData = new FormData()
 
-  //     // "TRIPSHEET_NO": "OD44446",
-  //     // "VEHICLE_NO ": "TN57BB1203",
-  //     // "DIVISION": "NLMD",
-  //     // "TOT_FRE_INC": "100",
-  //     // "POST_DATE": "2026-06-09",
-  //     // "KUNNR": "1003",
-  //     // "REMARKS": "TEST" 
 
-  //   sapData.append('TRIPSHEET_NO', tripsettlementData.tripsheet_no)
-  //   sapData.append('VEHICLE_NO', tripInfo.vehicle_info.vehicle_number)
-  //   sapData.append('DIVISION', 'NLMD')
-  //   sapData.append('TOT_FRE_INC', values.income)
-  //   sapData.append('POST_DATE', values.income_posting_date)
-  //   sapData.append('KUNNR', 1002)
-  //   sapData.append('REMARKS', values.income_sap_text) 
+    // "TRIPSHEET_NO": "OD44446",
+    // "VEHICLE_NO ": "TN57BB1203",
+    // "DIVISION": "NLMD",
+    // "TOT_FRE_INC": "100",
+    // "POST_DATE": "2026-06-09",
+    // "KUNNR": "1003",
+    // "REMARKS": "TEST" 
 
-  //   console.log(sapData)
-  //   NlmtTripSheetClosureSapService.tsDivisionIncomePost(sapData)
-  //     .then((res) => {
-  //       console.log(res, 'resresresres')
+    sapData.append('TRIPSHEET_NO', tripsettlementData.tripsheet_no)
+    sapData.append('VEHICLE_NO', tripInfo.vehicle_info.vehicle_number)
+    sapData.append('DIVISION', 'NLMD')
+    sapData.append('TOT_FRE_INC', values.income)
+    sapData.append('POST_DATE', values.income_posting_date)
+    sapData.append('KUNNR', nlmt_expense_vendor_code)
+    sapData.append('REMARKS', values.income_sap_text)
 
-  //       let sap_resp = res.data && res.data[0] ? res.data[0] : ''
+    console.log(sapData)
+    NlmtTripSheetClosureSapService.tsDivisionIncomePost(sapData)
+      .then((res) => {
+        console.log(res, 'resresresres')
 
-  //       if(sap_resp == ''){
-  //         setFetch(true)
-  //         Swal.fire({
-  //           title: 'SAP Income Posting failed and get Invalid SAP response.. Kindly Contact Admin!',
-  //           icon: 'warning',
-  //           confirmButtonText: 'OK',
-  //         })
-  //       }
+        let sap_resp = res.data && res.data[0] ? res.data[0] : ''
 
-  //       let sap_ts_no = sap_resp.TRIPSHEET_NO
-  //       let sap_status = sap_resp.STATUS
-  //       let sap_expense_post_document = sap_resp.DOCUMENT_NO
-  //       let sap_expense_post_message = sap_resp.MESSAGE
+        if (sap_resp == '') {
+          setFetch(true)
+          Swal.fire({
+            title: 'SAP Income Posting failed and get Invalid SAP response.. Kindly Contact Admin!',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+          })
+        }
 
-  //       console.log(sap_ts_no, 'sap_ts_no')
-  //       console.log(sap_status, 'sap_status')
-  //       console.log(sap_expense_post_document, 'sap_expense_post_document')
-  //       console.log(sap_expense_post_message, 'sap_expense_post_message')
+        let sap_ts_no = sap_resp.TRIPSHEET_NO
+        let sap_status = sap_resp.STATUS
+        let sap_expense_post_document = sap_resp.DOCUMENT_NO
+        let sap_expense_post_message = sap_resp.MESSAGE
 
-  //       setDriverExpenseSapDocumentNo(sap_expense_post_document)
+        console.log(sap_ts_no, 'sap_ts_no')
+        console.log(sap_status, 'sap_status')
+        console.log(sap_expense_post_document, 'sap_expense_post_document')
+        console.log(sap_expense_post_message, 'sap_expense_post_message')
 
-  //       console.log(
-  //         sap_ts_no +
-  //           '/' +
-  //           sap_status +
-  //           '/' +
-  //           sap_expense_post_document +
-  //           '/' +
-  //           sap_expense_post_message
-  //       )
+        setDriverExpenseSapDocumentNo(sap_expense_post_document)
 
-  //       if(sap_status == '1' &&
-  //         res.status == 200 &&
-  //         sap_expense_post_document &&
-  //         sap_expense_post_message &&
-  //         sap_ts_no == tripsettlementData.tripsheet_no
-  //       ){ 
+        console.log(
+          sap_ts_no +
+          '/' +
+          sap_status +
+          '/' +
+          sap_expense_post_document +
+          '/' +
+          sap_expense_post_message
+        )
 
-  //         try {
-  //           // ✅ Isolate runtime errors from network errors
-  //           addIncomeClosureRequest(sap_expense_post_document)
-  //         } catch (runtimeError) {
-  //           setFetch(true)
-  //           console.error('Runtime error in addIncomeClosureRequest:', runtimeError)
-  //           Swal.fire({
-  //             title: 'An internal error occurred while submitting closure. Kindly contact Admin!',
-  //             text: runtimeError.message,
-  //             icon: 'error',
-  //             confirmButtonText: 'OK',
-  //           })
-  //         }
-  //       } else if (
-  //         (sap_status == '2') &&
-  //         res.status == 200 &&
-  //         sap_expense_post_document == '' &&
-  //         sap_expense_post_message &&
-  //         sap_ts_no == tripsettlementData.tripsheet_no
-  //       ) {
-  //         setFetch(true)
-  //         Swal.fire({
-  //           title: sap_expense_post_message + ' Kindly Contact Admin..',
-  //           icon: "warning",
-  //           confirmButtonText: "OK",
-  //         }).then(function () {
-  //           // window.location.reload(false)
-  //         })
+        if (sap_status == '1' &&
+          res.status == 200 &&
+          sap_expense_post_document &&
+          sap_expense_post_message &&
+          sap_ts_no == tripsettlementData.tripsheet_no
+        ) {
 
-  //       } else {
-  //         setFetch(true)
-  //         Swal.fire({
-  //           title: 'SAP Income Posting Failed.. Kindly Contact Admin!',
-  //           icon: 'warning',
-  //           confirmButtonText: 'OK',
-  //         })
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       // ✅ This now ONLY catches actual network/API failures
-  //       setFetch(true)
-  //       console.error('SAP API network error:', error)
-  //       Swal.fire({
-  //         title: 'Server Connection Failed. Kindly contact Admin.!',
-  //         text: error.message,
-  //         icon: 'warning',
-  //         confirmButtonText: 'OK',
-  //       })
-  //     })
-  // }
+          try {
+            // ✅ Isolate runtime errors from network errors
+            addIncomeClosureRequest(sap_expense_post_document)
+          } catch (runtimeError) {
+            setFetch(true)
+            console.error('Runtime error in addIncomeClosureRequest:', runtimeError)
+            Swal.fire({
+              title: 'An internal error occurred while submitting closure. Kindly contact Admin!',
+              text: runtimeError.message,
+              icon: 'error',
+              confirmButtonText: 'OK',
+            })
+          }
+        } else if (
+          (sap_status == '2') &&
+          res.status == 200 &&
+          sap_expense_post_document == '' &&
+          sap_expense_post_message &&
+          sap_ts_no == tripsettlementData.tripsheet_no
+        ) {
+          setFetch(true)
+          Swal.fire({
+            title: sap_expense_post_message + ' Kindly Contact Admin..',
+            icon: "warning",
+            confirmButtonText: "OK",
+          }).then(function () {
+            // window.location.reload(false)
+          })
 
+        } else {
+          setFetch(true)
+          Swal.fire({
+            title: 'SAP Income Posting Failed.. Kindly Contact Admin!',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+          })
+        }
+      })
+      .catch((error) => {
+        // ✅ This now ONLY catches actual network/API failures
+        setFetch(true)
+        console.error('SAP API network error:', error)
+        Swal.fire({
+          title: 'Server Connection Failed. Kindly contact Admin.!',
+          text: error.message,
+          icon: 'warning',
+          confirmButtonText: 'OK',
+        })
+      })
+  }
   /* Income Closure Submit Request ( Status2 = reject, Status3 = submit,) */
-  const addIncomeClosureRequest = () => {
-   
+  const addIncomeClosureRequest = (sap_expense_post_document = '') => {
+
     const formData = new FormData()
 
     formData.append('income_posting_date', values.income_posting_date)
     formData.append('income', values.income)
     formData.append('profit_and_loss', PLFinder())
-    // formData.append('income_sap_document_no', sap_expense_post_document) 
-    formData.append('income_sap_text', values.income_sap_text) 
-    formData.append('vendor_hsn', values.vendor_hsn) 
-    formData.append('supplier_ref_no', values.supplier_ref_no) 
-    formData.append('supplier_posting_date', values.supplier_posting_date) 
-    formData.append('income_remarks', values.income_remarks ? values.income_remarks : '') 
-    formData.append('updated_by', user_id) 
-    formData.append('income_request_by', user_id) 
-    formData.append('parking_id', tripInfo.nlmt_trip_in_id)  
-    formData.append('vehicle_id', tripInfo.vehicle_id) 
-    formData.append('own_closure_status', 7) /* 7 - Income Requeted (26) */ 
-    formData.append('nlmt_income_status', 1) /* 1 - Income Requeted */ 
+    formData.append('income_sap_document_no', sap_expense_post_document)
+    formData.append('income_sap_text', values.income_sap_text)
+    formData.append('income_remarks', values.income_remarks ? values.income_remarks : '')
+    formData.append('updated_by', user_id)
 
     NlmtTripSheetClosureService.updateIncomeClosureAcception(id, formData).then((res) => {
       // alert('success')
@@ -2686,9 +1971,9 @@ const NlmtTripSheetInfoClosure = () => {
         // toast.success('Income Closure Submitted!')
         // navigation('/TSIncomeCapture')
         Swal.fire({
-          title: 'Income Closure Request Submitted Successfully..!',
+          title: 'Income Closure Submitted Successfully..!',
           icon: 'success',
-          // text: 'SAP Income Doc. No : ' + sap_expense_post_document,
+          text: 'SAP Income Doc. No : ' + sap_expense_post_document,
           confirmButtonText: 'OK',
         }).then(function () {
           navigation('/NlmtTSIncomeClosureHome')
@@ -2696,7 +1981,7 @@ const NlmtTripSheetInfoClosure = () => {
       } else {
         // toast.warning('Something Went Wrong !')
         Swal.fire({
-          title: 'Income Closure Request Submission Failed in LP.. Kindly Contact Admin!',
+          title: 'Income Closure Submission Failed in LP.. Kindly Contact Admin!',
           icon: 'warning',
           confirmButtonText: 'OK',
         }).then(function () {
@@ -2704,12 +1989,18 @@ const NlmtTripSheetInfoClosure = () => {
         })
       }
     })
-    .catch((err) => {
-      console.error('NLMT Income Closure Request Submission Error:', err)
-      toast.error('Failed to submit Income Closure Request in PRO. Please try again.')
-      setFetch(true)
-    }) 
-    
+      .catch((error) => {
+        // alert('failure')
+        setFetch(true)
+        var object = error.response.data.errors
+        var output = ''
+        for (var property in object) {
+          output += '*' + object[property] + '\n'
+        }
+        setError(output)
+        setErrorModal(true)
+      })
+
   }
 
   /* =========== Others Tripsheet Reworks Part Start ask1=========== */
@@ -2751,7 +2042,7 @@ const NlmtTripSheetInfoClosure = () => {
       console.log(viewData, 'getDieselVendors')
       setDvData(viewData)
     })
-  }, []) 
+  }, [])
 
   useEffect(() => {
     /* section for getting VR Lists from database */
@@ -2947,7 +2238,7 @@ const NlmtTripSheetInfoClosure = () => {
                       </CNavItem>
                       <CNavItem>
                         <CNavLink active={activeKey === 13} onClick={() => setActiveKey(13)}>
-                          Income
+                          Payment
                         </CNavLink>
                       </CNavItem>
                     </CNav>
@@ -2990,9 +2281,9 @@ const NlmtTripSheetInfoClosure = () => {
                               value={
                                 mastersLoaded
                                   ? `${getDefinitionName(
-                                      vehicleCapacity,
-                                      tripInfo?.vehicle_info?.vehicle_capacity_id
-                                    )} MTS`
+                                    vehicleCapacity,
+                                    tripInfo?.vehicle_info?.vehicle_capacity_id
+                                  )} MTS`
                                   : ''
                               }
                               readOnly
@@ -3008,9 +2299,9 @@ const NlmtTripSheetInfoClosure = () => {
                               value={
                                 mastersLoaded
                                   ? `${getDefinitionName(
-                                      vehicleBody,
-                                      tripInfo?.vehicle_info?.vehicle_body_type_id
-                                    )}`
+                                    vehicleBody,
+                                    tripInfo?.vehicle_info?.vehicle_body_type_id
+                                  )}`
                                   : ''
                               }
                               readOnly
@@ -3333,7 +2624,7 @@ const NlmtTripSheetInfoClosure = () => {
                               </CCol>
                             </>
                           )}
-                          
+
                         </CRow>
                         <CRow>
                           {/* {tripInfo && tripInfo.vehicle_info.vehicle_type_id == 22 && (
@@ -3378,7 +2669,7 @@ const NlmtTripSheetInfoClosure = () => {
                           </>
                         )}
 
-                        
+
                         {tripInfo.diesel_intent_info && (
                           <>
                             <CRow className="mt-2" hidden>
@@ -3480,7 +2771,7 @@ const NlmtTripSheetInfoClosure = () => {
                                     <CButton
                                       className="w-100 m-0"
                                       color="info"
-                                      size="sm" 
+                                      size="sm"
                                       id="dInvoice"
                                     >
                                       <span
@@ -3495,7 +2786,7 @@ const NlmtTripSheetInfoClosure = () => {
                               )}
                             </CRow>
                             {tripsettlementData.enroute_diesel_amount && Number(tripsettlementData.enroute_diesel_amount) > 0 && (
-                              <> 
+                              <>
                                 <CRow className="mt-2" hidden>
                                   <CCol xs={12} md={3}>
                                     <CFormLabel
@@ -3511,49 +2802,49 @@ const NlmtTripSheetInfoClosure = () => {
                                   </CCol>
                                 </CRow>
                                 <CRow className="mt-2" hidden style={{ marginBottom: '20px' }}>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="dVendor">Diesel Vendor</CFormLabel>
+                                  <CCol xs={12} md={2}>
+                                    <CFormLabel htmlFor="dVendor">Diesel Vendor</CFormLabel>
 
-                                <CFormInput
-                                  size="sm"
-                                  id="dVendor"
-                                  value={tripsettlementData.enroute_vendor ? tripsettlementData.enroute_vendor : '-'}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="dLtr">Diesel Liter</CFormLabel>
+                                    <CFormInput
+                                      size="sm"
+                                      id="dVendor"
+                                      value={tripsettlementData.enroute_vendor ? tripsettlementData.enroute_vendor : '-'}
+                                      readOnly
+                                    />
+                                  </CCol>
+                                  <CCol xs={12} md={2}>
+                                    <CFormLabel htmlFor="dLtr">Diesel Liter</CFormLabel>
 
-                                <CFormInput
-                                  size="sm"
-                                  id="dLtr"
-                                  value={tripsettlementData.enroute_diesel_liter ? tripsettlementData.enroute_diesel_liter : '-'}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="rateLtr">Rate Per Liter</CFormLabel>
+                                    <CFormInput
+                                      size="sm"
+                                      id="dLtr"
+                                      value={tripsettlementData.enroute_diesel_liter ? tripsettlementData.enroute_diesel_liter : '-'}
+                                      readOnly
+                                    />
+                                  </CCol>
+                                  <CCol xs={12} md={2}>
+                                    <CFormLabel htmlFor="rateLtr">Rate Per Liter</CFormLabel>
 
-                                <CFormInput
-                                  size="sm"
-                                  type=""
-                                  id="rateLtr"
-                                  value={tripsettlementData.enroute_diesel_rate ? tripsettlementData.enroute_diesel_rate : '-'}
-                                  readOnly
-                                />
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="dAmount">Total Amount</CFormLabel>
+                                    <CFormInput
+                                      size="sm"
+                                      type=""
+                                      id="rateLtr"
+                                      value={tripsettlementData.enroute_diesel_rate ? tripsettlementData.enroute_diesel_rate : '-'}
+                                      readOnly
+                                    />
+                                  </CCol>
+                                  <CCol xs={12} md={2}>
+                                    <CFormLabel htmlFor="dAmount">Total Amount</CFormLabel>
 
-                                <CFormInput
-                                  size="sm"
-                                  id="dAmount"
-                                  type=""
-                                  value={tripsettlementData.enroute_diesel_amount ? tripsettlementData.enroute_diesel_amount : '-'}
-                                  readOnly
-                                />
-                              </CCol>
-                              {/* <CCol xs={12} md={2}>
+                                    <CFormInput
+                                      size="sm"
+                                      id="dAmount"
+                                      type=""
+                                      value={tripsettlementData.enroute_diesel_amount ? tripsettlementData.enroute_diesel_amount : '-'}
+                                      readOnly
+                                    />
+                                  </CCol>
+                                  {/* <CCol xs={12} md={2}>
                                 <CFormLabel htmlFor="invoiceDate">Invoice Date & Time</CFormLabel>
 
                                 <CFormInput
@@ -3592,13 +2883,13 @@ const NlmtTripSheetInfoClosure = () => {
                                   )}
                                 </CCol>
                               )} */}
-                            </CRow>
+                                </CRow>
                               </>
                             )}
                           </>
                         )}
                         <hr />
-                        
+
                       </CTabPane>
 
                       {/* Hire Vehicle Over All Info Part End */}
@@ -3929,13 +3220,13 @@ const NlmtTripSheetInfoClosure = () => {
                             {/* ================== Enroute Diesel Charges Part Start ============ */}
                             {tripsettlementData.enroute_diesel_amount &&
                               Number(tripsettlementData.enroute_diesel_amount) > 0 && (
-                              <CTableRow>
-                                <CTableDataCell>Enroute Diesel Expenses</CTableDataCell>
-                                <CTableDataCell>
-                                  <CFormInput size="sm" value={tripsettlementData.enroute_diesel_amount} readOnly />
-                                </CTableDataCell>
-                              </CTableRow>
-                            )}
+                                <CTableRow>
+                                  <CTableDataCell>Enroute Diesel Expenses</CTableDataCell>
+                                  <CTableDataCell>
+                                    <CFormInput size="sm" value={tripsettlementData.enroute_diesel_amount} readOnly />
+                                  </CTableDataCell>
+                                </CTableRow>
+                              )}
                             {/* ================== Enroute Diesel Charges Part End ========== */}
 
                             {/* ================== Total Charges Part Start ============ */}
@@ -3951,158 +3242,6 @@ const NlmtTripSheetInfoClosure = () => {
                         </CTable>
                         {/* ================== Expense Table Body Part Start ======================= */}
 
-                        
-                        <CRow className="mt-2" hidden>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel
-                              htmlFor="inputAddress"
-                              style={{
-                                backgroundColor: '#4d3227',
-                                color: 'white',
-                              }}
-                            >
-                              Expense Request Information : 
-                            </CFormLabel>
-                          </CCol>
-                        </CRow>
-
-                        <CRow className="mt-2">
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="remarks">Expense Request Remarks</CFormLabel>
-                            <CFormTextarea 
-                              value={tripsettlementData.remarks ? tripsettlementData.remarks : '-'} 
-                              readOnly
-                            ></CFormTextarea>
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="remarks">Driver Expense Amount</CFormLabel>
-                            <CFormInput 
-                              size='sm'
-                              value={tripsettlementData.driver_expenses ? tripsettlementData.driver_expenses : '-'} 
-                              readOnly
-                            /> 
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="remarks">Expense Request Date & Time</CFormLabel>
-                            <CFormInput 
-                              size='sm'
-                              value={tripsettlementData.expense_creation_time ? tripsettlementData.expense_creation_time : '-'} 
-                              readOnly
-                            /> 
-                          </CCol> 
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="remarks">Expense SAP Text</CFormLabel>
-                            <CFormInput 
-                              size='sm'
-                              value={tripsettlementData.sap_text ? tripsettlementData.sap_text : '-'} 
-                              readOnly
-                            /> 
-                          </CCol> 
-                        </CRow>
-
-                        <CRow className="mt-2" hidden>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel
-                              htmlFor="inputAddress"
-                              style={{
-                                backgroundColor: '#4d3227',
-                                color: 'white',
-                              }}
-                            >
-                              Expense Approval Information : 
-                            </CFormLabel>
-                          </CCol>
-                        </CRow>
-
-                        <CRow className="mt-2">
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="remarks">Expense Approval Remarks</CFormLabel>
-                            <CFormTextarea 
-                              value={tripsettlementData.expense_approval_remarks ? tripsettlementData.expense_approval_remarks : '-'} 
-                              readOnly
-                            ></CFormTextarea>
-                          </CCol>
-                          
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="remarks">SAP Driver Expense Posting Amount</CFormLabel>
-                            <CFormInput 
-                              size='sm'
-                              value={tripsettlementData.sap_expense_amount ? tripsettlementData.sap_expense_amount : '-'} 
-                              readOnly
-                            /> 
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="remarks">Expense Approval Date & Time</CFormLabel>
-                            <CFormInput 
-                              size='sm'
-                              value={tripsettlementData.expense_approval_at ? tripsettlementData.expense_approval_at : '-'} 
-                              readOnly
-                            /> 
-                          </CCol> 
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="remarks">SAP Posting Date / Doc. No</CFormLabel>
-                            <CFormInput 
-                              size='sm'
-                              value={`${tripsettlementData.sap_expense_date ? tripsettlementData.sap_expense_date : '-'} / ${tripsettlementData.expense_sap_document_no ? tripsettlementData.expense_sap_document_no : '-'}`}
-                              readOnly
-                            /> 
-                          </CCol> 
-                        </CRow>
-                        
-                        {tripsettlementData.payment_status == 3 && (
-                          <>
-                            <CRow className="mt-2" hidden>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel
-                                  htmlFor="inputAddress"
-                                  style={{
-                                    backgroundColor: '#4d3227',
-                                    color: 'white',
-                                  }}
-                                >
-                                  Driver Payment Information : 
-                                </CFormLabel>
-                              </CCol>
-                            </CRow>
-
-                            <CRow className="mt-2">
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="remarks">Payment Remarks</CFormLabel>
-                                <CFormTextarea 
-                                  value={tripsettlementData.driver_payment_remarks ? tripsettlementData.driver_payment_remarks : '-'} 
-                                  readOnly
-                                ></CFormTextarea>
-                              </CCol>
-                              
-                              <CCol xs={12} md={4}>
-                                <CFormLabel htmlFor="remarks">SAP Payment Amount / Text</CFormLabel>
-                                <CFormInput 
-                                  size='sm'
-                                  value={`${tripsettlementData.sap_expense_amount ? tripsettlementData.sap_expense_amount : '-'} / ${tripsettlementData.driver_payment_sap_text ? tripsettlementData.driver_payment_sap_text : '-'}`}
-                                  readOnly
-                                /> 
-                              </CCol>
-                              <CCol xs={12} md={2}>
-                                <CFormLabel htmlFor="remarks">Payment Date & Time</CFormLabel>
-                                <CFormInput 
-                                  size='sm'
-                                  value={tripsettlementData.driver_payment_at ? tripsettlementData.driver_payment_at : '-'} 
-                                  readOnly
-                                /> 
-                              </CCol> 
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="remarks">SAP Posting Date / Doc. No</CFormLabel>
-                                <CFormInput 
-                                  size='sm'
-                                  value={`${tripsettlementData.sap_payment_date ? tripsettlementData.sap_payment_date : '-'} / ${tripsettlementData.driver_payment_sap_document_no ? tripsettlementData.driver_payment_sap_document_no : '-'}`}
-                                  readOnly
-                                /> 
-                              </CCol> 
-                            </CRow>
-                          </>
-                        )}
-                            
-                        
                       </CTabPane>
                       {/* HIre Vehicles Income Capture Start */}
                       <CTabPane
@@ -4110,132 +3249,122 @@ const NlmtTripSheetInfoClosure = () => {
                         aria-labelledby="profile-tab"
                         visible={activeKey === 13}
                       >
-                        
-                        {/* ================== P&L Body Start ======================= */}
-                        <CTable caption="top" style={{ height: '40vh', marginTop: '20px' }} hover>
-                          <CTableCaption style={{ color: 'maroon' }}>Profit and Loss</CTableCaption>
-                          <CTableHead style={{ backgroundColor: '#4d3227', color: 'white' }}>
-                            <CTableRow>
-                              <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                S.No
-                              </CTableHeaderCell>
 
-                              <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                Type
-                              </CTableHeaderCell>
-
-                              <CTableHeaderCell scope="col" style={{ color: 'white' }}>
-                                Total
-                              </CTableHeaderCell>
-                            </CTableRow>
-                          </CTableHead>
-
-                          <CTableBody>
-                            <CTableRow>
-                              <CTableHeaderCell scope="row">1</CTableHeaderCell>
-                              <CTableDataCell>Income</CTableDataCell>
-
-                              <CTableDataCell>
-                                <CFormInput
-                                  size="sm"
-                                  id="inputAddress"
-                                  value={values.income}
-                                  readOnly
-                                />
-                              </CTableDataCell>
-                            </CTableRow>
-
-                            <CTableRow>
-                              <CTableHeaderCell scope="row">2</CTableHeaderCell>
-                              <CTableDataCell>Expense</CTableDataCell>
-
-                              <CTableDataCell>
-                                <CFormInput
-                                  size="sm"
-                                  id="inputAddress"
-                                  value={tripsettlementData.expense}
-                                  readOnly
-                                />
-                              </CTableDataCell>
-                            </CTableRow>
-                            <CTableRow>
-                              <CTableHeaderCell scope="row">3</CTableHeaderCell>
-                              <CTableDataCell>Profit and Loss</CTableDataCell>
-                              <CTableDataCell>
-                                <CFormInput size="sm" id="inputAddress" value={PLFinder()} readOnly />
-                              </CTableDataCell>
-                            </CTableRow>
-                          </CTableBody>
-                        </CTable>
-                        {/* ================== P&L Body End ======================= */}
-                         
-                        <CRow className="mt-2">
-
-                          {tripsettlementData.deduction_approval_by && (
-                            <>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="remarks">Income Req. Rejection Remarks</CFormLabel>
-                                <CFormTextarea 
-                                  value={tripsettlementData.deduction_approval_remarks} 
-                                  readOnly
-                                ></CFormTextarea>
-                              </CCol> 
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="remarks">Income Req. Rejection Date & Time</CFormLabel>
-                                <CFormInput 
-                                  size='sm'
-                                  value={tripsettlementData.deduction_approval_at ? tripsettlementData.deduction_approval_at : '-'} 
-                                  readOnly
-                                /> 
-                              </CCol>
-                            </>
-                          )}
+                        <CRow className="mt-2" hidden>
                           <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="remarks">NLMT Vendor Code</CFormLabel>
-                            <CFormInput 
-                              size='sm'
-                              value={`Expense : ${nlmt_expense_vendor_code}, Income : ${nlmt_income_vendor_code}`}
-                              readOnly
-                            /> 
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="income">Income Amount <REQ />{' '} </CFormLabel>
-                            <CFormInput
-                              name="income"
-                              size='sm'
-                              id="income"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              maxLength={"6"}
-                              onChange={(e) => {
-                                const value = e.target.value;
-
-                                // Allow only digits
-                                if (/^\d*$/.test(value)) {
-                                  handleChange(e);
-                                }
+                            <CFormLabel
+                              htmlFor="inputAddress"
+                              style={{
+                                backgroundColor: '#4d3227',
+                                color: 'white',
                               }}
-                              // onChange={handleChange}
-                              rows="1"
-                              value={values.income}
-                            />
+                            >
+                              Expense Request Information :
+                            </CFormLabel>
+                          </CCol>
+                        </CRow>
+
+                        <CRow className="mt-2">
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">Expense Request Remarks</CFormLabel>
+                            <CFormTextarea
+                              value={tripsettlementData.remarks ? tripsettlementData.remarks : '-'}
+                              readOnly
+                            ></CFormTextarea>
                           </CCol>
                           <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="income_sap_text">SAP Text </CFormLabel>
+                            <CFormLabel htmlFor="remarks">Driver Expense Amount</CFormLabel>
                             <CFormInput
                               size='sm'
-                              name="income_sap_text"
-                              id="income_sap_text"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              maxLength={"30"} 
-                              onChange={handleChange}
-                              rows="1"
-                              value={values.income_sap_text}
+                              value={tripsettlementData.driver_expenses ? tripsettlementData.driver_expenses : '-'}
+                              readOnly
                             />
                           </CCol>
                           <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="income_remarks">Pro Income Remarks</CFormLabel>
+                            <CFormLabel htmlFor="remarks">Expense Request Date & Time</CFormLabel>
+                            <CFormInput
+                              size='sm'
+                              value={tripsettlementData.expense_creation_time ? tripsettlementData.expense_creation_time : '-'}
+                              readOnly
+                            />
+                          </CCol>
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">Expense SAP Text</CFormLabel>
+                            <CFormInput
+                              size='sm'
+                              value={tripsettlementData.sap_text ? tripsettlementData.sap_text : '-'}
+                              readOnly
+                            />
+                          </CCol>
+                        </CRow>
+
+                        <CRow className="mt-2" hidden>
+                          <CCol xs={12} md={3}>
+                            <CFormLabel
+                              htmlFor="inputAddress"
+                              style={{
+                                backgroundColor: '#4d3227',
+                                color: 'white',
+                              }}
+                            >
+                              Expense Approval Information :
+                            </CFormLabel>
+                          </CCol>
+                        </CRow>
+
+                        <CRow className="mt-2">
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">Expense Approval Remarks</CFormLabel>
+                            <CFormTextarea
+                              value={tripsettlementData.expense_approval_remarks ? tripsettlementData.expense_approval_remarks : '-'}
+                              readOnly
+                            ></CFormTextarea>
+                          </CCol>
+
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">SAP Driver Expense Posting Amount</CFormLabel>
+                            <CFormInput
+                              size='sm'
+                              value={tripsettlementData.sap_expense_amount ? tripsettlementData.sap_expense_amount : '-'}
+                              readOnly
+                            />
+                          </CCol>
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">Expense Approval Date & Time</CFormLabel>
+                            <CFormInput
+                              size='sm'
+                              value={tripsettlementData.expense_approval_at ? tripsettlementData.expense_approval_at : '-'}
+                              readOnly
+                            />
+                          </CCol>
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">SAP Posting Date / Doc. No</CFormLabel>
+                            <CFormInput
+                              size='sm'
+                              value={`${tripsettlementData.sap_expense_date ? tripsettlementData.sap_expense_date : '-'} / ${tripsettlementData.expense_sap_document_no ? tripsettlementData.expense_sap_document_no : '-'}`}
+                              readOnly
+                            />
+                          </CCol>
+                        </CRow>
+
+                        <CRow className="mt-2" hidden>
+                          <CCol xs={12} md={3}>
+                            <CFormLabel
+                              htmlFor="inputAddress"
+                              style={{
+                                backgroundColor: '#4d3227',
+                                color: 'white',
+                              }}
+                            >
+                              Driver Payment Information :
+                            </CFormLabel>
+                          </CCol>
+                        </CRow>
+
+                        {/* ================== P&L Body End ======================= */}
+                        <CRow className="mt-2">
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="income_remarks">Driver Payment Remarks</CFormLabel>
                             <CFormTextarea
                               name="income_remarks"
                               id="income_remarks"
@@ -4247,8 +3376,30 @@ const NlmtTripSheetInfoClosure = () => {
                             ></CFormTextarea>
                           </CCol>
                           <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">Driver Payment Posting Amount</CFormLabel>
+                            <CFormInput
+                              size='sm'
+                              value={tripsettlementData.sap_expense_amount ? tripsettlementData.sap_expense_amount : '-'}
+                              readOnly
+                            />
+                          </CCol>
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="income_sap_text">Payment SAP Text </CFormLabel>
+                            <CFormInput
+                              name="income_sap_text"
+                              id="income_sap_text"
+                              onFocus={onFocus}
+                              onBlur={onBlur}
+                              maxLength={"30"}
+                              onChange={handleChange}
+                              rows="1"
+                              value={values.income_sap_text}
+                            />
+                          </CCol>
+
+                          <CCol xs={12} md={3}>
                             <CFormLabel htmlFor="income_posting_date">
-                              Income Posting Date <REQ />{' '} 
+                              Payment Posting Date <REQ />{' '}
                             </CFormLabel>
                             <CFormInput
                               size="sm"
@@ -4266,74 +3417,8 @@ const NlmtTripSheetInfoClosure = () => {
                               value={values.income_posting_date}
                             />
                           </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="supplier_ref_no">SAP Expense Ref. No <REQ />{' '} </CFormLabel>
-                            <CFormInput
-                              size='sm'
-                              name="supplier_ref_no"
-                              id="supplier_ref_no"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              maxLength={"50"} 
-                              onChange={handleChange}
-                              rows="1"
-                              value={values.supplier_ref_no}
-                            />
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="supplier_posting_date">
-                              SAP Expense Ref. Date <REQ />{' '} 
-                            </CFormLabel>
-                            <CFormInput
-                              size="sm"
-                              type="date"
-                              id="supplier_posting_date"
-                              name="supplier_posting_date"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              onChange={handleChange}
-                              // min={Expense_Income_Posting_Date.min_date}
-                              // max={Expense_Income_Posting_Date.max_date}
-                              onKeyDown={(e) => {
-                                e.preventDefault()
-                              }}
-                              value={values.supplier_posting_date}
-                            />
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="vendor_hsn">
-                              HSN Code <REQ />{' '}
-                            </CFormLabel>
-                            <CFormSelect
-                              size="sm"
-                              name="vendor_hsn"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              onChange={handleChange}
-                              value={values.vendor_hsn}
-                              className={`${errors.vendor_hsn && 'is-invalid'}`}
-                              aria-label="Small select example"
-                            >
-                              <option value="">Select</option>
-                  
-                              {sapHsnData.map(({ definition_list_code, definition_list_name }) => {
-                                if (definition_list_code) {
-                                  return (
-                                    <>
-                                      <option
-                                        key={definition_list_code}
-                                        value={definition_list_code}
-                                      >
-                                        {definition_list_name}
-                                      </option>
-                                    </>
-                                  )
-                                }
-                              })}
-                            </CFormSelect>
-                          </CCol>
                         </CRow>
-                        <CRow> 
+                        <CRow>
                           <CCol
                             className="offset-md-9"
                             xs={12}
@@ -4343,17 +3428,17 @@ const NlmtTripSheetInfoClosure = () => {
                             style={{ display: 'flex', flexDirection: 'row-reverse', cursor: 'pointer' }}
                           >
                             <CButton size="sm" color="primary" className="text-white" type="button">
-                              <Link className="text-white" to="/NlmtTSIncomeClosureHome">
+                              <Link className="text-white" to="/NlmtTSPaymentHome">
                                 Cancel
                               </Link>
                             </CButton>
                             <CButton
                               size="sm"
                               color="success"
-                              className="mx-3 text-white" 
+                              className="mx-3 text-white"
                               onClick={() => {
-                                // setFetch(false)
-                                TripsheetIncomeClosureSubmit()
+                                setFetch(false)
+                                validationApproval()
                               }}
                               type="submit"
                             >
@@ -4398,7 +3483,7 @@ const NlmtTripSheetInfoClosure = () => {
                   </CModalHeader>
                   <CModalBody>
                     {tripInfo.odometer_closing_photo &&
-                    !tripInfo.odometer_closing_photo.includes('.pdf') ? (
+                      !tripInfo.odometer_closing_photo.includes('.pdf') ? (
                       <CCardImage orientation="top" src={tripInfo.odometer_closing_photo} />
                     ) : (
                       <iframe
@@ -4446,8 +3531,8 @@ const NlmtTripSheetInfoClosure = () => {
                   </CModalHeader>
                   <CModalBody>
                     {stoTableData[stoEditIndex] &&
-                    stoValues.sto_pod_copy &&
-                    !stoValues.sto_pod_copy.includes('.pdf') ? (
+                      stoValues.sto_pod_copy &&
+                      !stoValues.sto_pod_copy.includes('.pdf') ? (
                       <CCardImage orientation="top" src={stoTableData[stoEditIndex].sto_pod_copy} />
                     ) : (
                       <iframe
@@ -4486,11 +3571,11 @@ const NlmtTripSheetInfoClosure = () => {
                       tripInfo?.vehicle_info?.vehicle_type_id === 21 && (
                         <>
                           {dieselCollectionInfo &&
-                          dieselCollectionInfo.length > 0 &&
-                          dieselInvoiceAttachmentVisible1Index != '' &&
-                          !dieselCollectionInfo[
-                            Number(dieselInvoiceAttachmentVisible1Index)
-                          ].invoice_copy.includes('.pdf') ? (
+                            dieselCollectionInfo.length > 0 &&
+                            dieselInvoiceAttachmentVisible1Index != '' &&
+                            !dieselCollectionInfo[
+                              Number(dieselInvoiceAttachmentVisible1Index)
+                            ].invoice_copy.includes('.pdf') ? (
                             <CCardImage
                               orientation="top"
                               src={
@@ -4505,10 +3590,10 @@ const NlmtTripSheetInfoClosure = () => {
                               width={475}
                               src={
                                 dieselCollectionInfo &&
-                                dieselCollectionInfo.length > 0 &&
-                                dieselInvoiceAttachmentVisible1Index != ''
+                                  dieselCollectionInfo.length > 0 &&
+                                  dieselInvoiceAttachmentVisible1Index != ''
                                   ? dieselCollectionInfo[Number(dieselInvoiceAttachmentVisible1Index)]
-                                      .invoice_copy
+                                    .invoice_copy
                                   : ''
                               }
                             ></iframe>
@@ -4519,9 +3604,9 @@ const NlmtTripSheetInfoClosure = () => {
                       tripInfo?.vehicle_info?.vehicle_type_id !== 22 && (
                         <>
                           {dieselInvoiceAttachmentVisible1Index != '' &&
-                          !dieselCollectionInfo[
-                            Number(dieselInvoiceAttachmentVisible1Index)
-                          ].invoice_copy.includes('.pdf') ? (
+                            !dieselCollectionInfo[
+                              Number(dieselInvoiceAttachmentVisible1Index)
+                            ].invoice_copy.includes('.pdf') ? (
                             <CCardImage
                               orientation="top"
                               src={
@@ -4537,7 +3622,7 @@ const NlmtTripSheetInfoClosure = () => {
                               src={
                                 dieselInvoiceAttachmentVisible1Index != ''
                                   ? dieselCollectionInfo[Number(dieselInvoiceAttachmentVisible1Index)]
-                                      .invoice_copy
+                                    .invoice_copy
                                   : ''
                               }
                             ></iframe>
@@ -4558,112 +3643,7 @@ const NlmtTripSheetInfoClosure = () => {
                     </CButton>
                   </CModalFooter>
                 </CModal>
-                {/* Diesel Invoice Photo 1 View End  */}
-                {/* RMSTO POD Copy Photo View Start */}
-                <CModal visible={stoPodVisibleRMSTO} onClose={() => setStoPodVisibleRMSTO(false)}>
-                  <CModalHeader>
-                    <CModalTitle>Opeing Odometer Photo</CModalTitle>
-                  </CModalHeader>
-                  <CModalBody>
-                    {stoTableDataRMSTO[stoEditIndexRMSTO] &&
-                    stoValuesRMSTO.sto_pod_copy_rmsto &&
-                    !stoValuesRMSTO.sto_pod_copy_rmsto.includes('.pdf') ? (
-                      <CCardImage
-                        orientation="top"
-                        src={stoTableDataRMSTO[stoEditIndexRMSTO].sto_pod_copy_rmsto}
-                      />
-                    ) : (
-                      <iframe
-                        orientation="top"
-                        height={500}
-                        width={475}
-                        src={
-                          stoTableDataRMSTO[stoEditIndexRMSTO]
-                            ? stoTableDataRMSTO[stoEditIndexRMSTO].sto_pod_copy_rmsto
-                            : filePathRMSTO
-                        }
-                      ></iframe>
-                    )}
-                  </CModalBody>
 
-                  <CModalFooter>
-                    <CButton color="secondary" onClick={() => setStoPodVisibleRMSTO(false)}>
-                      Close
-                    </CButton>
-                  </CModalFooter>
-                </CModal>
-                {/* RMSTO POD Copy Photo View End */}
-                {/* Diesel Invoice Photo View  */}
-                {/* <CModal
-                visible={dieselInvoiceAttachmentVisible}
-                onClose={() => setDieselInvoiceAttachmentVisible(false)}
-              >
-                <CModalHeader>
-                  <CModalTitle>Diesel Invoice Copy</CModalTitle>
-                </CModalHeader>
-                <CModalBody>
-                  {tripInfo.diesel_intent_info &&
-                  tripInfo.diesel_intent_info.invoice_copy &&
-                  !tripInfo.diesel_intent_info.invoice_copy.includes('.pdf') ? (
-                    <CCardImage
-                      orientation="top"
-                      src={tripInfo.diesel_intent_info ? tripInfo.diesel_intent_info.invoice_copy : ''}
-                    />
-                  ) : (
-                    <iframe
-                      orientation="top"
-                      height={500}
-                      width={475}
-                      src={tripInfo.diesel_intent_info ? tripInfo.diesel_intent_info.invoice_copy : ''}
-                    ></iframe>
-                  )}
-                </CModalBody>
-
-                <CModalFooter>
-                  <CButton color="secondary" onClick={() => setDieselInvoiceAttachmentVisible(false)}>
-                    Close
-                  </CButton>
-                </CModalFooter>
-              </CModal> */}
-                {/* ============== Income Submit Confirm Button Modal Area ================= */}
-                <CModal
-                  visible={incomeSubmit}
-                  backdrop="static"
-                  // scrollable
-                  onClose={() => {
-                    setIncomeSubmit(false)
-                  }}
-                >
-                  <CModalBody>
-                    {tripsettlementData.driver_id == 0 ? (
-                      <p className="lead">Are you sure to Post the Vendor expenses to SAP ?</p>
-                    ) : (
-                      <p className="lead">Are you sure to Post the Income Amount to SAP ?</p>
-                    )}
-                  </CModalBody>
-                  <CModalFooter>
-                    <CButton
-                      className="m-2"
-                      color="warning"
-                      onClick={() => {
-                        setIncomeSubmit(false)
-                        setFetch(false)
-                        sendDriverExpenseToSAP()
-                      }}
-                    >
-                      Confirm
-                    </CButton>
-                    <CButton
-                      color="secondary"
-                      onClick={() => {
-                        setIncomeSubmit(false)
-                      }}
-                    >
-                      Cancel
-                    </CButton>
-                  </CModalFooter>
-                </CModal>
-              
               </CCard>
             </>
           ) : (
@@ -4675,4 +3655,4 @@ const NlmtTripSheetInfoClosure = () => {
   )
 }
 
-export default NlmtTripSheetInfoClosure
+export default NlmtTSPayment

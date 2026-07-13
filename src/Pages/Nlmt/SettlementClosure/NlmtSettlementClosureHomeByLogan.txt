@@ -1,0 +1,1124 @@
+// import { React, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import {
+  CButton,
+  CCard,
+  CCol,
+  CContainer,
+  CFormInput,
+  CFormLabel,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
+  CRow,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+} from '@coreui/react'
+import { Link } from 'react-router-dom'
+import CustomTable from 'src/components/customComponent/CustomTable'
+import Loader from 'src/components/Loader'
+import AccessDeniedComponent from 'src/components/commoncomponent/AccessDeniedComponent'
+import JavascriptInArrayComponent from 'src/components/commoncomponent/JavascriptInArrayComponent'
+import * as LogisticsProScreenNumberConstants from 'src/components/constants/LogisticsProScreenNumberConstants'
+import { DateRangePicker } from 'rsuite'
+import { toast } from 'react-toastify'
+import TripPaymentSubmissionComponent from './TripPaymentSubmissionComponent'
+import UserMasterValidation from 'src/Utils/Master/UserMasterValidation'
+import useForm from 'src/Hooks/useForm'
+import Swal from 'sweetalert2'
+import DefinitionsListApi from 'src/Service/Definitions/DefinitionsListApi'
+import { GetDateTimeFormat } from '../CommonMethods/CommonMethods'
+import FileSaver from 'file-saver'
+import * as XLSX from 'xlsx'
+import NlmtTripSheetClosureService from 'src/Service/Nlmt/TripSheetClosure/NlmtTripSheetClosureService'
+import DieselVendorMasterService from 'src/Service/Master/DieselVendorMasterService'
+
+const NlmtSettlementClosureHome = () => {
+  /*================== User Location Fetch ======================*/
+  const user_info_json = localStorage.getItem('user_info')
+  const user_info = JSON.parse(user_info_json)
+  const user_locations = []
+  const user_vehicle_types = []
+
+  /* Get User Locations From Local Storage */
+  user_info.location_info.map((data, index) => {
+    user_locations.push(data.id)
+  })
+
+  /* Get User Id From Local Storage */
+  const user_id = user_info.user_id
+
+  /* Get User Vehicle Types From Local Storage */
+  user_info.vehicle_type_info.map((data, index) => {
+    user_vehicle_types.push(data.id)
+  })
+
+  // console.log(user_locations)
+  /*================== User Location Fetch ======================*/
+
+  const formValues = {
+    vehicleNumber: '',
+    tripsheetNumber: '',
+    tripPaymentSubmission: '',
+  }
+
+  const {
+    values,
+    errors,
+    handleChange,
+    handleMultipleChange,
+    onFocus,
+    handleSubmit,
+    enableSubmit,
+    onBlur,
+    isTouched,
+  } = useForm(login, UserMasterValidation, formValues)
+
+  function login() {
+    // alert('No Errors CallBack Called')
+  }
+
+  /* ==================== Access Part Start ========================*/
+  // const [screenAccess, setScreenAccess] = useState(false)
+  // let page_no = LogisticsProScreenNumberConstants.TripSettlementScreens.Tripsheet_Settlement_Closure
+
+  // useEffect(()=>{
+
+  //   if(user_info.is_admin == 1 || JavascriptInArrayComponent(page_no,user_info.page_permissions)){
+  //     console.log('screen-access-allowed')
+  //     setScreenAccess(true)
+  //   } else{
+  //     console.log('screen-access-not-allowed')
+  //     setScreenAccess(false)
+  //   }
+
+  // },[])
+  /* ==================== Access Part End ========================*/
+
+  const [rowData, setRowData] = useState([])
+  const [allRowData, setAllRowData] = useState([])
+  const [tripPaymentsArray, setTripPaymentsArray] = useState([])
+  const [singleVendorArray, setSingleVendorArray] = useState([])
+  const [searchFilterData, setSearchFilterData] = useState([])
+  const [fetch, setFetch] = useState(false)
+  const [dvData, setDvData] = useState([])
+  let tableData = []
+  let closureData = []
+
+  const ACTION = {
+    GATE_IN: 1,
+    GATE_OUT: 2,
+    WAIT_OUTSIDE: 0,
+  }
+
+  const [message, setMessage] = useState('')
+  const [checkPersOptions, setCheckPersOptions] = useState([])
+  const [selectedCheckPers, setSelectedCheckPers] = useState('')
+  const [originalData, setOriginalData] = useState([])
+  const handleChangeRemarks = (event) => {
+    const result = event.target.value.toUpperCase()
+    setMessage(result)
+  }
+
+  /* Vehicle Current Position */
+  const VEHICLE_CURRENT_POSITION = {
+    TRIPSHEET_CREATED: 16,
+    ADVANCE_CREATED: 18,
+    NLFD_SHIPMENT_COMPLETED: 22,
+    NLCD_SHIPMENT_COMPLETED: 25,
+    DIESEL_INDENT_CREATION_COMPLETED: 37,
+    DIESEL_INDENT_CONFIRMATION_COMPLETED: 39,
+    DIESEL_INDENT_APPROVAL_COMPLETED: 41,
+    INCOME_CLOSURE_REJECTED: 261,
+  }
+
+  const VEHICLE_TYPE_MAP = {
+    21: 'Own',
+    22: 'Hire',
+  }
+
+  /* Set Default Date (Last 10 days to Today) */
+  const ddd = new Date()
+  ddd.setDate(ddd.getDate() - 10)
+  const [defaultDate, setDefaultDate] = React.useState([
+    new Date(ddd),
+    new Date(getCurrentDate('-')),
+  ])
+
+  function getCurrentDate(separator = '') {
+    let newDate = new Date()
+    let date = newDate.getDate()
+    let month = newDate.getMonth() + 1
+    let year = newDate.getFullYear()
+
+    return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${
+      date < 10 ? `0${date}` : `${date}`
+    }`
+  }
+
+  function formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear()
+
+    if (month.length < 2) month = '0' + month
+    if (day.length < 2) day = '0' + day
+
+    return [day, month, year].join('-')
+  }
+
+  useEffect(() => {
+    console.log(defaultDate)
+    if (defaultDate) {
+      setDefaultDate(defaultDate)
+    } else {
+    }
+  }, [defaultDate])
+  const [ded_posting_date, setpostingDate] = useState('')
+  const handleChangepostingDate = (event) => {
+    let vall = event.target.value
+    setpostingDate(vall)
+  }
+  const exportToCSV = () => {
+    let dateTimeString = GetDateTimeFormat(1)
+    let fileName = 'NLMT_Settlement_Closure_' + dateTimeString
+    const fileType =
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+    const fileExtension = '.xlsx'
+    const ws = XLSX.utils.json_to_sheet(rowData)
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] }
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    const data = new Blob([excelBuffer], { type: fileType })
+    FileSaver.saveAs(data, fileName + fileExtension)
+  }
+
+  const removeDuplicates = (arr) => {
+    return arr.filter((item, index) => arr.indexOf(item) === index)
+  }
+
+  const [assignPSModal, setAssignPSModal] = useState(false)
+
+  const getDieselVendorNameById = (vendor_id) => {
+    console.log(dvData, 'dieselVendorFinder-dvData')
+    console.log(vendor_id, 'dieselVendorFinder-vendor_id')
+    let vendorName = '-'
+    for (let i = 0; i < dvData.length; i++) {
+      if (dvData[i].diesel_vendor_id == vendor_id) {
+        vendorName = dvData[i].diesel_vendor_name
+      }
+    }
+    console.log(vendorName, 'dieselVendorFinder-vendorName')
+    return vendorName
+  }
+
+  const getVehicleTypeId = (data) => {
+    return Number(
+      typeof data.vehicle_info?.vehicle_type_id === 'object'
+        ? data.vehicle_info?.vehicle_type_id?.id
+        : data.vehicle_info?.vehicle_type_id
+    )
+  }
+
+  const checkModalDisplay = () => {
+    let trip_payments_array = JSON.parse(JSON.stringify(values.tripPaymentSubmission))
+
+    let trip_payments_selected_array = searchFilterData.filter((value) =>
+      JavascriptInArrayComponent(value.nlmt_trip_in_id, trip_payments_array)
+    )
+
+    // Check empty
+    if (trip_payments_selected_array.length === 0) {
+      toast.warning('Please Choose Atleast One Tripsheet for Payment Submission..!')
+      setAssignPSModal(false)
+      return
+    }
+
+    // Get vendor codes
+    const vendor_code_array = trip_payments_selected_array.map(
+      (val) => val.vendor_info?.vendor_code
+    )
+
+    console.log(vendor_code_array, 'vendor_code_array')
+
+    // Get unique vendor codes
+    const unique_vendor_codes = [...new Set(vendor_code_array)]
+
+    // Validate vendor_code uniqueness
+    if (unique_vendor_codes.length > 1) {
+      toast.warning('Selection of Tripsheets should only be for Single Vendor..!')
+      setAssignPSModal(false)
+      return
+    }
+    // ✅ Get all selected checkPers values
+    const checkPersArray = trip_payments_selected_array.map((val) => {
+      const freightRate =
+        val.tripsheet_info?.trip_vehicle_route?.freight_rate &&
+        val.vehicle_assignment?.[0]?.billed_qty
+          ? val.tripsheet_info.trip_vehicle_route.freight_rate *
+            Number(val.vehicle_assignment[0].billed_qty)
+          : 0
+
+      const advanceAmt = val.advance_payment_info?.advance_payment || 0
+
+      if (advanceAmt > 0 && freightRate > 0) {
+        return Math.round((advanceAmt / freightRate) * 100)
+      }
+
+      return 0
+    })
+
+    // ✅ Get unique checkPers values
+    const uniqueCheckPers = [...new Set(checkPersArray)]
+
+    // ❌ If not same → show alert
+    if (uniqueCheckPers.length > 1) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Selection',
+        text: 'Selected Tripsheets must have same Advance % (checkPers)',
+        confirmButtonText: 'OK',
+      })
+      setAssignPSModal(false)
+      return
+    }
+    // Valid case → use first vendor
+    const selectedVendor = trip_payments_selected_array[0]
+
+    setTripPaymentsArray(trip_payments_selected_array)
+
+    setSingleVendorArray([selectedVendor])
+
+    setAssignPSModal(true)
+  }
+
+  const getClosureVehiclesData = (fresh_type = '') => {
+    if (fresh_type !== '1') {
+      NlmtTripSheetClosureService.getVehicleReadyToTripClose().then((res) => {
+        closureData = res.data.data
+        console.log(closureData, 'getVehicleReadyToTripClose')
+        setFetch(true)
+
+        let rowDataList = []
+        const filterData1 = closureData.filter(
+          (data) => user_locations.indexOf(data.vehicle_location_id) != -1
+        )
+
+        console.log('ROWSfilterData1:', filterData1)
+
+        const filterData = filterData1.filter(
+          (data) =>
+            (data.vehicle_info?.vehicle_type_id == 22 &&
+              data.trip_settlement_info?.tripsheet_is_settled == 1 &&
+              data.trip_settlement_info?.approval_status == 3) ||
+            (data.vehicle_info?.vehicle_type_id == 22 &&
+              data.trip_settlement_info?.approval_status == 0) ||
+            (data.vehicle_info?.vehicle_type_id == 28 &&
+              data.trip_settlement_info?.tripsheet_is_settled == 1)
+        )
+
+        console.log('ROWSfilterData:', filterData)
+        // ✅ Generate unique checkPers list
+        const checkPersList = filterData.map((data) => {
+          const freightRate =
+            data.tripsheet_info?.trip_vehicle_route?.freight_rate &&
+            data.vehicle_assignment?.[0]?.billed_qty
+              ? data.tripsheet_info.trip_vehicle_route.freight_rate *
+                Number(data.vehicle_assignment[0].billed_qty)
+              : 0
+
+          const advanceAmt = data.advance_payment_info?.advance_payment || 0
+
+          if (advanceAmt > 0 && freightRate > 0) {
+            return Math.round((advanceAmt / freightRate) * 100)
+          }
+
+          return 0
+        })
+
+        // ✅ remove duplicates
+        const uniqueCheckPers = [...new Set(checkPersList)]
+
+        // ✅ set state
+        setCheckPersOptions(uniqueCheckPers)
+
+        filterData.map((data, index) => {
+          const routeName = data.tripsheet_info?.trip_vehicle_route?.route_name || '-'
+          const freightRate =
+            data.tripsheet_info?.trip_vehicle_route?.freight_rate &&
+            data.vehicle_assignment?.[0]?.billed_qty
+              ? data.tripsheet_info.trip_vehicle_route.freight_rate *
+                Number(data.vehicle_assignment[0].billed_qty)
+              : '-'
+
+          const advanceAmt = data.advance_payment_info?.advance_payment || '0'
+          const advanceAmount = data.advance_payment_info?.advance_payment || '0'
+          const settlementInfo = data.trip_settlement_info || {}
+          let checkPers = '-'
+
+          if (advanceAmt > 0 && freightRate > 0) {
+            checkPers = Math.round((advanceAmt / freightRate) * 100)
+          } else {
+            checkPers = '0'
+          }
+          const adjustedFreightCharge =
+            Number(data?.trip_settlement_info?.unloading_charges || 0) +
+            Number(data?.trip_settlement_info?.additional_freight || 0) +
+            Number(data?.trip_settlement_info?.sub_delivery_charges || 0) +
+            Number(data?.trip_settlement_info?.weighment_charges || 0) +
+            Number(data?.trip_settlement_info?.low_tonage_charges || 0) +
+            Number(data?.trip_settlement_info?.toll_amount || 0) +
+            Number(data?.trip_settlement_info?.halting_charges || 0)
+          const deductionCharge = Number(data?.trip_settlement_info?.diversion_return_charges || 0)
+          const balanceAmount = Number(settlementInfo.expense) - advanceAmount
+          const totalExpenses = settlementInfo.expense
+          rowDataList.push({
+            sno: index + 1,
+            nlmt_trip_in_id: data.nlmt_trip_in_id,
+            // Tripsheet_No: data.tripsheet_info?.nlmt_tripsheet_no || '-',
+            Tripsheet_No: (
+              <Link
+                className="text-black"
+                target="_blank"
+                to={`/NlmtSettlementClosure/${data.nlmt_trip_in_id}`}
+              >
+                <u>
+                  <strong>{data.tripsheet_info.nlmt_tripsheet_no}</strong>
+                </u>
+              </Link>
+            ),
+            Tripsheet_Date: data.created_date || '-',
+            Vehicle_Type: VEHICLE_TYPE_MAP[getVehicleTypeId(data)] || '-',
+            Vehicle_No: data.vehicle_info?.vehicle_number || '-',
+            Driver_Name: data.driver_name || '-',
+            Driver_Phone: data.driver_phone_1 || '-',
+            Vendor_Name: data.vendor_info?.owner_name || '-',
+            Vendor_Code: data.vendor_info?.vendor_code || '-',
+            Shed_Name: data.vendor_info?.nlmt_shed_info?.shed_name || '-',
+            Shed_Mobile: data.vendor_info?.nlmt_shed_info?.shed_owner_phone_1 || '-',
+            Route_Name: routeName,
+            Advance_Amt: advanceAmt || '-',
+            Freight_Amount: freightRate,
+            Adjusted_Freight_Charge: adjustedFreightCharge,
+            Deduction_Charge: deductionCharge,
+            Balance_Amount: balanceAmount,
+            Total_Expenses: totalExpenses,
+            Advance_Given: checkPers,
+            Diesel_Bunk_Name: data.diesel_intent_info
+              ? getDieselVendorNameById(data.diesel_intent_info.diesel_vendor_id)
+              : '-',
+            Diesel_Amount: data.diesel_intent_info?.total_amount || '-',
+            Screen_Duration: data.vehicle_current_position_updated_time || '-',
+            Overall_Duration: data.created_at || '-',
+          })
+        })
+
+        setRowData(rowDataList)
+        setAllRowData(rowDataList)
+        setSearchFilterData(filterData)
+        setOriginalData(filterData)
+      })
+    }
+  }
+  console.log(tripPaymentsArray, 'tripPaymentsArray')
+  useEffect(() => {
+    getClosureVehiclesData()
+
+    DieselVendorMasterService.getDieselVendors().then((response) => {
+      let viewData = response.data.data
+      console.log(viewData, 'getDieselVendors')
+      setDvData(viewData)
+    })
+  }, [])
+
+  const columns = [
+    {
+      name: 'S.No',
+      selector: (row) => row.sno,
+      sortable: true,
+      center: true,
+      width: '60px',
+    },
+    {
+      name: 'TripSheet No',
+      selector: (row) => row.Tripsheet_No,
+      sortable: true,
+      center: true,
+    },
+    {
+      name: 'TripSheet Date',
+      selector: (row) => row.Tripsheet_Date,
+      sortable: true,
+      center: true,
+    },
+    {
+      name: 'Vehicle No',
+      selector: (row) => row.Vehicle_No,
+      sortable: true,
+      center: true,
+    },
+
+    {
+      name: 'Vendor Name',
+      selector: (row) => row.Vendor_Name,
+      sortable: true,
+      center: true,
+    },
+    {
+      name: 'Vendor Code',
+      selector: (row) => row.Vendor_Code,
+      sortable: true,
+      center: true,
+    },
+    {
+      name: 'Shed Name',
+      selector: (row) => row.Shed_Name,
+      sortable: true,
+      center: true,
+    },
+    {
+      name: 'Route',
+      selector: (row) => row.Route_Name,
+      sortable: true,
+      center: true,
+    },
+    {
+      name: 'Advance Given %',
+      selector: (row) => row.Advance_Given,
+      sortable: true,
+      center: true,
+    },
+    {
+      name: 'Advance Amount',
+      selector: (row) => row.Advance_Amt,
+      sortable: true,
+      center: true,
+      cell: (row) => {
+        const value = Number(row.Advance_Amt || 0)
+
+        let color = 'inherit' // default (0 case)
+
+        if (value > 0) {
+          color = 'green'
+        } else if (value < 0) {
+          color = 'red'
+        }
+
+        return (
+          <span style={{ color: color, fontWeight: value !== 0 ? 'bold' : 'normal' }}>{value}</span>
+        )
+      },
+    },
+    {
+      name: 'Adjustment',
+      selector: (row) => row.Adjusted_Freight_Charge,
+      sortable: true,
+      center: true,
+      cell: (row) => {
+        const value = Number(row.Adjusted_Freight_Charge || 0)
+
+        let color = 'inherit' // default (0 case)
+
+        if (value > 0) {
+          color = 'red'
+        } else if (value < 0) {
+          color = 'red'
+        }
+
+        return (
+          <span style={{ color: color, fontWeight: value !== 0 ? 'bold' : 'normal' }}>{value}</span>
+        )
+      },
+    },
+    {
+      name: 'Deduction',
+      selector: (row) => row.Deduction_Charge,
+      sortable: true,
+      center: true,
+      cell: (row) => {
+        const value = Number(row.Deduction_Charge || 0)
+
+        let color = 'inherit' // default (0 case)
+
+        if (value > 0) {
+          color = 'green'
+        } else if (value < 0) {
+          color = 'green'
+        }
+
+        return (
+          <span style={{ color: color, fontWeight: value !== 0 ? 'bold' : 'normal' }}>{value}</span>
+        )
+      },
+    },
+
+    {
+      name: 'Freight Amount',
+      selector: (row) => row.Freight_Amount,
+      sortable: true,
+      center: true,
+    },
+    {
+      name: 'Total Freight',
+      selector: (row) => row.Total_Expenses,
+      sortable: true,
+      center: true,
+    },
+    {
+      name: 'Balance Amount',
+      selector: (row) => row.Balance_Amount,
+      sortable: true,
+      center: true,
+      cell: (row) => {
+        const value = Number(row.Balance_Amount || 0)
+
+        let color = 'inherit' // default (0 case)
+
+        if (value > 0) {
+          color = 'blue'
+        } else if (value < 0) {
+          color = 'blue'
+        }
+
+        return (
+          <span style={{ color: color, fontWeight: value !== 0 ? 'bold' : 'normal' }}>{value}</span>
+        )
+      },
+    },
+
+    {
+      name: 'Screen Duration',
+      selector: (row) => row.Screen_Duration,
+      center: true,
+      sortable: true,
+    },
+  ]
+
+  const getTdsTax = (tax_type) => {
+    if (tax_type == '1') {
+      return '194C @ 1%'
+    } else if (tax_type == '2') {
+      return '194C @ 2%'
+    } else {
+      return 'No TDS'
+    }
+  }
+
+  const getGstTax = (tax_type) => {
+    if (tax_type == '1') {
+      return 'GST @ 5%'
+    } else if (tax_type == '2') {
+      return 'GST @ 12%'
+    } else if (tax_type == '3') {
+      return 'GST @ 18%'
+    } else {
+      return 'No GST'
+    }
+  }
+
+  const totalFreightTripsheets = (arr) => {
+    let total = 0
+    arr.map((val, ind) => {
+      const freightRate = val.tripsheet_info?.trip_vehicle_route?.freight_rate || '0'
+      const settlementExpenses =
+        Number(val.trip_settlement_info?.expense || 0) -
+        Number(val.advance_payment_info?.advance_payment || 0)
+      total = total + Number(settlementExpenses)
+    })
+    return total
+  }
+
+  const submitPayment = () => {
+    let paymentObject = {}
+    let trip_ids = []
+    let total_freight = 0
+
+    tripPaymentsArray.map((val, ind) => {
+      trip_ids.push(val.nlmt_trip_in_id)
+      const settlementExpenses =
+        Number(val.trip_settlement_info?.expense || 0) -
+        Number(val.advance_payment_info?.advance_payment || 0)
+      total_freight = total_freight + Number(settlementExpenses)
+    })
+
+    paymentObject.trip_ids = trip_ids
+    paymentObject.total_freight = total_freight
+    paymentObject.vendor_id = singleVendorArray[0]?.vendor_info?.id || null
+    paymentObject.vendor_code = singleVendorArray[0]?.vendor_info.vendor_code
+    paymentObject.vendor_location_id = singleVendorArray[0]?.vehicle_location_id || null
+    paymentObject.user_id = user_id
+    paymentObject.remarks = message
+
+    console.log(paymentObject, 'paymentObject')
+
+    NlmtTripSheetClosureService.storePaymentSubmission(paymentObject).then((res) => {
+      console.log(res.data, 'storePaymentSubmission')
+
+      let payment_reference = res.data.invoice_reference
+
+      // ✅ Correct success condition
+      if (payment_reference) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Payment Submission Completed Successfully\nReference ID : ' + payment_reference,
+          confirmButtonText: 'OK',
+        })
+
+        setFetch(false)
+        getClosureVehiclesData()
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: res.data.message || 'Payment submission failed',
+          confirmButtonText: 'OK',
+        })
+      }
+    })
+  }
+
+  return (
+    <>
+      {!fetch && <Loader />}
+      {fetch && (
+        <>
+          <CCard className="mt-4">
+            <CContainer className="mt-2">
+              <CRow className="mt-3">
+                <CCol xs={12} md={3}>
+                  <CFormLabel htmlFor="VNum">Date Filter</CFormLabel>
+                  <DateRangePicker
+                    style={{ width: '100rem', height: '100%', borderColor: 'black' }}
+                    className="mb-2"
+                    id="start_date"
+                    name="end_date"
+                    format="dd-MM-yyyy"
+                    value={defaultDate}
+                    onChange={setDefaultDate}
+                  />
+                </CCol>
+                <CCol xs={12} md={3}>
+                  <CFormLabel>Filter by Advance %</CFormLabel>
+                  <select
+                    className="form-control"
+                    value={selectedCheckPers}
+                    onChange={(e) => setSelectedCheckPers(e.target.value)}
+                  >
+                    <option value="">All</option>
+                    {checkPersOptions.map((val, index) => (
+                      <option key={index} value={val}>
+                        {val} %
+                      </option>
+                    ))}
+                  </select>
+                </CCol>
+                <CCol
+                  className="offset-md-6"
+                  xs={12}
+                  sm={9}
+                  md={3}
+                  style={{ display: 'flex', justifyContent: 'end' }}
+                >
+                  <CButton
+                    size="sm"
+                    color="primary"
+                    className="m-3 px-3 text-white"
+                    onClick={() => {
+                      const [startDate, endDate] = defaultDate || []
+
+                      const filteredSearch = originalData.filter((data) => {
+                        // Advance %
+                        let checkPers = 0
+                        const freightRate =
+                          data.tripsheet_info?.trip_vehicle_route?.freight_rate &&
+                          data.vehicle_assignment?.[0]?.billed_qty
+                            ? data.tripsheet_info.trip_vehicle_route.freight_rate *
+                              Number(data.vehicle_assignment[0].billed_qty)
+                            : 0
+
+                        const advanceAmt = data.advance_payment_info?.advance_payment || 0
+
+                        if (advanceAmt > 0 && freightRate > 0) {
+                          checkPers = Math.round((advanceAmt / freightRate) * 100)
+                        }
+
+                        const matchAdvance =
+                          selectedCheckPers === '' ||
+                          String(checkPers) === String(selectedCheckPers)
+
+                        // Date filter
+                        const tripDate = new Date(data.created_date.split('-').reverse().join('-'))
+
+                        const matchDate =
+                          !startDate || !endDate || (tripDate >= startDate && tripDate <= endDate)
+
+                        return matchAdvance && matchDate
+                      })
+
+                      // Table filter (based on same %)
+                      const filteredRows =
+                        selectedCheckPers === ''
+                          ? allRowData
+                          : allRowData.filter(
+                              (row) => String(row.Advance_Given) === String(selectedCheckPers)
+                            )
+
+                      setRowData(filteredRows)
+                      setSearchFilterData(filteredSearch)
+                    }}
+                  >
+                    Filter
+                  </CButton>
+                  <CButton
+                    size="lg-sm"
+                    color="warning"
+                    className="m-3 px-3 text-white"
+                    onClick={(e) => {
+                      exportToCSV()
+                    }}
+                  >
+                    Export
+                  </CButton>
+                </CCol>
+              </CRow>
+
+              {/* Payment Submission Section */}
+              <CRow className="mt-3">
+                <CCol xs={12} md={6}>
+                  <CFormLabel htmlFor="tripPaymentSubmission">
+                    Select Tripsheets for Payment Submission
+                  </CFormLabel>
+                  <TripPaymentSubmissionComponent
+                    size="sm"
+                    name="tripPaymentSubmission"
+                    id="tripPaymentSubmission"
+                    selectedValue={values.tripPaymentSubmission}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    onChange={handleMultipleChange}
+                    isMultiple={true}
+                    label="Select Tripsheets"
+                    noOptionsMessage="No Tripsheets Available"
+                    search_type="payment_submission"
+                    // search_data={searchFilterData}
+                    search_data={searchFilterData}
+                  />
+                </CCol>
+
+                {values.tripPaymentSubmission && values.tripPaymentSubmission.length > 0 && (
+                  <CCol className="mt-4" xs={12} sm={9} md={3}>
+                    <CButton
+                      color="success"
+                      className="m-2 text-white"
+                      onClick={() => {
+                        checkModalDisplay()
+                      }}
+                    >
+                      Confirm Payment Submission
+                    </CButton>
+
+                    <CModal
+                      alignment="center"
+                      size="xl"
+                      visible={assignPSModal}
+                      onClose={() => setAssignPSModal(false)}
+                    >
+                      <CModalHeader>
+                        <CModalTitle>{'NLMT Tripsheets : Payment Submission'}</CModalTitle>
+                      </CModalHeader>
+
+                      <CModalBody>
+                        {tripPaymentsArray.length > 0 ? (
+                          <CTable>
+                            {singleVendorArray.length > 0 && singleVendorArray[0].vendor_info && (
+                              <CRow className="mb-3">
+                                <CCol md={3}>
+                                  <CFormLabel htmlFor="vname">Vendor Name</CFormLabel>
+                                  <CFormInput
+                                    style={{ fontWeight: 'bolder' }}
+                                    name="vname"
+                                    size="sm"
+                                    id="vname"
+                                    value={singleVendorArray[0].vendor_info.owner_name || ''}
+                                    readOnly
+                                  />
+                                </CCol>
+
+                                <CCol md={3}>
+                                  <CFormLabel htmlFor="vcode">Vendor Code</CFormLabel>
+                                  <CFormInput
+                                    style={{ fontWeight: 'bolder' }}
+                                    name="vcode"
+                                    size="sm"
+                                    id="vcode"
+                                    value={singleVendorArray[0].vendor_info.vendor_code || ''}
+                                    readOnly
+                                  />
+                                </CCol>
+
+                                <CCol md={3}>
+                                  <CFormLabel htmlFor="shedname">Shed Name</CFormLabel>
+                                  <CFormInput
+                                    style={{ fontWeight: 'bolder' }}
+                                    name="shedname"
+                                    size="sm"
+                                    id="shedname"
+                                    value={
+                                      singleVendorArray[0].vendor_info.nlmt_shed_info?.shed_name ||
+                                      ''
+                                    }
+                                    readOnly
+                                  />
+                                </CCol>
+
+                                <CCol md={3}>
+                                  <CFormLabel htmlFor="remarks">Remarks</CFormLabel>
+                                  <CFormInput
+                                    size="sm"
+                                    name="remarks"
+                                    id="remarks"
+                                    value={message}
+                                    onChange={handleChangeRemarks}
+                                  />
+                                </CCol>
+                              </CRow>
+                            )}
+
+                            <CTableHead className="mt-3" style={{ background: 'pink' }}>
+                              <CTableRow>
+                                <CTableHeaderCell scope="col" style={{ width: '5%' }}>
+                                  S.No
+                                </CTableHeaderCell>
+                                <CTableHeaderCell scope="col" style={{ width: '15%' }}>
+                                  Tripsheet No.
+                                </CTableHeaderCell>
+                                <CTableHeaderCell scope="col" style={{ width: '15%' }}>
+                                  Vehicle No.
+                                </CTableHeaderCell>
+                                <CTableHeaderCell scope="col" style={{ width: '15%' }}>
+                                  Driver Name
+                                </CTableHeaderCell>
+                                <CTableHeaderCell scope="col" style={{ width: '15%' }}>
+                                  Route
+                                </CTableHeaderCell>
+                                <CTableHeaderCell scope="col" style={{ width: '15%' }}>
+                                  Actual Freight{' '}
+                                </CTableHeaderCell>
+                                <CTableHeaderCell scope="col" style={{ width: '15%' }}>
+                                  Advance Amount{' '}
+                                </CTableHeaderCell>
+                                <CTableHeaderCell scope="col" style={{ width: '15%' }}>
+                                  Deduction Amount{' '}
+                                </CTableHeaderCell>
+                                <CTableHeaderCell scope="col" style={{ width: '15%' }}>
+                                  Balance Freight
+                                </CTableHeaderCell>
+                              </CTableRow>
+                            </CTableHead>
+                            <CTableBody>
+                              {tripPaymentsArray.map((val, ind) => {
+                                // console.log(val, 'tripPaymentsArraytripPaymentsArray')
+                                const freightRate =
+                                  val.tripsheet_info?.trip_vehicle_route?.freight_rate &&
+                                  val.vehicle_assignment?.[0]?.billed_qty
+                                    ? val.tripsheet_info.trip_vehicle_route.freight_rate *
+                                      Number(val.vehicle_assignment[0].billed_qty)
+                                    : 0
+                                const deductionAmt =
+                                  val.trip_settlement_info?.diversion_return_charges
+
+                                const settlementExpenses =
+                                  Number(val.trip_settlement_info?.expense || 0) -
+                                  Number(val.advance_payment_info?.advance_payment || 0)
+                                const actualFreightRate =
+                                  val.advance_payment_info?.actual_freight || '0'
+                                const advanceAmt = val.advance_payment_info?.advance_payment || '0'
+                                return (
+                                  <CTableRow key={ind}>
+                                    <CTableDataCell scope="col" style={{ width: '5%' }}>
+                                      {ind + 1}
+                                    </CTableDataCell>
+                                    <CTableDataCell scope="col" style={{ width: '15%' }}>
+                                      {val.tripsheet_info?.nlmt_tripsheet_no || '-'}
+                                    </CTableDataCell>
+                                    <CTableDataCell scope="col" style={{ width: '15%' }}>
+                                      {val.vehicle_info?.vehicle_number || '-'}
+                                    </CTableDataCell>
+                                    <CTableDataCell scope="col" style={{ width: '15%' }}>
+                                      {val.driver_name || '-'}
+                                    </CTableDataCell>
+                                    <CTableDataCell scope="col" style={{ width: '15%' }}>
+                                      {val.tripsheet_info?.trip_vehicle_route?.route_name || '-'}
+                                    </CTableDataCell>
+                                    <CTableDataCell scope="col" style={{ width: '15%' }}>
+                                      {freightRate}
+                                    </CTableDataCell>
+                                    <CTableDataCell scope="col" style={{ width: '15%' }}>
+                                      {advanceAmt}
+                                    </CTableDataCell>
+                                    <CTableDataCell scope="col" style={{ width: '15%' }}>
+                                      {deductionAmt}
+                                    </CTableDataCell>
+                                    <CTableDataCell scope="col" style={{ width: '15%' }}>
+                                      {settlementExpenses}
+                                    </CTableDataCell>
+                                  </CTableRow>
+                                )
+                              })}
+                              {/* Summary Footer */}
+                              <CTableRow
+                                style={{
+                                  backgroundColor: '#f8f9fa',
+                                  borderTop: '2px solid #dee2e6',
+                                }}
+                              >
+                                <CTableDataCell colSpan={8} style={{ padding: '12px 15px' }}>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'center',
+                                      width: '100%',
+                                      fontSize: '15px',
+                                    }}
+                                  >
+                                    {/* Left Side → TS Count */}
+                                    <div style={{ fontWeight: '600' }}>
+                                      TS Count :
+                                      <span
+                                        style={{
+                                          color: '#0d6efd',
+                                          fontWeight: 'bold',
+                                          marginLeft: '5px',
+                                        }}
+                                      >
+                                        {tripPaymentsArray.length}
+                                      </span>
+                                    </div>
+
+                                    {/* Right Side → Totals */}
+                                    <div
+                                      style={{
+                                        display: 'flex',
+                                        gap: '25px',
+                                        fontWeight: '600',
+                                      }}
+                                    >
+                                      <div>
+                                        Total Freight :
+                                        <span
+                                          style={{
+                                            color: '#0d6efd',
+                                            fontWeight: 'bold',
+                                            marginLeft: '5px',
+                                          }}
+                                        >
+                                          {tripPaymentsArray.reduce(
+                                            (sum, val) =>
+                                              sum +
+                                              Number(val.advance_payment_info?.actual_freight || 0),
+                                            0
+                                          )}
+                                        </span>
+                                      </div>
+
+                                      <div>
+                                        Total Advance :
+                                        <span
+                                          style={{
+                                            color: '#0d6efd',
+                                            fontWeight: 'bold',
+                                            marginLeft: '5px',
+                                          }}
+                                        >
+                                          {tripPaymentsArray.reduce(
+                                            (sum, val) =>
+                                              sum +
+                                              Number(
+                                                val.advance_payment_info?.advance_payment || 0
+                                              ),
+                                            0
+                                          )}
+                                        </span>
+                                      </div>
+
+                                      <div>
+                                        Total Balance :
+                                        <span
+                                          style={{
+                                            color: 'green',
+                                            fontWeight: 'bold',
+                                            marginLeft: '5px',
+                                          }}
+                                        >
+                                          {tripPaymentsArray.reduce(
+                                            (sum, val) =>
+                                              sum +
+                                              (Number(val.trip_settlement_info?.expense || 0) -
+                                                Number(
+                                                  val.advance_payment_info?.advance_payment || 0
+                                                )),
+                                            0
+                                          )}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </CTableDataCell>
+                              </CTableRow>
+                            </CTableBody>
+                          </CTable>
+                        ) : (
+                          <>Tripsheets Not Found / Invalid</>
+                        )}
+                      </CModalBody>
+
+                      <CModalFooter>
+                        <CButton
+                          color="primary"
+                          style={{ marginRight: '2%' }}
+                          onClick={() => {
+                            setAssignPSModal(false)
+                            setFetch(false)
+                            submitPayment()
+                          }}
+                        >
+                          {'Submit'}
+                        </CButton>
+                        <CButton
+                          color="primary"
+                          onClick={() => {
+                            setAssignPSModal(false)
+                          }}
+                        >
+                          {'Cancel'}
+                        </CButton>
+                      </CModalFooter>
+                    </CModal>
+                  </CCol>
+                )}
+              </CRow>
+
+              <CustomTable
+                columns={columns}
+                pagination={false}
+                data={rowData}
+                fieldName={'Driver_Name'}
+                showSearchFilter={true}
+              />
+            </CContainer>
+          </CCard>
+        </>
+      )}
+    </>
+  )
+}
+
+export default NlmtSettlementClosureHome

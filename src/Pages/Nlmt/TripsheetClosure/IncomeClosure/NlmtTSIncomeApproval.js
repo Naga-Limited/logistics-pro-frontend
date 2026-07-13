@@ -38,11 +38,11 @@ import * as TripsheetClosureConstants from 'src/components/constants/TripsheetCl
 import VehicleAssignmentService from 'src/Service/VehicleAssignment/VehicleAssignmentService'
 import DieselVendorMasterService from 'src/Service/Master/DieselVendorMasterService'
 
-import StoTableComponent from './StoTableComponent'
+import StoTableComponent from '../StoTableComponent'
 import AllDriverListNameSelectComponent from 'src/components/commoncomponent/AllDriverListNameSelectComponent'
-import StoTableRMSTOComponent from './StoTableRMSTOComponent'
+import StoTableRMSTOComponent from '../StoTableRMSTOComponent'
 import CustomTable from 'src/components/customComponent/CustomTable'
-import ExpenseCalculations from './Calculations/NlmtExpenseCalculations'
+import ExpenseCalculations from '../Calculations/NlmtExpenseCalculations'
 import TripsheetClosureValidation from 'src/Utils/TripsheetClosure/TripsheetClosureValidation'
 import useFormRJSO from 'src/Hooks/useFormRJSO'
 import useFormTripsheetClosure from 'src/Hooks/useFormTripsheetClosure'
@@ -57,7 +57,7 @@ import { checkPropTypes, number } from 'prop-types'
 import PropTypes from 'prop-types'
 import CustomerCreationService from 'src/Service/CustomerCreation/CustomerCreationService'
 import TripSheetClosureSapService from 'src/Service/SAP/TripSheetClosureSapService'
-import ExpenseIncomePostingDate from './Calculations/NlmtExpenseIncomePostingDate'
+import ExpenseIncomePostingDate from '../Calculations/NlmtExpenseIncomePostingDate'
 
 import AccessDeniedComponent from 'src/components/commoncomponent/AccessDeniedComponent'
 import JavascriptInArrayComponent from 'src/components/commoncomponent/JavascriptInArrayComponent'
@@ -76,11 +76,11 @@ import SmallLoader from 'src/components/SmallLoader'
 import JavascriptDateCheckComponent from 'src/components/commoncomponent/JavascriptDateCheckComponent'
 import PanDataService from 'src/Service/SAP/PanDataService'
 import NlmtTripSheetClosureService from 'src/Service/Nlmt/TripSheetClosure/NlmtTripSheetClosureService'
-import NlmtRMSTOJourneyInfo from './JourneyInfo/NlmtRMSTOJourneyInfo'
-import NlmtRakeJourneyInfo from './JourneyInfo/NlmtRakeJourneyInfo'
-import NlmtOthersJourneyInfo from './JourneyInfo/NlmtOthersJourneyInfo'
-import NlmtFGSALESJourneyInfo from './JourneyInfo/NlmtFGSALESJourneyInfo'
-import NlmtFCIJourneyInfo from './JourneyInfo/NlmtFCIJourneyInfo'
+import NlmtRMSTOJourneyInfo from '../JourneyInfo/NlmtRMSTOJourneyInfo'
+import NlmtRakeJourneyInfo from '../JourneyInfo/NlmtRakeJourneyInfo'
+import NlmtOthersJourneyInfo from '../JourneyInfo/NlmtOthersJourneyInfo'
+import NlmtFGSALESJourneyInfo from '../JourneyInfo/NlmtFGSALESJourneyInfo'
+import NlmtFCIJourneyInfo from '../JourneyInfo/NlmtFCIJourneyInfo'
 import NlmtRJSaleOrderCreationService from 'src/Service/Nlmt/RJSaleOrderCreation/NlmtRJSaleOrderCreationService'
 import NlmtVehicleAssignmentService from 'src/Service/Nlmt/VehicleAssignment/NlmtVehicleAssignmentService'
 import NlmtDefinitionsListApi from 'src/Service/Nlmt/Masters/NlmtDefinitionsListApi'
@@ -89,7 +89,7 @@ import NlmtTripSheetClosureSapService from 'src/Service/Nlmt/SAP/NlmtTripSheetCl
 export const nlmt_expense_vendor_code = process.env.REACT_APP_NLMT_EXPENSE_VENDOR
 export const nlmt_income_vendor_code = process.env.REACT_APP_NLMT_INCOME_VENDOR
 
-const NlmtTripSheetInfoClosure = () => {
+const NlmtTSIncomeApproval = () => {
   /*================== User Id & Location Fetch ======================*/
   const user_info_json = localStorage.getItem('user_info')
   const user_info = JSON.parse(user_info_json)
@@ -113,7 +113,7 @@ const NlmtTripSheetInfoClosure = () => {
   /* ==================== Access Part Start ========================*/
   const [screenAccess, setScreenAccess] = useState(false)
   const [restrictScreenById, setRestrictScreenById] = useState(true)
-  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.Nlmt_Income_Closure
+  let page_no = NlmtScreenAccessCodes.NlmtClosureScreens.NLMT_Income_Closure_Approval
 
   useEffect(() => {
 
@@ -192,14 +192,12 @@ const NlmtTripSheetInfoClosure = () => {
     created_by: '',
     remarks: '',
     income_remarks: '',
+    income_approval_remarks: '',
     settled_by: '',
     driver_balance_received: '',
     expense_posting_date: '',
     income_posting_date: '',
     income_sap_text: '',
-    supplier_ref_no: '',
-    supplier_posting_date: '',
-    vendor_hsn: '',
     HSNtax: '',
   }
 
@@ -290,6 +288,92 @@ const NlmtTripSheetInfoClosure = () => {
     const item = list.find((x) => String(x.definition_list_id) === String(id))
 
     return item ? item.definition_list_name.trim() : ''
+  }
+
+  const baseFreightCalculation = (data, ind = '') => {
+    // console.log(data)
+    let shipment = data.shipment_child_info
+    let shipment_freight = 0
+    let shipment_splitted_info = JSON.parse(JSON.stringify(shipmentInfo))
+    let totalQty = 0
+    shipment.map((delivery_1, index_1) => {
+      // if(delivery_1.delivery_status == '3' && delivery_1.delivery_plant == '9290') {
+      if (
+        delivery_1.delivery_status == '3' &&
+        JavascriptInArrayComponent(delivery_1.delivery_plant, nlcdPlantsArrayData)
+      ) {
+        totalQty += Number(parseFloat(delivery_1.delivery_qty).toFixed(4))
+      }
+    })
+
+    shipment.map((delivery, index) => {
+      if (
+        delivery.delivery_freight_amount == '1' &&
+        !(delivery.inco_term_id == '381' || delivery.inco_term_id == '382')
+      ) {
+        let uom_data = delivery.invoice_uom
+        // if(delivery.delivery_plant != '9290'){
+        if (!JavascriptInArrayComponent(delivery.delivery_plant, nlcdPlantsArrayData)) {
+          uom_data = delivery.billed_uom != null ? delivery.billed_uom : delivery.invoice_uom
+        }
+
+        let freight_needed = calculationForFreight(
+          shipment,
+          delivery.delivery_qty,
+          delivery.customer_info.CustomerCode,
+          delivery.delivery_plant,
+          uom_data,
+          data.created_at,
+          totalQty
+        )
+        console.log(freight_needed, 'freight_needed')
+
+        shipment_freight += Number(parseFloat(freight_needed).toFixed(2))
+      } else {
+        shipment_freight += Number(parseFloat(delivery.delivery_freight_amount).toFixed(2))
+      }
+    })
+
+    if (ind == 'test') {
+      console.log(shipment_freight, 'shipment_freight')
+      data.shipment_freight_amount_db = shipment_freight
+    }
+
+    return shipment_freight
+  }
+
+  const baseFreightNullCalculation = (data) => {
+    let test_key = 1
+    console.log(data, 'baseFreightNullCalculationData')
+    let shipment = data.shipment_child_info
+    let shipment_freight = 0
+    shipment.map((delivery, index) => {
+      if (
+        delivery.delivery_freight_amount == '1' &&
+        !(delivery.inco_term_id == '381' || delivery.inco_term_id == '382')
+      ) {
+        console.log(delivery, 'baseFreightNullCalculationdelivery')
+        let uom_data = delivery.invoice_uom
+        // if(delivery.delivery_plant != '9290'){
+        if (!JavascriptInArrayComponent(delivery.delivery_plant, nlcdPlantsArrayData)) {
+          uom_data = delivery.billed_uom != null ? delivery.billed_uom : delivery.invoice_uom
+        }
+        let freight_needed = calculationForFreight(
+          shipment,
+          delivery.delivery_qty,
+          delivery.customer_info.CustomerCode,
+          delivery.delivery_plant,
+          uom_data,
+          data.created_at
+        )
+        console.log(freight_needed, 'baseFreightNullCalculationfreight_needed1')
+        if (freight_needed == '0') {
+          test_key = 0
+        }
+      }
+    })
+    console.log(shipment_freight, 'baseFreightNullCalculationfreight_needed2')
+    return test_key
   }
 
   const dateCheck = (dateFrom, dateTo, dateCheck) => {
@@ -584,17 +668,6 @@ const NlmtTripSheetInfoClosure = () => {
         console.log(shipmentRes,'shipmentRes')
         const shipmentRaw = shipmentRes?.data?.data
 
-        if(settlementData){
-          values.income = settlementData.income
-          values.income_sap_text = settlementData.income_sap_text
-          values.income_remarks = settlementData.income_remarks
-          values.income_posting_date = settlementData.income_posting_date
-          values.vendor_hsn = settlementData.vendor_hsn ? settlementData.vendor_hsn : ''
-          values.supplier_posting_date = settlementData.supplier_posting_date
-          values.supplier_ref_no = settlementData.supplier_ref_no
-        }
-        
-
         // NLMT returns object, convert to array for FG UI
         const shipmentData = shipmentRaw
           ? Array.isArray(shipmentRaw)
@@ -734,55 +807,47 @@ const NlmtTripSheetInfoClosure = () => {
   }, [stoTableDataRMSTO]) 
   /* ===================== TripsheetIncomeClosureSubmit Start ===================== */
 
-  const TripsheetIncomeClosureSubmit = () => {
+  const TripsheetIncomeClosureSubmit = (process) => {
 
-    if (values.income == '' || values.income == 0) {
-      toast.warning('Income Posting Amount should be required..!')
-      return false
-    }
+    if (process == 'reject') {
+        
+      if(values.income_approval_remarks == '' || values.income_approval_remarks.trim() == ''){
+        setFetch(true)
+        toast.warning(`Approval Remarks Should be required for Rejection Process.`)
+        return false
+      } 
 
-    if (values.income < 0) {
-      toast.warning('Income Posting Amount should be greater than zero..!')
-      return false
-    }
-    
-    if (values.income_posting_date == '') {
-      toast.warning('You should select income posting date before submitting..!')
-      return false
-    }
+      const formData = new FormData() 
+      formData.append('vehicle_id', tripInfo.vehicle_id)
+      formData.append('parking_id', tripInfo.nlmt_trip_in_id) 
+      formData.append(
+        'income_approval_remarks',
+        values.income_approval_remarks ? values.income_approval_remarks : 'reject'
+      )
+      formData.append('income_approval_by', user_id) 
+      formData.append('own_closure_status', 8) /* 8 - Income Rejected (27) */
+      formData.append('closure_id', tripsettlementData.id)   
+      formData.append('nlmt_income_status', 2) /* 2 - Income Rejected */ 
 
-    let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate()
-    let from_date = Expense_Income_Posting_Date_Taken.min_date
-    let to_date = Expense_Income_Posting_Date_Taken.max_date
-
-    if (JavascriptDateCheckComponent(from_date, values.income_posting_date, to_date)) {
-      // addIncomeClosureRequest()
-    } else {
       setFetch(true)
-      // setIncomeSubmit(false)
-      toast.warning('Invalid Income Posting date')
-      return false
-    }
-
-    if(values.supplier_ref_no == null || values.supplier_ref_no == '' || values.supplier_ref_no.trim() == '') {
-      setFetch(true)
-      toast.warning(`SAP Expense Reference No. Should be required..`)
-      return false
-    }
-
-    if(values.supplier_posting_date == '' || values.supplier_posting_date == null || values.supplier_posting_date == undefined) {
-      toast.warning('Enter SAP Expense Reference Date')
-      setFetch(true)
-      return false
-    }
-
-    if(values.vendor_hsn == '') {
-      toast.warning('HSN Code Should be required..')
-      setFetch(true)
-      return false
-    } 
-
-    addIncomeClosureRequest()
+      NlmtTripSheetClosureService.ownIncApprovalRejectionProcess(formData).then((res) => {
+        console.log(res)
+        if (res.status == 200) {
+          setFetch(true)
+          toast.success('Income Approval Process Rejected Successfully!')
+          navigation('/NlmtTSIncomeApprovalHome')
+        } else {
+          setFetch(true)
+          toast.warning('Expense Approval Rejection Process Failed..')
+          // navigation('/NlmtTSIncomeApprovalHome')
+        }
+      })
+      .catch((err) => {
+        console.error('NLMT Income Approval Rejection Error:', err)
+        toast.error('Failed to reject income approval in PRO. Please try again.')
+        setFetch(true)
+      })  
+    }  
  
   }
 
@@ -2193,6 +2258,31 @@ const NlmtTripSheetInfoClosure = () => {
     })
   }, [shipmentInfo, rjsoInfo, stoTableData, stoTableDataRMSTO, tripInfo])
 
+  const getGSTTaxTypeName = (value) => {
+    let data = ''
+    if (value == 'Empty') {
+      data = 'No Tax'
+    } else if (value == 'R5') {
+      data = 'Input Tax RCM (SGST,CGST @ 2.5% & 2.5%)'
+    } else if (value == 'F6') {
+      data = 'Input Tax (SGST,CGST @ 6% & 6%)'
+    }
+
+    values.GSTtax = value
+    return data
+  }
+
+  const getTdsTypeHaving = (value) => {
+    let data = ''
+    if (value == '1') {
+      data = 'YES'
+    } else if (value == '2') {
+      data = 'NO'
+    }
+    values.TdsHaving = value
+    return data
+  }
+
   /* KM Differce Calculation */
   useEffect(() => {
     if (tripsettlementData.budgeted_km) {
@@ -2293,154 +2383,6 @@ const NlmtTripSheetInfoClosure = () => {
 
   console.log(tabFGSTOSuccess, 'tabFGSTOSuccess')
   console.log(shipmentInfo)
-
-  const vadDataUpdateForDCC = (original, input) => {
-    return input === undefined ? original : input
-  }
-
-  /* ================= RJSO ========================================= */
-  const changeRjsoTableItemForDCC = (event, child_property_name, parent_index, arpl = '') => {
-    let getData1 = event.target.value
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      getData1 = event.target.value
-        .replace(/[^0-9^\.]+/g, '')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.')
-        .replace(/^0+/, '')
-    } else if (child_property_name == 'closing_km' || child_property_name == 'opening_km') {
-      getData1 = event.target.value.replace(/\D/g, '')
-    }
-
-    const rjso_parent_info = JSON.parse(JSON.stringify(rjsoInfo))
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      rjso_parent_info[parent_index][`${child_property_name}_input`] = getData1
-      rjso_parent_info[parent_index][`diesel_amount_input`] = Math.round(getData1 * arpl)
-    } else if (child_property_name == 'opening_km') {
-      rjso_parent_info[parent_index][`${child_property_name}_input`] = getData1
-      rjso_parent_info[parent_index][`running_km_input`] = rjso_parent_info[parent_index][
-        `closing_km_input`
-      ]
-        ? Number(rjso_parent_info[parent_index][`closing_km_input`]) - Number(getData1)
-        : ''
-    } else if (child_property_name == 'closing_km') {
-      rjso_parent_info[parent_index][`${child_property_name}_input`] = getData1
-      rjso_parent_info[parent_index][`running_km_input`] = rjso_parent_info[parent_index][
-        `opening_km_input`
-      ]
-        ? Number(getData1) - Number(rjso_parent_info[parent_index][`opening_km_input`])
-        : ''
-    } else {
-      rjso_parent_info[parent_index][`${child_property_name}_input`] = getData1
-    }
-
-    // console.log(shipment_parent_info)
-    setRjsoInfo(rjso_parent_info)
-  }
-
-  console.log(rjsoInfo)
-
-  const rjsoDataUpdateForDCC = (original, input) => {
-    return input === undefined ? original : input
-  }
-
-  /* ================= FGSTO ========================================= */
-  const changeFgstoTableItemForDCC = (event, child_property_name, parent_index, arpl = '') => {
-    let getData2 = event.target.value
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      getData2 = event.target.value
-        .replace(/[^0-9^\.]+/g, '')
-        .replace('.', '$#$')
-        .replace(/\./g, '')
-        .replace('$#$', '.')
-        .replace(/^0+/, '')
-    } else if (child_property_name == 'closing_km' || child_property_name == 'opening_km') {
-      getData2 = event.target.value.replace(/\D/g, '')
-    }
-
-    const fgsto_parent_info = JSON.parse(JSON.stringify(stoTableData))
-
-    if (child_property_name == 'diesel_cons_qty_ltr') {
-      fgsto_parent_info[parent_index][`${child_property_name}_input`] = getData2
-      fgsto_parent_info[parent_index][`diesel_amount_input`] = Math.round(getData2 * arpl)
-    } else if (child_property_name == 'opening_km') {
-      fgsto_parent_info[parent_index][`${child_property_name}_input`] = getData2
-      fgsto_parent_info[parent_index][`running_km_input`] = fgsto_parent_info[parent_index][
-        `closing_km_input`
-      ]
-        ? Number(fgsto_parent_info[parent_index][`closing_km_input`]) - Number(getData2)
-        : ''
-    } else if (child_property_name == 'closing_km') {
-      fgsto_parent_info[parent_index][`${child_property_name}_input`] = getData2
-      fgsto_parent_info[parent_index][`running_km_input`] = fgsto_parent_info[parent_index][
-        `opening_km_input`
-      ]
-        ? Number(getData2) - Number(fgsto_parent_info[parent_index][`opening_km_input`])
-        : ''
-    } else {
-      fgsto_parent_info[parent_index][`${child_property_name}_input`] = getData2
-    }
-
-    setStoTableData(fgsto_parent_info)
-  }
-
-  console.log(stoTableData)
-
-  const fgstoDataUpdateForDCC = (original, input) => {
-    return input === undefined ? original : input
-  }
-
-  /*============= Advance Clearance Calculation Part Start ===================*/
-
-  const driver_expense_calculation = () => {
-    let driver_expense = 0
-    if (tripsettlementData.enroute_payment == '2') {
-      driver_expense =
-        Number(tripsettlementData.expense) -
-        (Number(tripsettlementData.fasttag_toll_amount) +
-          Number(tripsettlementData.registered_diesel_amount) +
-          Number(tripsettlementData.enroute_diesel_amount))
-    } else {
-      driver_expense =
-        Number(tripsettlementData.expense) -
-        (Number(tripsettlementData.fasttag_toll_amount) +
-          Number(tripsettlementData.registered_diesel_amount))
-    }
-    // return parseFloat(Number(driver_expense)).toFixed(2)
-    return driver_expense
-  }
-
-  const rj_receipt_amount_calculation = () => {
-    console.log(rjsoInfo)
-    let rj_amount = 0
-    rjsoInfo.map((da, ins) => {
-      if (da.balance_payment_received_input == '1' || da.balance_payment_received == '1') {
-        if (da.advance_payment_mode == '1') {
-          rj_amount += Number(da.advance_amount)
-        }
-
-        if (da.balance_payment_mode_input) {
-          if (da.balance_payment_mode_input == '1') {
-            rj_amount += Number(da.balance_amount)
-          }
-        } else if (da.balance_payment_mode == '1') {
-          rj_amount += Number(da.balance_amount)
-        }
-      } else {
-        if (da.advance_payment_mode == '1') {
-          rj_amount += Number(da.advance_amount)
-        }
-      }
-    })
-    console.log(rj_amount, 'rj_amount')
-    // return parseFloat(Number(rj_amount)).toFixed(2)
-    return rj_amount
-  }
-
-  /*============= Advance Clearance Calculation Part End ===================*/
    
   useEffect(() => {
     if (tripInfo.diesel_intent_collection_info) {
@@ -2531,6 +2473,280 @@ const NlmtTripSheetInfoClosure = () => {
     { value: 'vanilla', label: 'Vanilla' },
   ]
   const [deliveryNumber, setSelectedDeliveryNumber] = useState([])
+
+  const submitNameAssigner = () => {
+    let name = '-' 
+    let vstat =  tripsettlementData.nlmt_income_status
+    console.log(vstat,'submitNameAssigner-vstat')
+  
+    if(vstat == 1){
+      name = 'NLMT Expense Submit'
+    } else if(vstat == 3){
+      name = 'NLMT Income Claim'
+    }  
+
+    return name
+  }
+
+  const NLMTIncomeApprovalSubmission = () => {
+    let vstat =  tripsettlementData.nlmt_income_status
+
+    if(vstat == 1){
+      NLMTExpenseEntryPosting()
+    } else if(vstat == 3){
+      NLMTIncomeEntryPosting()
+    } else {
+      navigation('/NlmtTSIncomeApprovalHome')
+      window.location.reload(false)
+    }  
+
+  }
+
+  function BasicValidation() {
+    let Expense_Income_Posting_Date_Taken = ExpenseIncomePostingDate()
+    let from_date = Expense_Income_Posting_Date_Taken.min_date
+    let to_date = Expense_Income_Posting_Date_Taken.max_date
+
+    let condition = 0
+    if (JavascriptDateCheckComponent(from_date, tripsettlementData.income_posting_date, to_date)) {
+      condition = 1
+    } else {
+      setFetch(true)
+      // setIncomeSubmit(false)
+      toast.warning('Invalid Income Posting date')
+      return false
+    }
+
+    return condition
+  }
+
+  function NLMTExpenseEntryPosting () {
+    let valid = BasicValidation()
+    
+    if(valid == 1)
+    {
+      toast.success('NLMT Expense Entry Posting Process')
+
+      console.log('TRIPSHEET_NO : ', tripsettlementData.tripsheet_no)
+      console.log('VEHICLE_NO : ', tripsettlementData.vehicle_number)
+      console.log('LIFNR : ', nlmt_expense_vendor_code)
+      console.log('REMARKS : ', tripsettlementData.income_sap_text)
+      console.log('FRE_CHARG_DIV : ', tripsettlementData.income)
+      console.log('POST_DATE : ', tripsettlementData.income_posting_date)
+      console.log('REF_NO : ', tripsettlementData.supplier_ref_no) 
+      console.log('REF_DATE : ', tripsettlementData.supplier_posting_date) 
+      console.log('HSN : ', tripsettlementData.vendor_hsn) 
+      console.log('PLANT : ', 'NLMD') 
+
+      let formData = new FormData() 
+      formData.append('TRIPSHEET_NO', tripsettlementData.tripsheet_no)
+      formData.append('VEHICLE_NO', tripsettlementData.vehicle_number)
+      formData.append('LIFNR', nlmt_expense_vendor_code)
+      formData.append('REMARKS', tripsettlementData.income_sap_text)
+      formData.append('FRE_CHARG_DIV', tripsettlementData.income)
+      formData.append('POST_DATE', tripsettlementData.income_posting_date)
+      formData.append('REF_NO', tripsettlementData.supplier_ref_no) 
+      formData.append('REF_DATE', tripsettlementData.supplier_posting_date) 
+      formData.append('HSN', tripsettlementData.vendor_hsn) 
+      formData.append('PLANT', 'NLMD') 
+      
+      console.log('SAP-formData', formData)
+      // return false
+
+      setFetch(false)
+      NlmtTripSheetClosureSapService.tsDivisionExpensePost(formData).then((res) => {
+        // setFetch(true)
+        console.log(res,'tsDivisionExpensePost')
+
+        let sap_resp = res.data && res.data[0] ? res.data[0] : ''
+
+        if(sap_resp == ''){
+          setFetch(true)
+          Swal.fire({
+            title: 'SAP Expense Posting failed and get Invalid SAP response.. Kindly Contact Admin!',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+          })
+          return false
+        }
+
+        let sap_status = sap_resp.STATUS
+        let sap_doc_no = sap_resp.DOCUMENT_NO
+        let sap_message = sap_resp.MESSAGE
+        let sap_tripsheet = sap_resp.TRIP_SHEET
+        if(sap_status != '1'){
+          setFetch(true)
+          toast.warning(sap_message)
+        } else {
+          // toast.success(`Sale Order (${sap_so}) Created`)  
+          
+          const data = new FormData()
+          console.log(values)
+
+          data.append('nlmt_div_sap_expense_doc_no', sap_doc_no) 
+          data.append('vehicle_id', tripInfo.vehicle_id)
+          data.append('parking_id', tripInfo.nlmt_trip_in_id) 
+          data.append(
+            'income_approval_remarks',
+            values.income_approval_remarks ? values.income_approval_remarks : 'reject'
+          )
+          data.append('income_approval_by', user_id) 
+          // data.append('own_closure_status', 8) /* 8 - Income Rejected (27) */
+          data.append('closure_id', tripsettlementData.id)   
+          data.append('nlmt_income_status', 3) /* 3 - Expense Claimed */ 
+          data.append('nlmt_div_expense_vendor_code', nlmt_expense_vendor_code)
+          
+          // setFetch(false)
+          NlmtTripSheetClosureService.updateIncomeClosureApprovalAcception(id, data).then((res) => {
+            // alert('success')
+            setFetch(true)
+
+            if (res.status == 200) {
+              // toast.success('Income Closure Submitted!')
+              // navigation('/TSIncomeCapture')
+              Swal.fire({
+                title: 'NLMT Division Expense Entry Submitted Successfully..!',
+                icon: 'success',
+                text: 'SAP Expense Doc. No : ' + sap_doc_no,
+                confirmButtonText: 'OK',
+              }).then(function () {
+                window.location.reload(false)
+              })
+            } else {
+              // toast.warning('Something Went Wrong !')
+              Swal.fire({
+                title: 'NLMT Division Expense Entry Submission Failed in LP.. Kindly Contact Admin!',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+              }).then(function () {
+                //
+              })
+            }
+          })
+          .catch((err) => {
+            console.error('NLMT NLMT Division Expense Entry Submission Error:', err)
+            toast.error('Failed to submit NLMT Division Expense Entry in PRO. Please try again.')
+            setFetch(true)
+          }) 
+        }
+      })
+      .catch((err) => {
+      console.error('NLMT Division Expense Entry Posting Submission Error:', err)
+      toast.error('Failed to submit NLMT Division Expense Entry Posting in SAP. Please try again.')
+      setFetch(true)
+    }) 
+    }
+  }
+
+  function NLMTIncomeEntryPosting ()  {
+    let valid = BasicValidation()
+    
+    if(valid == 1)
+    {
+      toast.success('NLMT Income Entry Posting Process')
+
+      console.log('TRIPSHEET_NO : ', tripsettlementData.tripsheet_no)
+      console.log('VEHICLE_NO : ', tripsettlementData.vehicle_number)
+      console.log('DIVISION : ', 'NLMD')       
+      console.log('TOT_FRE_INC : ', tripsettlementData.income)
+      console.log('POST_DATE : ', tripsettlementData.income_posting_date)    
+      console.log('KUNNR : ', nlmt_income_vendor_code)
+      console.log('REMARKS : ', tripsettlementData.income_sap_text)    
+
+      let formData = new FormData() 
+
+      formData.append('TRIPSHEET_NO', tripsettlementData.tripsheet_no)
+      formData.append('VEHICLE_NO', tripsettlementData.vehicle_number)
+      formData.append('DIVISION', 'NLMD')       
+      formData.append('TOT_FRE_INC', tripsettlementData.income)
+      formData.append('POST_DATE', tripsettlementData.income_posting_date)    
+      formData.append('KUNNR', nlmt_income_vendor_code)
+      formData.append('REMARKS', tripsettlementData.income_sap_text)  
+      
+      console.log('SAP-formData', formData)
+      // return false
+
+      setFetch(false)
+      NlmtTripSheetClosureSapService.tsDivisionIncomePost(formData).then((res) => {
+        // setFetch(true)
+        console.log(res,'tsDivisionIncomePost')
+
+        let sap_resp = res.data && res.data[0] ? res.data[0] : ''
+
+        if(sap_resp == ''){
+          setFetch(true)
+          Swal.fire({
+            title: 'SAP Income Posting failed and get Invalid SAP response.. Kindly Contact Admin!',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+          })
+          return false
+        }
+
+        let sap_status = sap_resp.STATUS
+        let sap_doc_no = sap_resp.DOCUMENT_NO
+        let sap_message = sap_resp.MESSAGE
+        let sap_tripsheet = sap_resp.TRIP_SHEET
+        if(sap_status != '1'){
+          setFetch(true)
+          toast.warning(sap_message)
+        } else {
+          // toast.success(`Sale Order (${sap_so}) Created`)  
+          
+          const data = new FormData()
+          console.log(values)
+
+          data.append('income_sap_document_no', sap_doc_no) 
+          data.append('vehicle_id', tripInfo.vehicle_id)
+          data.append('parking_id', tripInfo.nlmt_trip_in_id) 
+          data.append('income_approval_remarks',tripsettlementData.deduction_approval_remarks)
+          data.append('income_approval_by', user_id) 
+          data.append('own_closure_status', 9) /* 9 - Income Approved (28) */
+          data.append('closure_id', tripsettlementData.id)   
+          data.append('nlmt_income_status', 4) /* 4 - Income Claimed */ 
+          data.append('nlmt_div_income_vendor_code', nlmt_income_vendor_code)
+          
+          // setFetch(false)
+          NlmtTripSheetClosureService.updateIncomeClosureApprovalAcception(id, data).then((res) => {
+            // alert('success')
+            setFetch(true)
+
+            if (res.status == 200) {
+              // toast.success('Income Closure Submitted!')
+              // navigation('/TSIncomeCapture')
+              Swal.fire({
+                title: 'NLMT Division Income Entry Submitted Successfully..!',
+                icon: 'success',
+                text: 'SAP Income Doc. No : ' + sap_doc_no,
+                confirmButtonText: 'OK',
+              }).then(function () {
+                navigation('/NlmtTSIncomeApprovalHome')
+              })
+            } else {
+              // toast.warning('Something Went Wrong !')
+              Swal.fire({
+                title: 'NLMT Division Income Entry Submission Failed in LP.. Kindly Contact Admin!',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+              }).then(function () {
+                //
+              })
+            }
+          })
+          .catch((err) => {
+            console.error('NLMT NLMT Division Income Entry Submission Error:', err)
+            toast.error('Failed to submit NLMT Income Expense Entry in PRO. Please try again.')
+            setFetch(true)
+          }) 
+        }
+      })
+      .catch((err) => {
+      console.error('NLMT Division Income Entry Posting Submission Error:', err)
+      toast.error('Failed to submit NLMT Division Income Entry Posting in SAP. Please try again.')
+      setFetch(true)
+    }) 
+    }
+  }
 
   // const sendDriverExpenseToSAP = () => {
   //   console.log(tripsettlementData, 'tripsettlementData')
@@ -2667,16 +2883,12 @@ const NlmtTripSheetInfoClosure = () => {
     formData.append('profit_and_loss', PLFinder())
     // formData.append('income_sap_document_no', sap_expense_post_document) 
     formData.append('income_sap_text', values.income_sap_text) 
-    formData.append('vendor_hsn', values.vendor_hsn) 
-    formData.append('supplier_ref_no', values.supplier_ref_no) 
-    formData.append('supplier_posting_date', values.supplier_posting_date) 
     formData.append('income_remarks', values.income_remarks ? values.income_remarks : '') 
     formData.append('updated_by', user_id) 
     formData.append('income_request_by', user_id) 
     formData.append('parking_id', tripInfo.nlmt_trip_in_id)  
     formData.append('vehicle_id', tripInfo.vehicle_id) 
     formData.append('own_closure_status', 7) /* 7 - Income Requeted (26) */ 
-    formData.append('nlmt_income_status', 1) /* 1 - Income Requeted */ 
 
     NlmtTripSheetClosureService.updateIncomeClosureAcception(id, formData).then((res) => {
       // alert('success')
@@ -2700,7 +2912,7 @@ const NlmtTripSheetInfoClosure = () => {
           icon: 'warning',
           confirmButtonText: 'OK',
         }).then(function () {
-          // window.location.reload(false)
+          //
         })
       }
     })
@@ -4139,7 +4351,7 @@ const NlmtTripSheetInfoClosure = () => {
                                 <CFormInput
                                   size="sm"
                                   id="inputAddress"
-                                  value={values.income}
+                                  value={tripsettlementData.income}
                                   readOnly
                                 />
                               </CTableDataCell>
@@ -4162,34 +4374,67 @@ const NlmtTripSheetInfoClosure = () => {
                               <CTableHeaderCell scope="row">3</CTableHeaderCell>
                               <CTableDataCell>Profit and Loss</CTableDataCell>
                               <CTableDataCell>
-                                <CFormInput size="sm" id="inputAddress" value={PLFinder()} readOnly />
+                                <CFormInput size="sm" id="inputAddress" value={tripsettlementData.profit_and_loss} readOnly />
                               </CTableDataCell>
                             </CTableRow>
                           </CTableBody>
                         </CTable>
                         {/* ================== P&L Body End ======================= */}
-                         
-                        <CRow className="mt-2">
+                        <CRow className="mt-2" hidden>
+                          <CCol xs={12} md={3}>
+                            <CFormLabel
+                              htmlFor="inputAddress"
+                              style={{
+                                backgroundColor: '#4d3227',
+                                color: 'white',
+                              }}
+                            >
+                              Income Closure Request Information : 
+                            </CFormLabel>
+                          </CCol>
+                        </CRow>
 
-                          {tripsettlementData.deduction_approval_by && (
-                            <>
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="remarks">Income Req. Rejection Remarks</CFormLabel>
-                                <CFormTextarea 
-                                  value={tripsettlementData.deduction_approval_remarks} 
-                                  readOnly
-                                ></CFormTextarea>
-                              </CCol> 
-                              <CCol xs={12} md={3}>
-                                <CFormLabel htmlFor="remarks">Income Req. Rejection Date & Time</CFormLabel>
-                                <CFormInput 
-                                  size='sm'
-                                  value={tripsettlementData.deduction_approval_at ? tripsettlementData.deduction_approval_at : '-'} 
-                                  readOnly
-                                /> 
-                              </CCol>
-                            </>
-                          )}
+                        <CRow className="mt-2">
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">Income Closure Remarks</CFormLabel>
+                            <CFormTextarea 
+                              value={tripsettlementData.income_remarks ? tripsettlementData.income_remarks : '-'} 
+                              readOnly
+                            ></CFormTextarea>
+                          </CCol>
+                          
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">SAP Income Posting Amount</CFormLabel>
+                            <CFormInput 
+                              size='sm'
+                              value={tripsettlementData.income ? tripsettlementData.income : '-'} 
+                              readOnly
+                            /> 
+                          </CCol>
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">Income Closure request Date & Time</CFormLabel>
+                            <CFormInput 
+                              size='sm'
+                              value={tripsettlementData.income_request_at ? tripsettlementData.income_request_at : '-'} 
+                              readOnly
+                            /> 
+                          </CCol> 
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">SAP Income Posting Date</CFormLabel>
+                            <CFormInput 
+                              size='sm'
+                              value={`${tripsettlementData.income_posting_date ? tripsettlementData.income_posting_date : '-'}`}
+                              readOnly
+                            /> 
+                          </CCol> 
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="remarks">SAP Income Text</CFormLabel>
+                            <CFormInput 
+                              size='sm'
+                              value={tripsettlementData.income_sap_text ? tripsettlementData.income_sap_text : '-'} 
+                              readOnly
+                            /> 
+                          </CCol> 
                           <CCol xs={12} md={3}>
                             <CFormLabel htmlFor="remarks">NLMT Vendor Code</CFormLabel>
                             <CFormInput 
@@ -4199,120 +4444,31 @@ const NlmtTripSheetInfoClosure = () => {
                             /> 
                           </CCol>
                           <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="income">Income Amount <REQ />{' '} </CFormLabel>
-                            <CFormInput
-                              name="income"
+                            <CFormLabel htmlFor="remarks">SAP Expense Ref. No</CFormLabel>
+                            <CFormInput 
                               size='sm'
-                              id="income"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              maxLength={"6"}
-                              onChange={(e) => {
-                                const value = e.target.value;
-
-                                // Allow only digits
-                                if (/^\d*$/.test(value)) {
-                                  handleChange(e);
-                                }
-                              }}
-                              // onChange={handleChange}
-                              rows="1"
-                              value={values.income}
-                            />
+                              value={tripsettlementData.supplier_ref_no}
+                              readOnly
+                            /> 
                           </CCol>
                           <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="income_sap_text">SAP Text </CFormLabel>
-                            <CFormInput
+                            <CFormLabel htmlFor="remarks">SAP Expense Ref. Date</CFormLabel>
+                            <CFormInput 
                               size='sm'
-                              name="income_sap_text"
-                              id="income_sap_text"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              maxLength={"30"} 
-                              onChange={handleChange}
-                              rows="1"
-                              value={values.income_sap_text}
-                            />
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="income_remarks">Pro Income Remarks</CFormLabel>
-                            <CFormTextarea
-                              name="income_remarks"
-                              id="income_remarks"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              onChange={handleChange}
-                              rows="1"
-                              value={values.income_remarks}
-                            ></CFormTextarea>
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="income_posting_date">
-                              Income Posting Date <REQ />{' '} 
-                            </CFormLabel>
-                            <CFormInput
-                              size="sm"
-                              type="date"
-                              id="income_posting_date"
-                              name="income_posting_date"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              onChange={handleChange}
-                              min={Expense_Income_Posting_Date.min_date}
-                              max={Expense_Income_Posting_Date.max_date}
-                              onKeyDown={(e) => {
-                                e.preventDefault()
-                              }}
-                              value={values.income_posting_date}
-                            />
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="supplier_ref_no">SAP Expense Ref. No <REQ />{' '} </CFormLabel>
-                            <CFormInput
-                              size='sm'
-                              name="supplier_ref_no"
-                              id="supplier_ref_no"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              maxLength={"50"} 
-                              onChange={handleChange}
-                              rows="1"
-                              value={values.supplier_ref_no}
-                            />
-                          </CCol>
-                          <CCol xs={12} md={3}>
-                            <CFormLabel htmlFor="supplier_posting_date">
-                              SAP Expense Ref. Date <REQ />{' '} 
-                            </CFormLabel>
-                            <CFormInput
-                              size="sm"
-                              type="date"
-                              id="supplier_posting_date"
-                              name="supplier_posting_date"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              onChange={handleChange}
-                              // min={Expense_Income_Posting_Date.min_date}
-                              // max={Expense_Income_Posting_Date.max_date}
-                              onKeyDown={(e) => {
-                                e.preventDefault()
-                              }}
-                              value={values.supplier_posting_date}
-                            />
+                              value={tripsettlementData.supplier_posting_date}
+                              readOnly
+                            /> 
                           </CCol>
                           <CCol xs={12} md={3}>
                             <CFormLabel htmlFor="vendor_hsn">
-                              HSN Code <REQ />{' '}
+                              HSN Code  
                             </CFormLabel>
                             <CFormSelect
                               size="sm"
-                              name="vendor_hsn"
-                              onFocus={onFocus}
-                              onBlur={onBlur}
-                              onChange={handleChange}
-                              value={values.vendor_hsn}
-                              className={`${errors.vendor_hsn && 'is-invalid'}`}
+                              name="vendor_hsn" 
+                              value={tripsettlementData ? tripsettlementData.vendor_hsn : ''} 
                               aria-label="Small select example"
+                              disabled
                             >
                               <option value="">Select</option>
                   
@@ -4332,32 +4488,91 @@ const NlmtTripSheetInfoClosure = () => {
                               })}
                             </CFormSelect>
                           </CCol>
+                          {tripsettlementData.nlmt_income_status == 3 && (
+                            <>
+                              <CCol xs={12} md={3}>
+                                <CFormLabel htmlFor="remarks">NLMT Div. Expense Doc. No</CFormLabel>
+                                <CFormTextarea 
+                                  value={tripsettlementData.nlmt_div_sap_expense_doc_no} 
+                                  readOnly
+                                ></CFormTextarea>
+                              </CCol> 
+                              <CCol xs={12} md={3}>
+                                <CFormLabel htmlFor="remarks">Income Approval Remarks</CFormLabel>
+                                <CFormTextarea 
+                                  value={tripsettlementData.deduction_approval_remarks} 
+                                  readOnly
+                                ></CFormTextarea>
+                              </CCol> 
+                              <CCol xs={12} md={3}>
+                                <CFormLabel htmlFor="remarks">Income Approval Date & Time</CFormLabel>
+                                <CFormInput 
+                                  size='sm'
+                                  value={tripsettlementData.deduction_approval_at ? tripsettlementData.deduction_approval_at : '-'} 
+                                  readOnly
+                                /> 
+                              </CCol>
+                            </>
+                          )}
+                          {tripsettlementData.nlmt_income_status == 1 && (
+                          <CCol xs={12} md={3}>
+                            <CFormLabel htmlFor="income_approval_remarks">Income Approval Remarks</CFormLabel>
+                            <CFormTextarea
+                              name="income_approval_remarks"
+                              id="income_approval_remarks"
+                              onFocus={onFocus}
+                              onBlur={onBlur}
+                              onChange={handleChange}
+                              rows="1"
+                              value={values.income_approval_remarks}
+                            ></CFormTextarea>
+                          </CCol>
+                          )}
                         </CRow>
+                         
                         <CRow> 
                           <CCol
-                            className="offset-md-9"
+                            // className="offset-md-9"
                             xs={12}
                             sm={12}
-                            md={3}
+                            md={12}
                             // style={{ display: 'flex', justifyContent: 'space-between' }}
-                            style={{ display: 'flex', flexDirection: 'row-reverse', cursor: 'pointer' }}
+                            style={{ display: 'flex', justifyContent: 'end', cursor: 'pointer' }}
                           >
                             <CButton size="sm" color="primary" className="text-white" type="button">
-                              <Link className="text-white" to="/NlmtTSIncomeClosureHome">
-                                Cancel
+                              <Link className="text-white" to="/NlmtTSIncomeApprovalHome">
+                                Home
                               </Link>
                             </CButton>
+                            {tripsettlementData.nlmt_income_status == 1 && 
+                              <CButton
+                                size="sm"
+                                color="danger"
+                                className="mx-3 text-white" 
+                                onClick={() => {
+                                  setFetch(false)
+                                  TripsheetIncomeClosureSubmit('reject')
+                                }}
+                                type="submit"
+                              >
+                                Reject
+                              </CButton>
+                            }
                             <CButton
                               size="sm"
                               color="success"
                               className="mx-3 text-white" 
-                              onClick={() => {
+                              // onClick={() => {
                                 // setFetch(false)
-                                TripsheetIncomeClosureSubmit()
-                              }}
+                                // TripsheetIncomeClosureSubmit('submit')
+                                
+                              // }}
+                              onClick={() => { 
+                                NLMTIncomeApprovalSubmission()
+                              }} 
                               type="submit"
                             >
-                              Submit
+                              {submitNameAssigner()}
                             </CButton>
                           </CCol>
                         </CRow>
@@ -4675,4 +4890,4 @@ const NlmtTripSheetInfoClosure = () => {
   )
 }
 
-export default NlmtTripSheetInfoClosure
+export default NlmtTSIncomeApproval
