@@ -7,14 +7,14 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        REACT_APP_BASEURL: ${REACT_APP_BASEURL:-http://localhost:8000/api/v1}
-        REACT_APP_BASEURL1: ${REACT_APP_BASEURL1:-http://localhost:8000/api/v1/}
+        REACT_APP_BASEURL: ${REACT_APP_BASEURL:-http://localhost:4002/api/v1}
+        REACT_APP_BASEURL1: ${REACT_APP_BASEURL1:-http://localhost:4002/api/v1/}
         REACT_APP_NLFS_DIESEL_VENDOR: ${REACT_APP_NLFS_DIESEL_VENDOR:-231564}
         REACT_APP_NLFS_DIESEL_MATERIAL_CODE: ${REACT_APP_NLFS_DIESEL_MATERIAL_CODE:-SS126568}
-    container_name: logisticspro_frontend
+    container_name: prod-logistics-pro-frontend
     restart: unless-stopped
     ports:
-      - "3000:80"
+      - "4001:80"
     networks:
       - logisticspro_network
     environment:
