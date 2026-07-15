@@ -50,3 +50,12 @@ jobs:
             ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:latest
 
   
+      - name: Wait for ECR image to be fully available
+        run: sleep 30
+
+      - name: Force deploy to ECS Fargate
+        run: |
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER_PROD \
+            --service $ECS_SERVICE_PROD \
+            --force-new-deployment
