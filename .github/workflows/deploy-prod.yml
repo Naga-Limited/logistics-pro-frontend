@@ -13,7 +13,7 @@ jobs:
 
     env:
       AWS_REGION: ap-south-1
-      ECR_REPOSITORY: prod-logistics-pro-frontend
+      ECR_REPOSITORY: prod/logistics-pro-frontend
       ECS_CLUSTER: Pro-app-prod-cluster
       ECS_SERVICE: prod-logistics-pro-frontend
 
